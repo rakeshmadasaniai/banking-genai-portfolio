@@ -1,6 +1,6 @@
 # Conversational Memory Backend
 
- project adds a FastAPI-based conversational layer on top of the banking RAG assistant so interactions become session-aware instead of stateless. It introduces session memory, controlled history retention, and summarization for longer conversations while keeping the underlying retrieval-backed banking Q&A workflow reusable. The backend supports both an OpenAI path for quick deployment and a local Hugging Face adapter path for a stronger end-to-end portfolio story.
+This project adds a FastAPI-based conversational layer on top of the banking RAG assistant so interactions become session-aware instead of stateless. It introduces session memory, controlled history retention, and summarization for longer conversations while keeping the underlying retrieval-backed banking Q&A workflow reusable. The backend supports both an OpenAI path for quick deployment and a local Hugging Face adapter path for a stronger end-to-end portfolio story.
 
 ## What this project does
 
