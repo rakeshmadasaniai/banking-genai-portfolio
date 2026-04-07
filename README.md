@@ -1,6 +1,6 @@
 # Banking & Finance GenAI Portfolio
 
-**Rakesh Madasani** · [Hugging Face](https://huggingface.co/RakeshMadasani) · [LinkedIn](https://www.linkedin.com/in/rakesh-madasani-b217b71b0/) · [Email](mailto:rakeshee230@gmail.com)
+**Rakesh Madasani** | [Hugging Face](https://huggingface.co/RakeshMadasani) | [LinkedIn](https://www.linkedin.com/in/rakesh-madasani-b217b71b0/)
 
 An end-to-end GenAI portfolio focused on banking, finance, compliance, and regulatory question answering.
 
