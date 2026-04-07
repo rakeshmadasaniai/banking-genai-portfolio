@@ -1,6 +1,6 @@
 # Banking Finance QLoRA Fine-Tuned Model
 
-This project contains the fine-tuning workflow for adapting a Mistral-based LLM to banking and finance question answering.
+ project contains the fine-tuning workflow for adapting a Mistral-based LLM to banking and finance question answering.
 
 ## Model
 [banking-finance-mistral-qlora](https://huggingface.co/RakeshMadasani/banking-finance-mistral-qlora)
