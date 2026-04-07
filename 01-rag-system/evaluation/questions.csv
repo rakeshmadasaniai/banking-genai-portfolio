@@ -1,0 +1,51 @@
+id,question,category,expected_source_type
+1,What is the FDIC deposit insurance limit in the United States?,fdic,base
+2,What are the three stages of money laundering?,aml,base
+3,What documents are required for KYC of an individual in India?,kyc,base
+4,What is the difference between CDD and EDD in banking compliance?,kyc,base
+5,What is a Suspicious Activity Report and when must it be filed?,sar,base
+6,Compare CTR reporting thresholds in the U.S. and India.,ctr_comparison,base
+7,What is Regulation E liability for unauthorized electronic fund transfers?,reg_e,base
+8,What is the purpose of the Basel Framework?,basel,base
+9,What is the role of FIU-IND in India's AML framework?,aml_india,base
+10,What is the difference between repo rate and reverse repo rate in India?,rbi,base
+11,What is CRR in Indian banking?,rbi,base
+12,What is SLR in Indian banking?,rbi,base
+13,What is the purpose of customer due diligence?,kyc,base
+14,What is the leverage ratio under Basel III designed to control?,basel,base
+15,What is the role of FinCEN in the U.S. banking system?,fincen,base
+16,What is the role of the OCC in U.S. banking regulation?,occ,base
+17,What is a Currency Transaction Report?,ctr,base
+18,What is the difference between AML and KYC?,aml_kyc,base
+19,What is the Net Interest Margin?,finance,base
+20,What is the CASA ratio in banking?,finance,base
+21,What is an NPA in Indian banking?,credit_risk,base
+22,What is the purpose of provisioning in banking?,credit_risk,base
+23,What is LCR under Basel III?,basel,base
+24,What is NSFR under Basel III?,basel,base
+25,What is PCR in banking?,finance,base
+26,What is the FDIC and what does it insure?,fdic,base
+27,How does enhanced due diligence differ from standard due diligence?,kyc,base
+28,What is the purpose of suspicious transaction monitoring?,aml,base
+29,What is the difference between SAR and CTR reporting?,sar_ctr,base
+30,What does RBI stand for and what does it regulate?,rbi,base
+31,What is the purpose of Basel III capital adequacy requirements?,basel,base
+32,What is the difference between Tier 1 and Tier 2 capital?,basel,base
+33,What is the role of the CFPB in U.S. banking?,cfpb,base
+34,What is the purpose of deposit insurance?,fdic,base
+35,What is money laundering?,aml,base
+36,What is customer identification in KYC?,kyc,base
+37,What is beneficial ownership in compliance?,compliance,base
+38,What is the purpose of sanctions screening in banking?,compliance,base
+39,What is priority sector lending in India?,rbi,base
+40,What is a bank run?,banking_fundamentals,base
+41,What is capital adequacy ratio?,basel,base
+42,What is the difference between ROA and ROE?,finance,base
+43,What is the purpose of AML risk scoring?,aml,base
+44,What is the role of FinCEN in SAR filings?,fincen,base
+45,What is the difference between secured and unsecured lending?,credit_risk,base
+46,What is the function of a central bank?,banking_fundamentals,base
+47,What is a correspondent banking relationship?,compliance,base
+48,What is the purpose of transaction monitoring?,aml,base
+49,What is the difference between insured and uninsured deposits?,fdic,base
+50,What is the role of compliance officers in banks?,compliance,base
