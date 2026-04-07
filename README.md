@@ -100,7 +100,7 @@ flowchart LR
     H --> I["Live banking RAG assistant"]
     I --> J["FastAPI conversational memory backend"]
 
-    E -. domain knowledge strategy .-> I
+    E -. "parallel model artifact" .-> I
 ```
 
 ## Comparison Snapshot
