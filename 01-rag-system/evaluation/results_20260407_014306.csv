@@ -1,51 +1,51 @@
 id,question,latency_ms,source_count,grounded_flag,confidence,accuracy_rating,notes
-1,What is the FDIC deposit insurance limit in the United States?,,,,,,
-2,What are the three stages of money laundering?,,,,,,
-3,What documents are required for KYC of an individual in India?,,,,,,
-4,What is the difference between CDD and EDD in banking compliance?,,,,,,
-5,What is a Suspicious Activity Report and when must it be filed?,,,,,,
-6,Compare CTR reporting thresholds in the U.S. and India.,,,,,,
-7,What is Regulation E liability for unauthorized electronic fund transfers?,,,,,,
-8,What is the purpose of the Basel Framework?,,,,,,
-9,What is the role of FIU-IND in India's AML framework?,,,,,,
-10,What is the difference between repo rate and reverse repo rate in India?,,,,,,
-11,What is CRR in Indian banking?,,,,,,
-12,What is SLR in Indian banking?,,,,,,
-13,What is the purpose of customer due diligence?,,,,,,
-14,What is the leverage ratio under Basel III designed to control?,,,,,,
-15,What is the role of FinCEN in the U.S. banking system?,,,,,,
-16,What is the role of the OCC in U.S. banking regulation?,,,,,,
-17,What is a Currency Transaction Report?,,,,,,
-18,What is the difference between AML and KYC?,,,,,,
-19,What is the Net Interest Margin?,,,,,,
-20,What is the CASA ratio in banking?,,,,,,
-21,What is an NPA in Indian banking?,,,,,,
-22,What is the purpose of provisioning in banking?,,,,,,
-23,What is LCR under Basel III?,,,,,,
-24,What is NSFR under Basel III?,,,,,,
-25,What is PCR in banking?,,,,,,
-26,What is the FDIC and what does it insure?,,,,,,
-27,How does enhanced due diligence differ from standard due diligence?,,,,,,
-28,What is the purpose of suspicious transaction monitoring?,,,,,,
-29,What is the difference between SAR and CTR reporting?,,,,,,
-30,What does RBI stand for and what does it regulate?,,,,,,
-31,What is the purpose of Basel III capital adequacy requirements?,,,,,,
-32,What is the difference between Tier 1 and Tier 2 capital?,,,,,,
-33,What is the role of the CFPB in U.S. banking?,,,,,,
-34,What is the purpose of deposit insurance?,,,,,,
-35,What is money laundering?,,,,,,
-36,What is customer identification in KYC?,,,,,,
-37,What is beneficial ownership in compliance?,,,,,,
-38,What is the purpose of sanctions screening in banking?,,,,,,
-39,What is priority sector lending in India?,,,,,,
-40,What is a bank run?,,,,,,
-41,What is capital adequacy ratio?,,,,,,
-42,What is the difference between ROA and ROE?,,,,,,
-43,What is the purpose of AML risk scoring?,,,,,,
-44,What is the role of FinCEN in SAR filings?,,,,,,
-45,What is the difference between secured and unsecured lending?,,,,,,
-46,What is the function of a central bank?,,,,,,
-47,What is a correspondent banking relationship?,,,,,,
-48,What is the purpose of transaction monitoring?,,,,,,
-49,What is the difference between insured and uninsured deposits?,,,,,,
-50,What is the role of compliance officers in banks?,,,,,,
+1,What is the FDIC deposit insurance limit in the United States?,1843,2,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt; banking_knowledge.txt
+2,What are the three stages of money laundering?,37,2,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt; us_banking_knowledge.txt
+3,What documents are required for KYC of an individual in India?,1742,2,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt; us_banking_knowledge.txt
+4,What is the difference between CDD and EDD in banking compliance?,2409,2,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt; banking_knowledge.txt
+5,What is a Suspicious Activity Report and when must it be filed?,2334,2,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt; banking_knowledge.txt
+6,Compare CTR reporting thresholds in the U.S. and India.,1578,2,no,Low,,Auto-filled from batch_eval.py | has_answer=false | sources=banking_knowledge.txt; us_banking_knowledge.txt
+7,What is Regulation E liability for unauthorized electronic fund transfers?,22,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt
+8,What is the purpose of the Basel Framework?,12,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt
+9,What is the role of FIU-IND in India's AML framework?,1759,2,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt; us_banking_knowledge.txt
+10,What is the difference between repo rate and reverse repo rate in India?,2364,1,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt
+11,What is CRR in Indian banking?,1290,2,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt; us_banking_knowledge.txt
+12,What is SLR in Indian banking?,1624,2,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt; us_banking_knowledge.txt
+13,What is the purpose of customer due diligence?,1672,2,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt; banking_knowledge.txt
+14,What is the leverage ratio under Basel III designed to control?,751,1,no,Low,,Auto-filled from batch_eval.py | has_answer=false | sources=banking_knowledge.txt
+15,What is the role of FinCEN in the U.S. banking system?,1195,2,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt; banking_knowledge.txt
+16,What is the role of the OCC in U.S. banking regulation?,1141,2,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt; banking_knowledge.txt
+17,What is a Currency Transaction Report?,17,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt
+18,What is the difference between AML and KYC?,1850,2,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt; us_banking_knowledge.txt
+19,What is the Net Interest Margin?,24,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt
+20,What is the CASA ratio in banking?,60,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt
+21,What is an NPA in Indian banking?,1955,2,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt; us_banking_knowledge.txt
+22,What is the purpose of provisioning in banking?,22,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt
+23,What is LCR under Basel III?,67,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt
+24,What is NSFR under Basel III?,108,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt
+25,What is PCR in banking?,79,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt
+26,What is the FDIC and what does it insure?,93,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt
+27,How does enhanced due diligence differ from standard due diligence?,161,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt
+28,What is the purpose of suspicious transaction monitoring?,1579,2,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt; banking_knowledge.txt
+29,What is the difference between SAR and CTR reporting?,2760,2,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt; us_banking_knowledge.txt
+30,What does RBI stand for and what does it regulate?,103,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt
+31,What is the purpose of Basel III capital adequacy requirements?,27,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt
+32,What is the difference between Tier 1 and Tier 2 capital?,2287,2,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt; us_banking_knowledge.txt
+33,What is the role of the CFPB in U.S. banking?,948,2,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt; banking_knowledge.txt
+34,What is the purpose of deposit insurance?,15,2,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt; banking_knowledge.txt
+35,What is money laundering?,12,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt
+36,What is customer identification in KYC?,1230,2,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt; us_banking_knowledge.txt
+37,What is beneficial ownership in compliance?,40,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt
+38,What is the purpose of sanctions screening in banking?,43,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt
+39,What is priority sector lending in India?,1661,1,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt
+40,What is a bank run?,61,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt
+41,What is capital adequacy ratio?,19,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt
+42,What is the difference between ROA and ROE?,1795,2,yes,Moderate,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt; us_banking_knowledge.txt
+43,What is the purpose of AML risk scoring?,13,2,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt; us_banking_knowledge.txt
+44,What is the role of FinCEN in SAR filings?,144,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt
+45,What is the difference between secured and unsecured lending?,558,2,no,Low,,Auto-filled from batch_eval.py | has_answer=false | sources=banking_knowledge.txt; us_banking_knowledge.txt
+46,What is the function of a central bank?,58,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt
+47,What is a correspondent banking relationship?,54,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=banking_knowledge.txt
+48,What is the purpose of transaction monitoring?,94,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt
+49,What is the difference between insured and uninsured deposits?,691,2,no,Low,,Auto-filled from batch_eval.py | has_answer=false | sources=us_banking_knowledge.txt; banking_knowledge.txt
+50,What is the role of compliance officers in banks?,62,1,yes,High,,Auto-filled from batch_eval.py | has_answer=true | sources=us_banking_knowledge.txt
