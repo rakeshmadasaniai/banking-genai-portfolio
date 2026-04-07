@@ -87,10 +87,14 @@ The app expects the base banking knowledge files in the project directory and su
 
 ## Evaluation
 
-The repo includes a starter evaluation pack in [evaluation](./evaluation) with:
-- a 50-question banking-domain set
-- a 10-question quick version
-- a simple metrics script for average latency, source count, grounded rate, and user-rated accuracy
+The repository includes a lightweight evaluation framework in [`evaluation`](./evaluation) with:
+
+- a 50-question banking-domain test set
+- a 10-question quick-pass evaluation set
+- a metrics script for summarizing average latency, source count, grounded response rate, and user-rated accuracy
+
+This framework provides a simple way to assess retrieval-backed answer quality and supports future expansion into more formal benchmarking.
+
 
 ## Note on latency screenshots
 The current screenshots in this repository reflect real app sessions and are included as product evidence. The Regulation E example shows a sub-second response path from the deployed assistant, while the Space overview captures the main dashboard metrics in context.
