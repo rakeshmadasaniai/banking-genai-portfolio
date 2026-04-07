@@ -1,11 +1,11 @@
 id,question,latency_ms,source_count,grounded_flag,confidence,accuracy_rating,notes
-1,What is the FDIC deposit insurance limit in the United States?,,,,,,
-2,What are the three stages of money laundering?,,,,,,
-3,What documents are required for KYC of an individual in India?,,,,,,
-4,What is a Suspicious Activity Report and when must it be filed?,,,,,,
-5,Compare CTR reporting thresholds in the U.S. and India.,,,,,,
-6,What is Regulation E liability for unauthorized electronic fund transfers?,,,,,,
-7,What is the purpose of the Basel Framework?,,,,,,
-8,What is the role of FIU-IND in India's AML framework?,,,,,,
-9,What is the difference between repo rate and reverse repo rate in India?,,,,,,
-10,What is the difference between AML and KYC?,,,,,,
+1,What is the FDIC deposit insurance limit in the United States?,960,1,yes,moderate,accurate,Correct answer with source
+2,What are the three stages of money laundering?,5,1,yes,high,accurate,Correct answer with source
+3,What documents are required for KYC of an individual in India?,1650,1,yes,moderate,accurate,Correct answer with source
+4,What is a Suspicious Activity Report and when must it be filed?,940,1,yes,moderate,accurate,Correct answer with source
+5,Compare CTR reporting thresholds in the U.S. and India.,1450,1,yes,moderate,accurate,Correct answer with source
+6,What is Regulation E liability for unauthorized electronic fund transfers?,30,1,yes,high,accurate,Correct answer with source
+7,What is the purpose of the Basel Framework?,30,1,yes,high,accurate,Correct answer with source
+8,What is the role of FIU-IND in India's AML framework?,770,1,yes,moderate,partial,Partially accurate answer with source
+9,What is the difference between repo rate and reverse repo rate in India?,1100,1,yes,moderate,accurate,Correct answer with source
+10,What is the difference between AML and KYC?,1520,1,yes,moderate,accurate,Correct answer with source
