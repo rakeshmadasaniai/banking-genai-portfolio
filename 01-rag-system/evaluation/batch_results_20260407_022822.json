@@ -1,0 +1,826 @@
+[
+  {
+    "id": "1",
+    "category": "fdic",
+    "question": "What is the FDIC deposit insurance limit in the United States?",
+    "answer": "The FDIC deposit insurance limit in the United States is $250,000 per depositor, per insured bank, per account category.",
+    "latency_ms": 1843,
+    "source_count": 2,
+    "sources": [
+      "us_banking_knowledge.txt",
+      "banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "2",
+    "category": "aml",
+    "question": "What are the three stages of money laundering?",
+    "answer": "Three Stages of Money Laundering:\n1. Integration: Reintroducing funds into the economy as legitimate money.",
+    "latency_ms": 37,
+    "source_count": 2,
+    "sources": [
+      "banking_knowledge.txt",
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": false
+  },
+  {
+    "id": "3",
+    "category": "kyc",
+    "question": "What documents are required for KYC of an individual in India?",
+    "answer": "The documents required for KYC of an individual in India are:\n- Proof of Identity: Aadhaar, PAN Card, Passport, Voter ID, Driving License\n- Proof of Address: Utility bills, bank statements, Aadhaar, Passport\n- Photograph",
+    "latency_ms": 1742,
+    "source_count": 2,
+    "sources": [
+      "banking_knowledge.txt",
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "4",
+    "category": "kyc",
+    "question": "What is the difference between CDD and EDD in banking compliance?",
+    "answer": "The key difference between Customer Due Diligence (CDD) and Enhanced Due Diligence (EDD) in banking compliance is that CDD is a standard process that involves understanding customer relationships, identifying beneficial owners, and ongoing monitoring of transactions. In contrast, EDD is a more rigorous process required for higher-risk situations, such as for Politically Exposed Persons (PEPs), customers from high-risk countries, and correspondent banking relationships, and it includes additional measures like source of funds verification and often requires senior management approval.",
+    "latency_ms": 2409,
+    "source_count": 2,
+    "sources": [
+      "us_banking_knowledge.txt",
+      "banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "5",
+    "category": "sar",
+    "question": "What is a Suspicious Activity Report and when must it be filed?",
+    "answer": "A Suspicious Activity Report (SAR) is a document that banks must file for transactions involving $5,000 or more when they suspect that the funds are from illegal activity. It must be filed within 30 days of detecting the suspicious activity.",
+    "latency_ms": 2334,
+    "source_count": 2,
+    "sources": [
+      "us_banking_knowledge.txt",
+      "banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "6",
+    "category": "ctr_comparison",
+    "question": "Compare CTR reporting thresholds in the U.S. and India.",
+    "answer": "I don't have sufficient information on that topic in my knowledge base.",
+    "latency_ms": 1578,
+    "source_count": 2,
+    "sources": [
+      "banking_knowledge.txt",
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "Low",
+    "grounded_flag": "no",
+    "has_answer": false,
+    "cites_source": false,
+    "is_domain_specific": false
+  },
+  {
+    "id": "7",
+    "category": "reg_e",
+    "question": "What is Regulation E liability for unauthorized electronic fund transfers?",
+    "answer": "Regulation E \u2014 Electronic Fund Transfers\n- Protects consumers using electronic banking services\n- Limits consumer liability for unauthorized transfers\n- Unauthorized transfer reported within 2 days: max liability $50\n- Reported within 60 days: max liability $500\n- After 60 days: unlimited liability",
+    "latency_ms": 22,
+    "source_count": 1,
+    "sources": [
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "8",
+    "category": "basel",
+    "question": "What is the purpose of the Basel Framework?",
+    "answer": "Basel II (2004): Three pillars framework:\n1.",
+    "latency_ms": 12,
+    "source_count": 1,
+    "sources": [
+      "banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "9",
+    "category": "aml_india",
+    "question": "What is the role of FIU-IND in India's AML framework?",
+    "answer": "The Financial Intelligence Unit - India (FIU-IND) is the nodal agency responsible for receiving and analyzing suspicious transaction reports as part of India's AML framework.",
+    "latency_ms": 1759,
+    "source_count": 2,
+    "sources": [
+      "banking_knowledge.txt",
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "10",
+    "category": "rbi",
+    "question": "What is the difference between repo rate and reverse repo rate in India?",
+    "answer": "The repo rate is the rate at which the Reserve Bank of India (RBI) lends money to commercial banks, currently set at 6.50%. In contrast, the reverse repo rate is the rate at which RBI borrows money from commercial banks, currently at 3.35%. The key difference is that the repo rate involves lending to banks, making borrowing more expensive when increased, while the reverse repo rate involves borrowing from banks, providing them with a place to park excess funds.",
+    "latency_ms": 2364,
+    "source_count": 1,
+    "sources": [
+      "banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "11",
+    "category": "rbi",
+    "question": "What is CRR in Indian banking?",
+    "answer": "The Cash Reserve Ratio (CRR) in Indian banking is the percentage of a bank's total deposits that must be kept as reserves with the Reserve Bank of India (RBI). The current CRR is 4.50%, and banks earn no interest on CRR balances.",
+    "latency_ms": 1290,
+    "source_count": 2,
+    "sources": [
+      "banking_knowledge.txt",
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "12",
+    "category": "rbi",
+    "question": "What is SLR in Indian banking?",
+    "answer": "SLR, or Statutory Liquidity Ratio, is the percentage of deposits that banks in India must maintain in liquid assets such as gold and government securities. The current SLR is 18%.",
+    "latency_ms": 1624,
+    "source_count": 2,
+    "sources": [
+      "banking_knowledge.txt",
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "13",
+    "category": "kyc",
+    "question": "What is the purpose of customer due diligence?",
+    "answer": "The purpose of customer due diligence (CDD) is to understand the nature and purpose of customer relationships, identify and verify beneficial owners of legal entity customers, assess the risk level of customers, and conduct ongoing monitoring of customer transactions.",
+    "latency_ms": 1672,
+    "source_count": 2,
+    "sources": [
+      "us_banking_knowledge.txt",
+      "banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": false
+  },
+  {
+    "id": "14",
+    "category": "basel",
+    "question": "What is the leverage ratio under Basel III designed to control?",
+    "answer": "I don't have sufficient information on that topic in my knowledge base.",
+    "latency_ms": 751,
+    "source_count": 1,
+    "sources": [
+      "banking_knowledge.txt"
+    ],
+    "confidence": "Low",
+    "grounded_flag": "no",
+    "has_answer": false,
+    "cites_source": false,
+    "is_domain_specific": false
+  },
+  {
+    "id": "15",
+    "category": "fincen",
+    "question": "What is the role of FinCEN in the U.S. banking system?",
+    "answer": "FinCEN administers the Bank Secrecy Act (BSA), which is the primary U.S. anti-money laundering law. Its role involves assisting U.S. government agencies in detecting and preventing money laundering and other financial crimes.",
+    "latency_ms": 1195,
+    "source_count": 2,
+    "sources": [
+      "us_banking_knowledge.txt",
+      "banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "16",
+    "category": "occ",
+    "question": "What is the role of the OCC in U.S. banking regulation?",
+    "answer": "The OCC is a federal agency within the U.S. Department of Treasury that charters, regulates, and supervises all national banks and federal savings associations, ensuring they operate safely, soundly, and fairly.",
+    "latency_ms": 1141,
+    "source_count": 2,
+    "sources": [
+      "us_banking_knowledge.txt",
+      "banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "17",
+    "category": "ctr",
+    "question": "What is a Currency Transaction Report?",
+    "answer": "Currency Transaction Reports (CTRs)\n   - Required for cash transactions exceeding $10,000 in a single day\n   - Includes multiple transactions that together exceed $10,000\n   - Must be filed within 15 days of the transaction\n   - Applies to deposits, withdrawals, exchanges, and other payments",
+    "latency_ms": 17,
+    "source_count": 1,
+    "sources": [
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "18",
+    "category": "aml_kyc",
+    "question": "What is the difference between AML and KYC?",
+    "answer": "The key difference between AML (Anti-Money Laundering) and KYC (Know Your Customer) is that KYC is focused on verifying the identity of customers and assessing their risk, while AML encompasses broader measures to prevent money laundering, which involves making illegally obtained funds appear legitimate.",
+    "latency_ms": 1850,
+    "source_count": 2,
+    "sources": [
+      "banking_knowledge.txt",
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "19",
+    "category": "finance",
+    "question": "What is the Net Interest Margin?",
+    "answer": "=== SECTION 8: FINANCIAL RATIOS & ANALYSIS ===\n\nNet Interest Margin (NIM): (Interest Income - Interest Expense) / Average Earning Assets.",
+    "latency_ms": 24,
+    "source_count": 1,
+    "sources": [
+      "banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "20",
+    "category": "finance",
+    "question": "What is the CASA ratio in banking?",
+    "answer": "CASA Ratio: Current + Savings Deposits / Total Deposits. PCR (Provision Coverage Ratio): Provisions / Gross NPAs.",
+    "latency_ms": 60,
+    "source_count": 1,
+    "sources": [
+      "banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "21",
+    "category": "credit_risk",
+    "question": "What is an NPA in Indian banking?",
+    "answer": "An NPA (Non-Performing Asset) in Indian banking is classified as a loan where interest or principal remains overdue for more than 90 days. It can be further categorized into three types: Substandard Asset (NPA for less than 12 months), Doubtful Asset (NPA for more than 12 months), and Loss Asset (where loss has been identified).",
+    "latency_ms": 1955,
+    "source_count": 2,
+    "sources": [
+      "banking_knowledge.txt",
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "22",
+    "category": "credit_risk",
+    "question": "What is the purpose of provisioning in banking?",
+    "answer": "Provisioning Norms: Banks must maintain provisions against NPAs.",
+    "latency_ms": 22,
+    "source_count": 1,
+    "sources": [
+      "banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "23",
+    "category": "basel",
+    "question": "What is LCR under Basel III?",
+    "answer": "Basel III (2010, post-financial crisis): Strengthened capital requirements:\n- Minimum Common Equity Tier 1 (CET1): 4.5%\n- Tier 1 Capital: 6%\n- Total Capital: 8% (9% in India)\n- Capital Conservation Buffer: 2.5%\n- Countercyclical Buffer: 0-2.5%\n- Leverage Ratio: Minimum 3%\n- Liquidity Coverage Ratio (LCR): Banks must hold enough high-quality liquid assets to cover 30 days of net cash outflows.",
+    "latency_ms": 67,
+    "source_count": 1,
+    "sources": [
+      "banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "24",
+    "category": "basel",
+    "question": "What is NSFR under Basel III?",
+    "answer": "Basel II (2004): Three pillars framework:\n1.",
+    "latency_ms": 108,
+    "source_count": 1,
+    "sources": [
+      "banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "25",
+    "category": "finance",
+    "question": "What is PCR in banking?",
+    "answer": "PCR (Provision Coverage Ratio): Provisions / Gross NPAs. Higher means better provisioned.",
+    "latency_ms": 79,
+    "source_count": 1,
+    "sources": [
+      "banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": false
+  },
+  {
+    "id": "26",
+    "category": "fdic",
+    "question": "What is the FDIC and what does it insure?",
+    "answer": "OVERVIEW\nThe FDIC is an independent U.S. The FDIC supervises state-chartered banks that are not members of the Federal Reserve System.",
+    "latency_ms": 93,
+    "source_count": 1,
+    "sources": [
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "27",
+    "category": "kyc",
+    "question": "How does enhanced due diligence differ from standard due diligence?",
+    "answer": "Customer Due Diligence (CDD)\n   - Understand customer's business and expected transactions\n   - Assess risk level: low, medium, high\n   - Low risk: basic CDD sufficient\n   - High risk: Enhanced Due Diligence (EDD) required",
+    "latency_ms": 161,
+    "source_count": 1,
+    "sources": [
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": false
+  },
+  {
+    "id": "28",
+    "category": "aml",
+    "question": "What is the purpose of suspicious transaction monitoring?",
+    "answer": "The purpose of suspicious transaction monitoring is to continuously monitor transactions against expected behavior, identify unusual patterns or activities that may indicate money laundering or other financial crimes, and file Suspicious Activity Reports (SARs) when such activities are detected. This process helps in maintaining compliance with regulations and protecting the financial system from illicit activities.",
+    "latency_ms": 1579,
+    "source_count": 2,
+    "sources": [
+      "us_banking_knowledge.txt",
+      "banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "29",
+    "category": "sar_ctr",
+    "question": "What is the difference between SAR and CTR reporting?",
+    "answer": "The key difference between SAR (Suspicious Activity Report) and CTR (Cash Transaction Report) reporting is that SARs must be filed for any transaction suspected of money laundering, while CTRs are required for all cash transactions above Rs. 10 lakhs. SARs must be reported within 7 days, whereas CTRs are reported monthly.",
+    "latency_ms": 2760,
+    "source_count": 2,
+    "sources": [
+      "banking_knowledge.txt",
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": false
+  },
+  {
+    "id": "30",
+    "category": "rbi",
+    "question": "What does RBI stand for and what does it regulate?",
+    "answer": "=== SECTION 1: RBI GUIDELINES & MONETARY POLICY ===\n\nThe Reserve Bank of India (RBI) is India's central bank and monetary authority. It was established on April 1, 1935, under the Reserve Bank of India Act, 1934.",
+    "latency_ms": 103,
+    "source_count": 1,
+    "sources": [
+      "banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "31",
+    "category": "basel",
+    "question": "What is the purpose of Basel III capital adequacy requirements?",
+    "answer": "Basel III (2010, post-financial crisis): Strengthened capital requirements:\n- Minimum Common Equity Tier 1 (CET1): 4.5%\n- Tier 1 Capital: 6%\n- Total Capital: 8% (9% in India)\n- Capital Conservation Buffer: 2.5%\n- Countercyclical Buffer: 0-2.5%\n- Leverage Ratio: Minimum 3%\n- Liquidity Coverage Ratio (LCR): Banks must hold enough high-quality liquid assets to cover 30 days of net cash outflows.",
+    "latency_ms": 27,
+    "source_count": 1,
+    "sources": [
+      "banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "32",
+    "category": "basel",
+    "question": "What is the difference between Tier 1 and Tier 2 capital?",
+    "answer": "Tier 1 Capital is core capital that includes common equity, retained earnings, and disclosed reserves, while Tier 2 Capital is supplementary capital that includes revaluation reserves, hybrid instruments, and subordinated debt. The key difference is that Tier 1 Capital is considered more stable and essential for a bank's financial health, whereas Tier 2 Capital serves as a supplementary buffer.",
+    "latency_ms": 2287,
+    "source_count": 2,
+    "sources": [
+      "banking_knowledge.txt",
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "33",
+    "category": "cfpb",
+    "question": "What is the role of the CFPB in U.S. banking?",
+    "answer": "The role of the CFPB in U.S. banking is to protect consumers in the financial marketplace and to enforce federal consumer financial laws.",
+    "latency_ms": 948,
+    "source_count": 2,
+    "sources": [
+      "us_banking_knowledge.txt",
+      "banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "34",
+    "category": "fdic",
+    "question": "What is the purpose of deposit insurance?",
+    "answer": "DEPOSIT INSURANCE\n- Standard insurance: $250,000 per depositor, per insured bank, per account category\n- Account categories: single accounts, joint accounts, retirement accounts, trust accounts\n- Depositors do not need to apply \u2014 insurance is automatic\n- Over 99% of all U.S.",
+    "latency_ms": 15,
+    "source_count": 2,
+    "sources": [
+      "us_banking_knowledge.txt",
+      "banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "35",
+    "category": "aml",
+    "question": "What is money laundering?",
+    "answer": "THREE STAGES OF MONEY LAUNDERING\n1. Integration \u2014 Making the money appear legitimate and usable",
+    "latency_ms": 12,
+    "source_count": 1,
+    "sources": [
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": false
+  },
+  {
+    "id": "36",
+    "category": "kyc",
+    "question": "What is customer identification in KYC?",
+    "answer": "Customer identification in KYC involves collecting and verifying customer identity documents, such as legal name, date of birth, address, and ID number, using government-issued IDs, passports, or driver's licenses.",
+    "latency_ms": 1230,
+    "source_count": 2,
+    "sources": [
+      "banking_knowledge.txt",
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "37",
+    "category": "compliance",
+    "question": "What is beneficial ownership in compliance?",
+    "answer": "BENEFICIAL OWNERSHIP RULE\nEffective May 2018, banks must identify beneficial owners of legal entity customers. - Must identify all individuals owning 25% or more\n- Must identify one individual with significant management control\n- Beneficial owners must provide: name, DOB, address, ID number\n- Banks must verify this information",
+    "latency_ms": 40,
+    "source_count": 1,
+    "sources": [
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "38",
+    "category": "compliance",
+    "question": "What is the purpose of sanctions screening in banking?",
+    "answer": "economic sanctions.",
+    "latency_ms": 43,
+    "source_count": 1,
+    "sources": [
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": false
+  },
+  {
+    "id": "39",
+    "category": "rbi",
+    "question": "What is priority sector lending in India?",
+    "answer": "Priority Sector Lending (PSL) in India is a mandate from the RBI that requires banks to allocate 40% of their net credit to priority sectors, which include agriculture, micro, small, and medium enterprises (MSMEs), education, housing, and social infrastructure.",
+    "latency_ms": 1661,
+    "source_count": 1,
+    "sources": [
+      "banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "40",
+    "category": "banking_fundamentals",
+    "question": "What is a bank run?",
+    "answer": "=== SECTION 6: BANKING PRODUCTS & SERVICES ===",
+    "latency_ms": 61,
+    "source_count": 1,
+    "sources": [
+      "banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "41",
+    "category": "basel",
+    "question": "What is capital adequacy ratio?",
+    "answer": "Capital Adequacy Ratio (CAR): Also known as CRAR. Formula: CAR = (Tier 1 Capital + Tier 2 Capital) / Risk Weighted Assets.",
+    "latency_ms": 19,
+    "source_count": 1,
+    "sources": [
+      "banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "42",
+    "category": "finance",
+    "question": "What is the difference between ROA and ROE?",
+    "answer": "The key difference between ROA (Return on Assets) and ROE (Return on Equity) is that ROA measures how efficiently a bank uses its total assets to generate profit, while ROE measures the return to shareholders based on their equity investment in the bank. Good ROA for Indian banks is above 1%, whereas a good ROE is considered to be above 12-15%.",
+    "latency_ms": 1795,
+    "source_count": 2,
+    "sources": [
+      "banking_knowledge.txt",
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "Moderate",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "43",
+    "category": "aml",
+    "question": "What is the purpose of AML risk scoring?",
+    "answer": "=== SECTION 2: CREDIT RISK MANAGEMENT ===\n\nCredit risk is the risk of loss arising from a borrower's failure to repay a loan or meet contractual obligations.",
+    "latency_ms": 13,
+    "source_count": 2,
+    "sources": [
+      "banking_knowledge.txt",
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": false
+  },
+  {
+    "id": "44",
+    "category": "fincen",
+    "question": "What is the role of FinCEN in SAR filings?",
+    "answer": "3. Suspicious Activity Reports (SARs)\n   - Banks must file SARs for transactions involving $5,000 or more\n   - Required when bank suspects funds are from illegal activity\n   - Must be filed within 30 days of detecting suspicious activity\n   - SARs are confidential \u2014 banks cannot tell customers a SAR was filed",
+    "latency_ms": 144,
+    "source_count": 1,
+    "sources": [
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "45",
+    "category": "credit_risk",
+    "question": "What is the difference between secured and unsecured lending?",
+    "answer": "I don't have sufficient information on that topic in my knowledge base.",
+    "latency_ms": 558,
+    "source_count": 2,
+    "sources": [
+      "banking_knowledge.txt",
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "Low",
+    "grounded_flag": "no",
+    "has_answer": false,
+    "cites_source": false,
+    "is_domain_specific": false
+  },
+  {
+    "id": "46",
+    "category": "banking_fundamentals",
+    "question": "What is the function of a central bank?",
+    "answer": "================================================================\nSECTION 5: FEDERAL RESERVE REGULATIONS\n================================================================\n\nOVERVIEW\nThe Federal Reserve (Fed) is the central bank of the United States. It supervises bank holding companies and state-chartered member banks.",
+    "latency_ms": 58,
+    "source_count": 1,
+    "sources": [
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "47",
+    "category": "compliance",
+    "question": "What is a correspondent banking relationship?",
+    "answer": "=== SECTION 6: BANKING PRODUCTS & SERVICES ===",
+    "latency_ms": 54,
+    "source_count": 1,
+    "sources": [
+      "banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  },
+  {
+    "id": "48",
+    "category": "aml",
+    "question": "What is the purpose of transaction monitoring?",
+    "answer": "Ongoing Monitoring\n   - Continuously monitor transactions against expected behavior\n   - Update customer information regularly\n   - Re-verify identity when significant changes occur\n   - File SARs when suspicious activity detected",
+    "latency_ms": 94,
+    "source_count": 1,
+    "sources": [
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": false
+  },
+  {
+    "id": "49",
+    "category": "fdic",
+    "question": "What is the difference between insured and uninsured deposits?",
+    "answer": "I don't have sufficient information on that topic in my knowledge base.",
+    "latency_ms": 691,
+    "source_count": 2,
+    "sources": [
+      "us_banking_knowledge.txt",
+      "banking_knowledge.txt"
+    ],
+    "confidence": "Low",
+    "grounded_flag": "no",
+    "has_answer": false,
+    "cites_source": false,
+    "is_domain_specific": false
+  },
+  {
+    "id": "50",
+    "category": "compliance",
+    "question": "What is the role of compliance officers in banks?",
+    "answer": "banks must have a written AML program that includes:\n- Internal policies, procedures, and controls\n- Designation of a BSA/AML Compliance Officer\n- Ongoing employee training program\n- Independent testing and auditing\n- Risk-based customer due diligence",
+    "latency_ms": 62,
+    "source_count": 1,
+    "sources": [
+      "us_banking_knowledge.txt"
+    ],
+    "confidence": "High",
+    "grounded_flag": "yes",
+    "has_answer": true,
+    "cites_source": false,
+    "is_domain_specific": true
+  }
+]

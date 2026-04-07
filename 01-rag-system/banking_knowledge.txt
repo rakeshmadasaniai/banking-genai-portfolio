@@ -1,0 +1,201 @@
+=== SECTION 1: RBI GUIDELINES & MONETARY POLICY ===
+
+The Reserve Bank of India (RBI) is India's central bank and monetary authority. It was established on April 1, 1935, under the Reserve Bank of India Act, 1934.
+
+Repo Rate: The rate at which RBI lends money to commercial banks. When repo rate increases, borrowing becomes expensive, reducing liquidity. As of 2024, the repo rate is 6.50%.
+
+Reverse Repo Rate: The rate at which RBI borrows money from commercial banks. It is currently 3.35%.
+
+Cash Reserve Ratio (CRR): The percentage of a bank's total deposits that must be kept as reserves with RBI. Current CRR is 4.50%. Banks earn no interest on CRR balances.
+
+Statutory Liquidity Ratio (SLR): The percentage of deposits banks must maintain in liquid assets like gold, government securities. Current SLR is 18%.
+
+Marginal Standing Facility (MSF): Rate at which banks can borrow overnight funds from RBI against government securities. MSF rate is typically 0.25% above the repo rate.
+
+Bank Rate: The rate at which RBI lends money to commercial banks without any collateral. It is used for long-term lending.
+
+Inflation Targeting: RBI follows flexible inflation targeting with a target of 4% CPI inflation, with a band of +/- 2%.
+
+Open Market Operations (OMO): RBI buys or sells government securities to control money supply. Buying securities injects liquidity; selling withdraws liquidity.
+
+Liquidity Adjustment Facility (LAF): A framework through which RBI manages short-term liquidity using repo and reverse repo operations.
+
+Priority Sector Lending (PSL): RBI mandates that 40% of bank's net credit must go to priority sectors including agriculture, MSMEs, education, housing, and social infrastructure.
+
+=== SECTION 2: CREDIT RISK MANAGEMENT ===
+
+Credit risk is the risk of loss arising from a borrower's failure to repay a loan or meet contractual obligations.
+
+Credit Risk Components:
+- Probability of Default (PD): Likelihood that a borrower will default within a given time horizon, typically one year.
+- Loss Given Default (LGD): The percentage of exposure that will be lost if a borrower defaults, after accounting for recovery.
+- Exposure at Default (EAD): The total value a bank is exposed to at the time of default.
+- Expected Loss (EL) = PD × LGD × EAD
+
+Credit Rating Systems: Banks use internal rating systems to classify borrowers. Ratings range from AAA (highest quality) to D (default). External agencies like CRISIL, ICRA, CARE, and India Ratings provide credit ratings in India.
+
+Non-Performing Assets (NPA): A loan is classified as NPA when interest or principal remains overdue for more than 90 days.
+- Substandard Asset: NPA for less than 12 months
+- Doubtful Asset: NPA for more than 12 months
+- Loss Asset: Asset where loss has been identified
+
+Provisioning Norms: Banks must maintain provisions against NPAs.
+- Substandard: 15% provision
+- Doubtful (up to 1 year): 25% provision
+- Doubtful (1-3 years): 40% provision
+- Doubtful (over 3 years): 100% provision
+- Loss assets: 100% provision
+
+Capital Adequacy Ratio (CAR): Also known as CRAR. Minimum CAR under Basel III is 9% in India (RBI requirement), higher than Basel III's 8% global minimum. Formula: CAR = (Tier 1 Capital + Tier 2 Capital) / Risk Weighted Assets.
+
+Tier 1 Capital: Core capital including common equity, retained earnings, and disclosed reserves.
+Tier 2 Capital: Supplementary capital including revaluation reserves, hybrid instruments, and subordinated debt.
+
+Stressed Assets: Include NPAs, restructured loans, and written-off assets.
+
+=== SECTION 3: LOANS & LENDING ===
+
+Types of Loans:
+- Term Loans: Loans with fixed repayment schedule over a defined period.
+- Working Capital Loans: Short-term loans to fund day-to-day operations.
+- Overdraft: Credit facility allowing withdrawal beyond account balance up to a limit.
+- Cash Credit: Similar to overdraft but specifically for businesses against stock/debtors.
+- Letter of Credit (LC): Bank guarantee for trade transactions.
+- Bank Guarantee (BG): Bank's commitment to pay if the customer defaults.
+
+Home Loans: Secured loans against property. Typical LTV (Loan to Value) ratio is up to 80% for loans above Rs. 30 lakhs.
+
+MCLR (Marginal Cost of Funds based Lending Rate): Benchmark rate introduced in 2016 for floating rate loans. Banks cannot lend below MCLR for most loans.
+
+External Benchmark Lending Rate (EBLR): From October 2019, floating rate loans for retail and MSMEs must be linked to external benchmarks like RBI repo rate.
+
+Loan Classification by Security:
+- Secured Loans: Backed by collateral (home loans, auto loans, gold loans)
+- Unsecured Loans: No collateral (personal loans, credit cards)
+
+Debt Service Coverage Ratio (DSCR): Measures ability to service debt. DSCR = Net Operating Income / Total Debt Service. DSCR above 1.25 is generally acceptable.
+
+Loan Restructuring: Process of modifying loan terms when borrower faces difficulty. Options include reducing interest rate, extending tenure, or providing moratorium.
+
+=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk.
+
+KYC Components:
+- Customer Identification Program (CIP): Collecting and verifying customer identity documents.
+- Customer Due Diligence (CDD): Assessing the nature of the customer's business and transaction patterns.
+- Enhanced Due Diligence (EDD): Applied to high-risk customers such as Politically Exposed Persons (PEPs).
+- Ongoing Monitoring: Continuous monitoring of customer transactions.
+
+KYC Documents for Individuals:
+- Proof of Identity: Aadhaar, PAN Card, Passport, Voter ID, Driving License
+- Proof of Address: Utility bills, bank statements, Aadhaar, Passport
+- Photograph
+
+KYC Documents for Companies:
+- Certificate of Incorporation
+- Memorandum and Articles of Association
+- Board Resolution
+- List of Directors and Beneficial Owners
+
+Beneficial Owner: A person who ultimately owns or controls more than 25% of shares or voting rights in an entity.
+
+Politically Exposed Persons (PEPs): Individuals who hold or have held prominent public positions. Banks must apply EDD for PEPs.
+
+Risk Categorization: Customers are classified as Low, Medium, or High risk based on occupation, transaction patterns, and geography.
+
+KYC Periodicity:
+- High-risk customers: Every 2 years
+- Medium-risk customers: Every 8 years
+- Low-risk customers: Every 10 years
+
+Video-based Customer Identification Process (V-CIP): RBI-approved digital KYC method using live video interaction.
+
+Central KYC Registry (CKYC): Centralized repository of KYC records maintained by CERSAI. One-time KYC valid across financial institutions.
+
+=== SECTION 5: AML (ANTI-MONEY LAUNDERING) ===
+
+Money laundering is the process of making illegally obtained funds appear legitimate.
+
+Three Stages of Money Laundering:
+1. Placement: Introducing illegal funds into the financial system (e.g., cash deposits).
+2. Layering: Concealing the trail through complex transactions (wire transfers, shell companies).
+3. Integration: Reintroducing funds into the economy as legitimate money.
+
+Prevention of Money Laundering Act (PMLA) 2002: India's primary AML legislation. Requires banks to maintain records and report suspicious transactions.
+
+Financial Intelligence Unit - India (FIU-IND): Nodal agency for receiving and analyzing suspicious transaction reports.
+
+Reporting Requirements:
+- Cash Transaction Report (CTR): All cash transactions above Rs. 10 lakhs must be reported monthly.
+- Suspicious Transaction Report (STR): Any transaction suspected of money laundering must be reported within 7 days.
+- Non-Profit Organization Transaction Report (NTR): Transactions by NPOs above Rs. 10 lakhs.
+- Cross Border Wire Transfer Report (CWTR): All cross-border transactions above Rs. 5 lakhs.
+
+Red Flags for Suspicious Transactions:
+- Unusual large cash deposits or withdrawals
+- Multiple transactions just below reporting thresholds (structuring)
+- Transactions inconsistent with customer's business profile
+- Rapid movement of funds through multiple accounts
+- Transactions involving high-risk jurisdictions
+
+FATF (Financial Action Task Force): International body setting global AML/CFT standards. India is a FATF member.
+
+CFT (Combating Financing of Terrorism): Related to AML; banks must screen customers against terror watchlists like UN Security Council sanctions list.
+
+Hawala: Informal value transfer system used to move money outside formal banking, commonly associated with money laundering.
+
+=== SECTION 6: BANKING PRODUCTS & SERVICES ===
+
+Current Account: Non-interest bearing account for businesses. Allows unlimited transactions.
+Savings Account: Interest-bearing account for individuals. RBI deregulated savings account interest rates in 2011.
+Fixed Deposit (FD): Term deposit with fixed interest rate for fixed tenure. DICGC insures deposits up to Rs. 5 lakhs.
+Recurring Deposit (RD): Fixed monthly deposit for a fixed period earning interest.
+
+NEFT (National Electronic Funds Transfer): Batch-based fund transfer system. Available 24x7 since December 2019.
+RTGS (Real Time Gross Settlement): Real-time fund transfer for high-value transactions (minimum Rs. 2 lakhs). Available 24x7.
+IMPS (Immediate Payment Service): Instant fund transfer available 24x7. No minimum amount.
+UPI (Unified Payments Interface): Real-time payment system by NPCI. Enables instant transfers using VPA.
+
+SWIFT: Society for Worldwide Interbank Financial Telecommunication. Used for international fund transfers.
+
+Demat Account: Electronic account to hold securities. Managed by NSDL or CDSL depositories.
+
+=== SECTION 7: BASEL NORMS ===
+
+Basel I (1988): Introduced minimum capital requirement of 8% of risk-weighted assets. Only covered credit risk.
+
+Basel II (2004): Three pillars framework:
+1. Minimum Capital Requirements (credit, market, operational risk)
+2. Supervisory Review Process
+3. Market Discipline (disclosure requirements)
+
+Basel III (2010, post-financial crisis): Strengthened capital requirements:
+- Minimum Common Equity Tier 1 (CET1): 4.5%
+- Tier 1 Capital: 6%
+- Total Capital: 8% (9% in India)
+- Capital Conservation Buffer: 2.5%
+- Countercyclical Buffer: 0-2.5%
+- Leverage Ratio: Minimum 3%
+- Liquidity Coverage Ratio (LCR): Banks must hold enough high-quality liquid assets to cover 30 days of net cash outflows.
+- Net Stable Funding Ratio (NSFR): Long-term stable funding must cover long-term assets.
+
+=== SECTION 8: FINANCIAL RATIOS & ANALYSIS ===
+
+Net Interest Margin (NIM): (Interest Income - Interest Expense) / Average Earning Assets. Measures profitability of lending activities.
+
+Return on Assets (ROA): Net Income / Total Assets. Measures how efficiently a bank uses its assets. Good ROA for Indian banks: above 1%.
+
+Return on Equity (ROE): Net Income / Shareholders' Equity. Measures return to shareholders. Good ROE: above 12-15%.
+
+Cost to Income Ratio: Operating Expenses / Net Income. Lower is better. Good ratio: below 50%.
+
+Gross NPA Ratio: Gross NPAs / Gross Advances. Measures asset quality. Lower is better.
+
+Net NPA Ratio: Net NPAs / Net Advances. After provisions. Good ratio: below 2%.
+
+PCR (Provision Coverage Ratio): Provisions / Gross NPAs. Higher means better provisioned. RBI recommends above 70%.
+
+CASA Ratio: Current + Savings Deposits / Total Deposits. Higher CASA means lower cost of funds.
+
+Credit Deposit (CD) Ratio: Total Loans / Total Deposits. RBI monitors this; high ratio may indicate liquidity risk.

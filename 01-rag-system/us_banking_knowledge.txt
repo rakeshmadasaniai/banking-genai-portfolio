@@ -1,0 +1,376 @@
+================================================================
+U.S. BANKING & FINANCIAL REGULATIONS KNOWLEDGE BASE
+================================================================
+Sources: FDIC, FinCEN, Federal Reserve, OCC, CFPB, SEC
+================================================================
+
+================================================================
+SECTION 1: BANK SECRECY ACT (BSA)
+================================================================
+
+OVERVIEW
+The Bank Secrecy Act (BSA), enacted in 1970, is the primary U.S. anti-money laundering law.
+It requires financial institutions to assist U.S. government agencies in detecting and preventing
+money laundering and other financial crimes. The Financial Crimes Enforcement Network (FinCEN),
+a bureau of the U.S. Department of the Treasury, administers the BSA.
+
+KEY BSA REQUIREMENTS
+1. Customer Identification Program (CIP)
+   - Banks must verify the identity of every customer opening an account
+   - Required information: name, date of birth, address, identification number (SSN/EIN)
+   - Must verify identity through documentary or non-documentary methods
+   - Must check customers against government lists of known terrorists and criminals
+
+2. Customer Due Diligence (CDD)
+   - Banks must understand the nature and purpose of customer relationships
+   - Must identify and verify beneficial owners of legal entity customers
+   - Beneficial owner = any individual owning 25% or more of a legal entity
+   - Must conduct ongoing monitoring of customer transactions
+
+3. Suspicious Activity Reports (SARs)
+   - Banks must file SARs for transactions involving $5,000 or more
+   - Required when bank suspects funds are from illegal activity
+   - Must be filed within 30 days of detecting suspicious activity
+   - SARs are confidential — banks cannot tell customers a SAR was filed
+
+4. Currency Transaction Reports (CTRs)
+   - Required for cash transactions exceeding $10,000 in a single day
+   - Includes multiple transactions that together exceed $10,000
+   - Must be filed within 15 days of the transaction
+   - Applies to deposits, withdrawals, exchanges, and other payments
+
+5. Recordkeeping Requirements
+   - Banks must retain records for minimum 5 years
+   - Includes records of cash purchases, wire transfers, and loans
+   - Wire transfers over $3,000 must include full sender and recipient information
+
+================================================================
+SECTION 2: ANTI-MONEY LAUNDERING (AML) — U.S. FRAMEWORK
+================================================================
+
+OVERVIEW
+Money laundering is the process of making illegally obtained money appear legitimate.
+U.S. AML regulations are enforced by FinCEN, FDIC, OCC, Federal Reserve, and SEC.
+
+THREE STAGES OF MONEY LAUNDERING
+1. Placement — Introducing illegal cash into the financial system
+2. Layering — Concealing the trail through complex transactions
+3. Integration — Making the money appear legitimate and usable
+
+U.S. AML PROGRAM REQUIREMENTS
+All U.S. banks must have a written AML program that includes:
+- Internal policies, procedures, and controls
+- Designation of a BSA/AML Compliance Officer
+- Ongoing employee training program
+- Independent testing and auditing
+- Risk-based customer due diligence
+
+AML RED FLAGS (U.S. SPECIFIC)
+- Large cash deposits inconsistent with customer's business
+- Frequent wire transfers to high-risk jurisdictions
+- Customers who avoid reporting thresholds (structuring)
+- Rapid movement of funds through multiple accounts
+- Transactions with no apparent business purpose
+- Use of shell companies or nominee accounts
+- Sudden large changes in transaction patterns
+
+STRUCTURING (ILLEGAL)
+Structuring is breaking up transactions to avoid the $10,000 CTR threshold.
+Example: Making $9,500 deposits on multiple days to avoid reporting.
+Structuring is a federal crime under 31 U.S.C. § 5324.
+Penalties include up to 5 years imprisonment and asset forfeiture.
+
+OFAC COMPLIANCE
+The Office of Foreign Assets Control (OFAC) administers U.S. economic sanctions.
+Banks must screen all transactions against OFAC's Specially Designated Nationals (SDN) list.
+Transactions with sanctioned individuals or countries must be blocked and reported.
+Violations can result in civil penalties up to $1 million per violation.
+
+================================================================
+SECTION 3: KNOW YOUR CUSTOMER (KYC) — U.S. STANDARDS
+================================================================
+
+OVERVIEW
+KYC is the process by which banks verify the identity of their clients.
+U.S. KYC requirements are governed by FinCEN's CDD Rule (effective May 2018).
+
+KYC FOUR PILLARS
+1. Customer Identification and Verification
+   - Collect: legal name, date of birth, address, ID number
+   - Verify: government-issued ID, passport, driver's license
+   - Enhanced verification for high-risk customers
+
+2. Customer Due Diligence (CDD)
+   - Understand customer's business and expected transactions
+   - Assess risk level: low, medium, high
+   - Low risk: basic CDD sufficient
+   - High risk: Enhanced Due Diligence (EDD) required
+
+3. Enhanced Due Diligence (EDD)
+   - Required for Politically Exposed Persons (PEPs)
+   - Required for customers from high-risk countries
+   - Required for correspondent banking relationships
+   - Includes source of funds verification
+   - Senior management approval often required
+
+4. Ongoing Monitoring
+   - Continuously monitor transactions against expected behavior
+   - Update customer information regularly
+   - Re-verify identity when significant changes occur
+   - File SARs when suspicious activity detected
+
+BENEFICIAL OWNERSHIP RULE
+Effective May 2018, banks must identify beneficial owners of legal entity customers.
+- Must identify all individuals owning 25% or more
+- Must identify one individual with significant management control
+- Beneficial owners must provide: name, DOB, address, ID number
+- Banks must verify this information
+
+================================================================
+SECTION 4: FDIC — FEDERAL DEPOSIT INSURANCE CORPORATION
+================================================================
+
+OVERVIEW
+The FDIC is an independent U.S. government agency created in 1933.
+It insures deposits at U.S. banks and savings institutions.
+The FDIC supervises state-chartered banks that are not members of the Federal Reserve System.
+
+DEPOSIT INSURANCE
+- Standard insurance: $250,000 per depositor, per insured bank, per account category
+- Account categories: single accounts, joint accounts, retirement accounts, trust accounts
+- Depositors do not need to apply — insurance is automatic
+- Over 99% of all U.S. banks are FDIC insured
+
+FDIC BANK EXAMINATION
+FDIC examines banks using the CAMELS rating system:
+- C — Capital adequacy
+- A — Asset quality
+- M — Management
+- E — Earnings
+- L — Liquidity
+- S — Sensitivity to market risk
+
+Each component rated 1 (best) to 5 (worst). Composite rating determines supervisory action.
+
+FDIC CONSUMER PROTECTION REGULATIONS
+- Truth in Savings Act: Banks must clearly disclose interest rates and fees
+- Equal Credit Opportunity Act: Prohibits discrimination in lending
+- Fair Housing Act: Prohibits discrimination in mortgage lending
+- Community Reinvestment Act (CRA): Banks must serve all community segments
+
+================================================================
+SECTION 5: FEDERAL RESERVE REGULATIONS
+================================================================
+
+OVERVIEW
+The Federal Reserve (Fed) is the central bank of the United States.
+It supervises bank holding companies and state-chartered member banks.
+The Fed sets monetary policy and regulates the U.S. payment system.
+
+KEY FEDERAL RESERVE REGULATIONS
+Regulation B — Equal Credit Opportunity
+- Prohibits discrimination based on race, color, religion, national origin, sex, age
+- Requires creditors to notify applicants of credit decisions within 30 days
+- Must provide specific reasons for adverse credit actions
+
+Regulation C — Home Mortgage Disclosure Act (HMDA)
+- Requires banks to collect and report mortgage lending data
+- Data used to identify discriminatory lending patterns
+- Applies to banks making 25+ home purchase loans per year
+
+Regulation D — Reserve Requirements
+- Sets reserve requirements for depository institutions
+- Banks must maintain reserves as percentage of certain deposits
+- Reserve requirements currently set at 0% (changed in 2020)
+
+Regulation E — Electronic Fund Transfers
+- Protects consumers using electronic banking services
+- Limits consumer liability for unauthorized transfers
+- Unauthorized transfer reported within 2 days: max liability $50
+- Reported within 60 days: max liability $500
+- After 60 days: unlimited liability
+
+Regulation Z — Truth in Lending Act (TILA)
+- Requires clear disclosure of loan terms and costs
+- Annual Percentage Rate (APR) must be clearly stated
+- Right of rescission: consumers can cancel certain loans within 3 days
+- Applies to credit cards, mortgages, auto loans, personal loans
+
+Regulation CC — Availability of Funds
+- Sets rules for how quickly banks must make deposited funds available
+- Next business day: cash, wire transfers, government checks
+- Second business day: local checks
+- Extended holds allowed for large deposits, new accounts, repeated overdrafts
+
+================================================================
+SECTION 6: OCC — OFFICE OF THE COMPTROLLER OF THE CURRENCY
+================================================================
+
+OVERVIEW
+The OCC is a federal agency within the U.S. Department of Treasury.
+It charters, regulates, and supervises all national banks and federal savings associations.
+The OCC ensures banks operate safely, soundly, and fairly.
+
+OCC RISK FRAMEWORK
+The OCC assesses eight categories of risk:
+1. Credit Risk — Risk of loan default
+2. Interest Rate Risk — Risk from interest rate changes
+3. Liquidity Risk — Risk of inability to meet obligations
+4. Price Risk — Risk from market price changes
+5. Operational Risk — Risk from failed processes or systems
+6. Compliance Risk — Risk from violating laws and regulations
+7. Strategic Risk — Risk from poor business decisions
+8. Reputation Risk — Risk from negative public opinion
+
+NATIONAL BANK REQUIREMENTS
+- Must maintain minimum capital ratios
+- Tier 1 Capital Ratio: minimum 6%
+- Total Capital Ratio: minimum 8%
+- Leverage Ratio: minimum 4%
+- Well-capitalized banks: Tier 1 ≥ 8%, Total ≥ 10%
+
+================================================================
+SECTION 7: CFPB — CONSUMER FINANCIAL PROTECTION BUREAU
+================================================================
+
+OVERVIEW
+The CFPB was created by the Dodd-Frank Act in 2010.
+It protects consumers in the financial marketplace.
+The CFPB enforces federal consumer financial laws.
+
+KEY CFPB REGULATIONS
+Fair Debt Collection Practices Act (FDCPA)
+- Prohibits abusive debt collection practices
+- Collectors cannot call before 8 AM or after 9 PM
+- Must stop contact if consumer requests in writing
+- Cannot use harassment, false statements, or unfair practices
+
+Fair Credit Reporting Act (FCRA)
+- Regulates collection and use of consumer credit information
+- Consumers have right to free annual credit report
+- Must be notified if credit report used against them
+- Can dispute inaccurate information — must be investigated within 30 days
+
+Gramm-Leach-Bliley Act (GLBA) — Privacy Rule
+- Financial institutions must explain information-sharing practices
+- Must protect sensitive customer data
+- Must provide opt-out options for sharing with non-affiliated third parties
+- Annual privacy notices required
+
+Real Estate Settlement Procedures Act (RESPA)
+- Requires disclosure of settlement costs for home purchases
+- Prohibits kickbacks between settlement service providers
+- Loan Estimate must be provided within 3 business days of application
+- Closing Disclosure must be provided 3 business days before closing
+
+================================================================
+SECTION 8: U.S. CREDIT RISK MANAGEMENT
+================================================================
+
+OVERVIEW
+Credit risk is the risk that a borrower will default on their loan obligations.
+U.S. banks manage credit risk through underwriting standards, portfolio monitoring, and reserves.
+
+CREDIT SCORING (U.S. SYSTEM)
+FICO Score ranges:
+- 800-850: Exceptional
+- 740-799: Very Good
+- 670-739: Good
+- 580-669: Fair
+- Below 580: Poor
+
+Key factors in FICO score:
+- Payment history: 35%
+- Amounts owed: 30%
+- Length of credit history: 15%
+- New credit: 10%
+- Credit mix: 10%
+
+LOAN CLASSIFICATION SYSTEM (OCC Standards)
+- Pass: No significant credit weakness
+- Special Mention: Potential weakness deserving management attention
+- Substandard: Inadequately protected, well-defined weakness
+- Doubtful: Full collection questionable, serious weakness
+- Loss: Considered uncollectible, must be charged off
+
+ALLOWANCE FOR LOAN AND LEASE LOSSES (ALLL)
+Banks must maintain reserves for expected loan losses.
+Current Expected Credit Loss (CECL) model (effective 2023):
+- Banks must estimate lifetime expected losses at origination
+- More forward-looking than previous incurred loss model
+- Requires more data and sophisticated modeling
+
+================================================================
+SECTION 9: U.S. FINTECH AND AI REGULATIONS
+================================================================
+
+OVERVIEW
+The use of AI and machine learning in U.S. banking is growing rapidly.
+Regulators have issued guidance on responsible AI use in financial services.
+
+KEY AI REGULATORY GUIDANCE
+FDIC, OCC, Fed, CFPB Joint Statement on AI (2021)
+- Banks must ensure AI models are fair and unbiased
+- Must be able to explain AI decisions to customers
+- Must monitor AI models for performance degradation
+- Must have human oversight of AI-driven decisions
+
+Fair Lending and AI
+- AI models used in credit decisions must comply with Equal Credit Opportunity Act
+- Cannot use protected characteristics (race, gender, age) directly or as proxies
+- Explainability required: must provide specific reasons for adverse actions
+- Regular bias testing required
+
+Model Risk Management (SR 11-7 Guidance)
+- Banks must have robust model validation processes
+- Three lines of defense: model developers, risk management, internal audit
+- Models must be documented, validated, and monitored
+- High-risk models require more rigorous validation
+
+================================================================
+SECTION 10: DODD-FRANK ACT KEY PROVISIONS
+================================================================
+
+OVERVIEW
+The Dodd-Frank Wall Street Reform and Consumer Protection Act (2010)
+was enacted in response to the 2008 financial crisis.
+
+KEY PROVISIONS
+Volcker Rule
+- Prohibits banks from proprietary trading with their own accounts
+- Restricts banks from owning hedge funds or private equity funds
+- Applies to banks with $10 billion+ in assets
+
+Stress Testing (DFAST)
+- Banks with $100 billion+ in assets must conduct annual stress tests
+- Tests assess ability to withstand severe economic scenarios
+- Results published publicly
+- Fed conducts its own stress tests (CCAR) for largest banks
+
+Systemic Risk Oversight
+- Financial Stability Oversight Council (FSOC) created
+- Identifies and monitors systemic risks to U.S. financial system
+- Can designate non-bank financial companies as systemically important
+
+Derivatives Regulation
+- Most derivatives must be traded on exchanges or swap execution facilities
+- Central clearing required for standardized derivatives
+- Reporting requirements for all derivatives transactions
+
+================================================================
+SECTION 11: COMPARISON — U.S. vs INDIA BANKING REGULATIONS
+================================================================
+
+TOPIC                    | U.S. (Federal Reserve/OCC/FDIC)  | INDIA (RBI)
+-------------------------|-----------------------------------|------------------
+Central Bank             | Federal Reserve                   | Reserve Bank of India
+Cash Report Threshold    | $10,000 (CTR)                    | ₹10 lakh
+Suspicious Activity      | SAR ($5,000+)                    | STR (no minimum)
+Deposit Insurance        | $250,000 (FDIC)                  | ₹5 lakh (DICGC)
+Capital Adequacy         | Basel III (8% minimum)            | Basel III (9% minimum)
+KYC Framework            | FinCEN CDD Rule                  | RBI KYC Master Direction
+AML Law                  | Bank Secrecy Act                 | PMLA 2002
+Consumer Protection      | CFPB                             | RBI Ombudsman
+Credit Bureau            | Equifax, Experian, TransUnion    | CIBIL, Experian India
+
+================================================================
