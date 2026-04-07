@@ -99,19 +99,19 @@ This is a qualitative comparison of the base model and the fine-tuned model on b
 | India-specific banking regulation | More likely to be vague or mix jurisdictions | Better alignment with RBI / banking-domain phrasing from the custom dataset |
 | Compliance terminology | Understands concepts, but responses can be inconsistent | More consistent responses on SAR, CTR, Basel, AML, and KYC topics |
 
-## Evaluation Template
+## Evaluation Results — RAG Assistant
 
-Use this structure once you finish the measured comparison run:
+A 50-question evaluation was run against the Banking Finance RAG Assistant using the local batch evaluation workflow aligned with the deployed app's retrieval and prompting logic.
 
-| System | Accuracy | Groundedness | Hallucination Risk | Notes |
-|---|---|---|---|---|
-| Base model | To be measured | To be measured | To be measured | General-purpose baseline |
-| RAG assistant | To be measured | To be measured | To be measured | Retrieval-backed answer generation |
-| Fine-tuned QLoRA model | To be measured | To be measured | To be measured | Domain-adapted banking responses |
+| Metric | Result |
+|---|---|
+| Questions tested | 50 |
+| Average latency | 809.3 ms |
+| Average sources per answer | 1.5 |
+| Grounded response rate | 92.0% |
+| Has answer rate | 92.0% |
 
-Current repo status:
-- screenshots and qualitative examples are included
-- formal measured benchmarking is the next planned improvement
+These results suggest that the assistant returns fast, mostly grounded responses on representative banking and compliance prompts, while leaving room to improve source citation visibility.
 
 ## Visible Code Entry Points
 
