@@ -20,6 +20,18 @@ Question shown:
 ## Overview
 The assistant retrieves relevant context from a curated domain knowledge base and optional uploaded PDFs, then uses an LLM to generate grounded responses with source visibility.
 
+## Architecture
+
+```mermaid
+flowchart LR
+    A["Built-in banking knowledge + uploaded PDFs"] --> B["Chunking and preprocessing"]
+    B --> C["Embeddings with all-MiniLM-L6-v2"]
+    C --> D["FAISS retrieval"]
+    D --> E["Prompt assembly"]
+    E --> F["OpenAI response generation"]
+    F --> G["Answer + sources + confidence"]
+```
+
 ## Why These Design Choices
 
 - **FAISS for retrieval:** lightweight, fast, and easy to deploy for a focused portfolio-scale knowledge base
@@ -76,6 +88,10 @@ OPENAI_MODEL=gpt-4o-mini
 streamlit run app.py
 ```
 
+### What to expect locally
+
+On startup, the app loads the built-in banking knowledge files, builds the FAISS index, and serves the Streamlit interface. You can use the packaged knowledge base on its own or upload PDFs to add extra retrieval context for the current session.
+
 ### Suggested questions
 - What is the FDIC deposit insurance limit in the United States?
 - What are the three stages of money laundering?
@@ -94,6 +110,13 @@ The repository includes a lightweight evaluation framework in [`evaluation`](./e
 - a metrics script for summarizing average latency, source count, grounded response rate, and user-rated accuracy
 
 This framework provides a simple way to assess retrieval-backed answer quality and supports future expansion into more formal benchmarking.
+
+## Limitations
+
+- the app depends on an external LLM backend for final answer generation
+- source visibility is useful, but citation presentation can still be stronger
+- uploaded PDF performance depends on extraction quality and readable document text
+- comparison-style questions are more sensitive to the quality of retrieved supporting context
 
 
 ## Note on latency screenshots

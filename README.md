@@ -114,7 +114,7 @@ This is a qualitative comparison of the base model and the fine-tuned model on b
 | India-specific banking regulation | More likely to be vague or mix jurisdictions | Better alignment with RBI / banking-domain phrasing from the custom dataset |
 | Compliance terminology | Understands concepts, but responses can be inconsistent | More consistent responses on SAR, CTR, Basel, AML, and KYC topics |
 
-## Evaluation Results — RAG Assistant
+## Evaluation Results - RAG Assistant
 
 A 50-question evaluation was run against the Banking Finance RAG Assistant using the local batch evaluation workflow aligned with the deployed app's retrieval and prompting logic.
 
@@ -153,7 +153,7 @@ banking-genai-portfolio/
 |   `-- README.md
 |-- 02-qa-dataset/
 |   `-- README.md
-`-- 03-qlora-finetuning/
+|-- 03-qlora-finetuning/
 |   `-- README.md
 `-- 04-conversational-memory/
     `-- README.md

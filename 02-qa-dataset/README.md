@@ -34,6 +34,26 @@ Published dataset page with train and validation splits:
 - validation and split design
 - Hugging Face dataset publishing
 
+## Data Methodology
+
+The dataset was built by turning curated banking and compliance material into instruction-style examples intended for downstream fine-tuning. The focus was not just on volume, but on having a usable spread of topics, clean formatting, and a validation pass before publishing.
+
+In practice, that meant:
+
+- selecting questions that map naturally to banking, compliance, and regulatory supervision
+- structuring examples in Alpaca-style `instruction`, `input`, and `output` fields
+- validating the finished dataset for structural consistency and duplicate issues before upload
+
+## Example Schema
+
+```json
+{
+  "instruction": "What is the FDIC deposit insurance limit in the United States?",
+  "input": "",
+  "output": "The FDIC insures deposits up to $250,000 per depositor, per insured bank, per account ownership category."
+}
+```
+
 ## Code Entry Points
 - `generate_dataset.py` - builds banking instruction-response pairs from curated source material
 - `validate_dataset.py` - runs duplicate and structural checks on the generated dataset
@@ -41,3 +61,9 @@ Published dataset page with train and validation splits:
 
 ## Why it stands out
 This project turns raw banking and compliance material into a reusable ML asset rather than stopping at prompt experimentation. It shows the data layer behind the model and application work in the rest of the portfolio.
+
+## Limitations
+
+- instruction-style datasets can still inherit phrasing bias from the source material used to create them
+- U.S. and India banking topics are useful together, but not always perfectly balanced in representation
+- the dataset is a strong domain adaptation asset, but it should not be treated as formal regulatory ground truth

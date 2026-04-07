@@ -108,7 +108,7 @@ LOCAL_HF_DEVICE=auto
 
 ### Backend options
 
-#### Option A — OpenAI backend
+#### Option A - OpenAI backend
 
 ```bash
 LLM_BACKEND=openai
@@ -116,7 +116,7 @@ OPENAI_API_KEY=your_openai_api_key_here
 OPENAI_MODEL=gpt-4o-mini
 ```
 
-#### Option B — Local HF backend
+#### Option B - Local HF backend
 
 ```bash
 LLM_BACKEND=local_hf
@@ -170,6 +170,17 @@ This prints:
 - relative improvement
 
 Use the resulting percentage as evidence for a claim like `17% improvement` only when your real run produces that number.
+
+## Execution Proof
+
+This project has already been exercised locally at a lightweight level:
+
+- `/health` returned a successful status response
+- `/chat` returned a real answer
+- a follow-up `/chat` call on the same session showed `history_used = true`
+- `/chat/compare` is implemented and reachable, with the local HF runtime path dependent on the local model environment
+
+For the current execution record, see [`evaluation/results.md`](./evaluation/results.md).
 
 ## Design Decisions
 

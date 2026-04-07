@@ -32,6 +32,12 @@ These prompts are short, easy to judge, and representative of the banking/compli
 - Global steps: 676
 - Final train loss: 1.13
 
+## Training Environment
+
+- notebook-based QLoRA workflow
+- designed for practical notebook GPU usage rather than full distributed training
+- built around an adapter approach so a 7B model could be adapted without full fine-tuning
+
 ## Code Entry Points
 - `Banking_QLoRA_Mistral7B_updated.ipynb` - main notebook used for the QLoRA workflow
 - `inference_demo.py` - lightweight inference script for loading the published adapter and testing example prompts
@@ -57,5 +63,17 @@ Example sample outputs from the fine-tuned model included banking-domain answers
 
 These examples showed that the adapter was capable of producing domain-specific responses after fine-tuning, even though formal benchmark scoring is still a planned improvement.
 
+## Before vs After Snapshot
+
+| Prompt type | Base model tendency | Fine-tuned model tendency |
+|---|---|---|
+| Banking definitions | usually reasonable but generic | more direct banking-specific phrasing |
+| Compliance language | broad but sometimes high-level | more targeted AML / KYC / SAR / CTR terminology |
+| India-focused regulation | can be vague or mix jurisdictions | better alignment with RBI-oriented wording from the custom dataset |
+
 ## Why it stands out
 This project shows that the portfolio goes beyond app development and dataset creation into actual model adaptation. Publishing the adapter with a model card, tokenizer files, and LoRA configuration makes the work visible and inspectable as a real model artifact.
+
+## Limitation to state clearly
+
+This repository publishes a QLoRA adapter artifact, not a fully hosted standalone inference service by itself. To run it end to end, the adapter still needs to be loaded with the compatible base model in a suitable inference environment.
