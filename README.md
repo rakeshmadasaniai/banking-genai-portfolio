@@ -16,9 +16,9 @@ Live demo: [banking-finance-rag](https://huggingface.co/spaces/RakeshMadasani/ba
 
 A deployed RAG application built with Streamlit, LangChain, FAISS, and OpenAI for source-grounded banking and compliance question answering.
 
-**Project 1 snapshots**
+**Project 1 Demo**
 
-Live product view, dashboard metrics, and a low-latency answer example from the deployed app:
+Live product view with the app title and top-level metrics, followed by a low-latency answer example from the deployed app:
 
 ![RAG space overview](01-rag-system/screenshots/rag-space-overview.png)
 
@@ -29,7 +29,7 @@ Dataset: [banking-finance-qa-dataset](https://huggingface.co/datasets/RakeshMada
 
 A 3,002-sample Alpaca-style instruction dataset covering AML, KYC, Basel III, FDIC, RBI, compliance, and financial concepts.
 
-**Project 2 snapshot**
+**Project 2 Demo**
 
 Published Hugging Face dataset view showing train and validation splits:
 
@@ -40,12 +40,11 @@ Model: [banking-finance-mistral-qlora](https://huggingface.co/RakeshMadasani/ban
 
 A domain-adapted Mistral-based model fine-tuned using QLoRA on the custom banking dataset.
 
-**Project 3 snapshot**
+**Project 3 Demo**
 
 Published Hugging Face model page for the banking-domain QLoRA adapter:
 
 ![QLoRA model page screenshot](03-qlora-finetuning/screenshots/model-page-demo.png)
-
 
 **Suggested live demo prompts**
 - What is the FDIC deposit insurance limit in the United States?
@@ -72,6 +71,23 @@ These projects show work across:
 - model fine-tuning
 - deployment and documentation
 
+## Architecture
+
+```mermaid
+flowchart LR
+    A["Banking and compliance documents"] --> B["Chunking and preprocessing"]
+    B --> C["Banking QA dataset"]
+    C --> D["QLoRA fine-tuning on Mistral-7B-Instruct"]
+    D --> E["Published banking-domain adapter model"]
+
+    A --> F["Embedding + FAISS indexing"]
+    F --> G["RAG retrieval pipeline"]
+    G --> H["Prompt assembly with retrieved context"]
+    H --> I["Live banking RAG assistant"]
+
+    E -. domain knowledge strategy .-> I
+```
+
 ## Comparison Snapshot
 
 This is a qualitative comparison of the base model and the fine-tuned model on banking-domain prompts. It is meant to show the direction of improvement, not to replace a formal benchmark.
@@ -82,6 +98,20 @@ This is a qualitative comparison of the base model and the fine-tuned model on b
 | AML / KYC concepts | Can answer broadly, but may stay high-level | More targeted banking/compliance language and stronger instructional tone |
 | India-specific banking regulation | More likely to be vague or mix jurisdictions | Better alignment with RBI / banking-domain phrasing from the custom dataset |
 | Compliance terminology | Understands concepts, but responses can be inconsistent | More consistent responses on SAR, CTR, Basel, AML, and KYC topics |
+
+## Evaluation Template
+
+Use this structure once you finish the measured comparison run:
+
+| System | Accuracy | Groundedness | Hallucination Risk | Notes |
+|---|---|---|---|---|
+| Base model | To be measured | To be measured | To be measured | General-purpose baseline |
+| RAG assistant | To be measured | To be measured | To be measured | Retrieval-backed answer generation |
+| Fine-tuned QLoRA model | To be measured | To be measured | To be measured | Domain-adapted banking responses |
+
+Current repo status:
+- screenshots and qualitative examples are included
+- formal measured benchmarking is the next planned improvement
 
 ## Repo Structure
 

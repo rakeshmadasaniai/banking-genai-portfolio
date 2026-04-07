@@ -8,9 +8,6 @@ This project contains the fine-tuning workflow for adapting a Mistral-based LLM 
 ## Published Model Page
 ![Published QLoRA model page](screenshots/model-page-demo.png)
 
-## Training Screenshot
-![QLoRA training progress](screenshots/qlora-training-progress.png)
-
 ## Recommended Demo Questions
 
 If you want to capture a stronger inference screenshot for this project, use these questions:
@@ -34,6 +31,12 @@ These prompts are short, easy to judge, and representative of the banking/compli
 - Validation samples: 301
 - Global steps: 676
 - Final train loss: 1.13
+
+## Why QLoRA
+
+- **4-bit NF4 quantization:** reduces memory usage enough to make 7B-scale fine-tuning practical in notebook GPU environments
+- **LoRA adapters:** updates a small trainable parameter set instead of full-model weights
+- **Cost-efficient experimentation:** a good fit for domain adaptation when full fine-tuning is too heavy
 
 ## What it demonstrates
 - parameter-efficient fine-tuning
