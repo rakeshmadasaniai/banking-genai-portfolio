@@ -21,12 +21,19 @@ flowchart LR
     B --> C["Session memory store"]
     B2 --> C
     C --> D["Truncation or summarization"]
-    D --> E["RAG chain with banking knowledge base"]
-    E --> F["Backend selector (OpenAI or local HF adapter)"]
-    F --> G["Response + sources + confidence"]
+    D --> E["Retriever + shared banking knowledge base"]
+    E --> F["Shared retrieved context"]
+    F --> G["Single backend path"]
+    F --> H["OpenAI backend"]
+    F --> I["Local HF adapter backend"]
+    G --> J["Single response"]
+    H --> K["OpenAI answer"]
+    I --> L["HF answer"]
+    K --> M["Side-by-side comparison output"]
+    L --> M
 
-    H["DELETE /session/{session_id}"] --> C
-    I["GET /health"] --> B
+    N["DELETE /session/{session_id}"] --> C
+    O["GET /health"] --> B
 ```
 
 ## Project Structure
@@ -171,6 +178,7 @@ Use the resulting percentage as evidence for a claim like `17% improvement` only
 - simple windowing drops older context entirely
 - summarization preserves earlier intent and constraints
 - retaining the most recent turns keeps the API responsive for active follow-ups
+- current session store is in-process for demo simplicity; a production upgrade path would be Redis or Postgres
 
 ### Why reuse the Project 1 knowledge base?
 
@@ -198,3 +206,12 @@ This project upgrades the overall portfolio from a collection of artifacts into 
 - Project 2 provides the banking instruction dataset
 - Project 3 provides the fine-tuned model artifact
 - Project 4 adds the backend memory and orchestration layer for multi-turn interaction
+
+## Execution Notes
+
+See [`evaluation/results.md`](./evaluation/results.md) for a lightweight execution record covering:
+
+- successful local `/health` response
+- successful local `/chat` response
+- successful memory follow-up showing `history_used = true`
+- the current state of `/chat/compare` validation
