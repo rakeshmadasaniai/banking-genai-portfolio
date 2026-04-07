@@ -18,11 +18,13 @@ A deployed RAG application built with Streamlit, LangChain, FAISS, and OpenAI fo
 
 **Project 1 snapshots**
 
-Dashboard metrics and answer-level evidence from the deployed app:
+Live product view, dashboard metrics, and a low-latency answer example from the deployed app:
+
+![RAG space overview](01-rag-system/screenshots/rag-space-overview.png)
 
 ![RAG dashboard metrics](01-rag-system/screenshots/rag-dashboard-metrics.png)
 
-![RAG answer example](01-rag-system/screenshots/rag-answer-demo.png)
+![RAG low-latency answer example](01-rag-system/screenshots/rag-low-latency-answer.png)
 
 ### 2. Banking & Finance QA Dataset
 Dataset: [banking-finance-qa-dataset](https://huggingface.co/datasets/RakeshMadasani/banking-finance-qa-dataset)
@@ -42,9 +44,18 @@ A domain-adapted Mistral-based model fine-tuned using QLoRA on the custom bankin
 
 **Project 3 snapshot**
 
+Published Hugging Face model page for the banking-domain QLoRA adapter:
+
+![QLoRA model page screenshot](03-qlora-finetuning/screenshots/model-page-demo.png)
+
 Training progress from the QLoRA fine-tuning workflow used to publish the banking-domain adapter:
 
 ![QLoRA training screenshot](03-qlora-finetuning/screenshots/qlora-training-progress.png)
+
+**Suggested live demo prompts**
+- What is the FDIC deposit insurance limit in the United States?
+- What are the three stages of money laundering?
+- What is the difference between AML and KYC?
 
 ## Training Snapshot
 

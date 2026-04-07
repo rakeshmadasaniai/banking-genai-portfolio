@@ -5,8 +5,21 @@ This project contains the fine-tuning workflow for adapting a Mistral-based LLM 
 ## Model
 [banking-finance-mistral-qlora](https://huggingface.co/RakeshMadasani/banking-finance-mistral-qlora)
 
+## Published Model Page
+![Published QLoRA model page](screenshots/model-page-demo.png)
+
 ## Training Screenshot
 ![QLoRA training progress](screenshots/qlora-training-progress.png)
+
+## Recommended Demo Questions
+
+If you want to capture a stronger inference screenshot for this project, use these questions:
+
+- `What is the FDIC deposit insurance limit in the United States?`
+- `What are the three stages of money laundering?`
+- `What is the difference between AML and KYC?`
+
+These prompts are short, easy to judge, and representative of the banking/compliance domain adaptation shown by the model.
 
 ## Base Model
 `mistralai/Mistral-7B-Instruct-v0.3`
