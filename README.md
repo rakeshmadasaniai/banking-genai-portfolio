@@ -113,6 +113,19 @@ Current repo status:
 - screenshots and qualitative examples are included
 - formal measured benchmarking is the next planned improvement
 
+## Visible Code Entry Points
+
+This repo now includes direct technical entrypoints rather than only project summaries:
+
+- `01-rag-system/app.py`
+- `01-rag-system/requirements.txt`
+- `01-rag-system/evaluation/compute_metrics.py`
+- `02-qa-dataset/generate_dataset.py`
+- `02-qa-dataset/validate_dataset.py`
+- `02-qa-dataset/upload_to_hf.py`
+- `03-qlora-finetuning/Banking_QLoRA_Mistral7B_updated.ipynb`
+- `03-qlora-finetuning/inference_demo.py`
+
 ## Repo Structure
 
 ```text

@@ -32,6 +32,10 @@ These prompts are short, easy to judge, and representative of the banking/compli
 - Global steps: 676
 - Final train loss: 1.13
 
+## Code Entry Points
+- `Banking_QLoRA_Mistral7B_updated.ipynb` - main notebook used for the QLoRA workflow
+- `inference_demo.py` - lightweight inference script for loading the published adapter and testing example prompts
+
 ## Why QLoRA
 
 - **4-bit NF4 quantization:** reduces memory usage enough to make 7B-scale fine-tuning practical in notebook GPU environments

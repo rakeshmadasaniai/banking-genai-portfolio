@@ -35,6 +35,13 @@ The assistant retrieves relevant context from a curated domain knowledge base an
 - sentence-transformers
 - pypdf
 
+## Code Entry Points
+- `app.py` - main Streamlit application
+- `requirements.txt` - Python dependencies for local reproduction
+- `evaluation/compute_metrics.py` - simple metrics summary script for RAG evaluation
+- `evaluation/questions.csv` - 50-question evaluation set
+- `evaluation/quick_questions.csv` - 10-question quick evaluation set
+
 ## Key Features
 - source-grounded banking Q&A
 - PDF upload support

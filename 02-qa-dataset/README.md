@@ -34,5 +34,10 @@ Published dataset page with train and validation splits:
 - validation and split design
 - Hugging Face dataset publishing
 
+## Code Entry Points
+- `generate_dataset.py` - builds banking instruction-response pairs from curated source material
+- `validate_dataset.py` - runs duplicate and structural checks on the generated dataset
+- `upload_to_hf.py` - publishes the dataset and dataset card to Hugging Face
+
 ## Why it stands out
 This project turns raw banking and compliance material into a reusable ML asset rather than stopping at prompt experimentation. It shows the data layer behind the model and application work in the rest of the portfolio.
