@@ -1,6 +1,6 @@
 # Banking & Finance QA Dataset
 
- project contains the banking and finance instruction dataset used for downstream fine-tuning.
+ This project contains the banking and finance instruction dataset used for downstream fine-tuning.
 
 ## Dataset
 [banking-finance-qa-dataset](https://huggingface.co/datasets/RakeshMadasani/banking-finance-qa-dataset)
