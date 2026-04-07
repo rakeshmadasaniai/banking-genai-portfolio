@@ -16,6 +16,8 @@ Live demo: [banking-finance-rag](https://huggingface.co/spaces/RakeshMadasani/ba
 
 A deployed RAG application built with Streamlit, LangChain, FAISS, and OpenAI for source-grounded banking and compliance question answering.
 
+![RAG assistant screenshot](01-rag-system/screenshots/rag-answer-demo.png)
+
 ### 2. Banking & Finance QA Dataset
 Dataset: [banking-finance-qa-dataset](https://huggingface.co/datasets/RakeshMadasani/banking-finance-qa-dataset)
 
@@ -25,6 +27,8 @@ A 3,002-sample Alpaca-style instruction dataset covering AML, KYC, Basel III, FD
 Model: [banking-finance-mistral-qlora](https://huggingface.co/RakeshMadasani/banking-finance-mistral-qlora)
 
 A domain-adapted Mistral-based model fine-tuned using QLoRA on the custom banking dataset.
+
+![QLoRA training screenshot](03-qlora-finetuning/screenshots/qlora-training-progress.png)
 
 ## Training Snapshot
 
@@ -45,6 +49,17 @@ These projects show work across:
 - dataset creation
 - model fine-tuning
 - deployment and documentation
+
+## Comparison Snapshot
+
+This is a qualitative comparison of the base model and the fine-tuned model on banking-domain prompts. It is meant to show the direction of improvement, not to replace a formal benchmark.
+
+| Prompt type | Base model behavior | Fine-tuned model behavior |
+|---|---|---|
+| FDIC insurance questions | Usually correct, but often generic and less domain-focused | More direct, domain-specific answers with cleaner banking phrasing |
+| AML / KYC concepts | Can answer broadly, but may stay high-level | More targeted banking/compliance language and stronger instructional tone |
+| India-specific banking regulation | More likely to be vague or mix jurisdictions | Better alignment with RBI / banking-domain phrasing from the custom dataset |
+| Compliance terminology | Understands concepts, but responses can be inconsistent | More consistent responses on SAR, CTR, Basel, AML, and KYC topics |
 
 ## Repo Structure
 

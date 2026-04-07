@@ -5,6 +5,9 @@ This project is a live Retrieval-Augmented Generation (RAG) assistant for bankin
 ## Live Demo
 [banking-finance-rag](https://huggingface.co/spaces/RakeshMadasani/banking-finance-rag)
 
+## Screenshot
+![RAG assistant answering a banking question](screenshots/rag-answer-demo.png)
+
 ## Overview
 The assistant retrieves relevant context from a curated domain knowledge base and optional uploaded PDFs, then uses an LLM to generate grounded responses with source visibility.
 

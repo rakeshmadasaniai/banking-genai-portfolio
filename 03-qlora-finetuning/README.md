@@ -5,6 +5,9 @@ This project contains the fine-tuning workflow for adapting a Mistral-based LLM 
 ## Model
 [banking-finance-mistral-qlora](https://huggingface.co/RakeshMadasani/banking-finance-mistral-qlora)
 
+## Training Screenshot
+![QLoRA training progress](screenshots/qlora-training-progress.png)
+
 ## Base Model
 `mistralai/Mistral-7B-Instruct-v0.3`
 
@@ -24,3 +27,12 @@ This project contains the fine-tuning workflow for adapting a Mistral-based LLM 
 - PEFT/LoRA configuration
 - domain adaptation using custom data
 - Hugging Face model publishing
+
+## Output Snapshot
+
+Example sample outputs from the fine-tuned model included banking-domain answers for prompts such as:
+- FDIC deposit insurance limits
+- the stages of money laundering
+- Basel-related banking questions
+
+These examples showed that the adapter was capable of producing domain-specific responses after fine-tuning, even though formal benchmark scoring is still a planned improvement.
