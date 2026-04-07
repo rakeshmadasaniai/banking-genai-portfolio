@@ -1,6 +1,6 @@
 # Banking Finance RAG Assistant
 
- project is a live Retrieval-Augmented Generation (RAG) assistant for banking, finance, compliance, and regulatory question answering.
+This project is a live Retrieval-Augmented Generation (RAG) assistant for banking, finance, compliance, and regulatory question answering.
 
 ## Live Demo
 [banking-finance-rag](https://huggingface.co/spaces/RakeshMadasani/banking-finance-rag)
