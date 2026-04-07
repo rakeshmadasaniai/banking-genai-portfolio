@@ -1,0 +1,15 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+pydantic==2.9.2
+langchain==0.1.20
+langchain-community==0.0.38
+langchain-openai==0.1.6
+openai==1.30.0
+httpx<0.28
+faiss-cpu
+sentence-transformers==2.7.0
+python-dotenv==1.0.1
+pytest==8.3.3
+transformers==4.44.2
+peft==0.13.2
+torch==2.4.1

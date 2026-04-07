@@ -8,6 +8,7 @@ This portfolio includes:
 - a live RAG assistant for grounded banking Q&A
 - a custom 3,002-sample banking instruction dataset
 - a QLoRA fine-tuned Mistral model adapted to the domain
+- a FastAPI conversational memory backend for multi-turn banking AI
 
 ## Projects
 
@@ -51,6 +52,17 @@ Published Hugging Face model page for the banking-domain QLoRA adapter:
 - What are the three stages of money laundering?
 - What is the difference between AML and KYC?
 
+### 4. Conversational Memory Backend
+
+A FastAPI backend that wraps the banking RAG workflow with session-aware memory, history truncation, and summarization for multi-turn conversations.
+
+**Project 4 Highlights**
+
+- session-based memory for follow-up questions
+- summarization of older turns to control prompt growth
+- modular API endpoints for chat, health checks, and session clearing
+- coherence evaluation scaffold for memory-on vs memory-off testing
+
 ## Training Snapshot
 
 | Item | Value |
@@ -69,6 +81,8 @@ These projects show work across:
 - retrieval pipelines
 - dataset creation
 - model fine-tuning
+- backend API design
+- conversational memory management
 - deployment and documentation
 
 ## Architecture
@@ -84,6 +98,7 @@ flowchart LR
     F --> G["RAG retrieval pipeline"]
     G --> H["Prompt assembly with retrieved context"]
     H --> I["Live banking RAG assistant"]
+    I --> J["FastAPI conversational memory backend"]
 
     E -. domain knowledge strategy .-> I
 ```
@@ -125,6 +140,9 @@ This repo now includes direct technical entrypoints rather than only project sum
 - `02-qa-dataset/upload_to_hf.py`
 - `03-qlora-finetuning/Banking_QLoRA_Mistral7B_updated.ipynb`
 - `03-qlora-finetuning/inference_demo.py`
+- `04-conversational-memory/app/main.py`
+- `04-conversational-memory/app/rag_chain.py`
+- `04-conversational-memory/evaluation/coherence_eval.py`
 
 ## Repo Structure
 
@@ -136,13 +154,15 @@ banking-genai-portfolio/
 |-- 02-qa-dataset/
 |   `-- README.md
 `-- 03-qlora-finetuning/
+|   `-- README.md
+`-- 04-conversational-memory/
     `-- README.md
 ```
 
 ## Next steps
 - base vs fine-tuned model comparison
 - screenshots and walkthroughs
-- FastAPI backend for conversational memory
+- integrated memory-on vs memory-off coherence results
 
 ## License
 Apache-2.0 where applicable. See individual project repositories for details.

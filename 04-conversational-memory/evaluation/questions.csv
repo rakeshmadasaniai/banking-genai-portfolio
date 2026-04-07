@@ -1,0 +1,13 @@
+conversation_id,turn,question,expected_context
+1,1,What is KYC?,customer identity verification and due diligence
+1,2,What are its main components?,customer identification document verification risk assessment and ongoing monitoring
+1,3,How does it relate to AML?,KYC supports AML by verifying identity and assessing customer risk
+2,1,What is Basel III?,post-crisis banking framework for capital liquidity and leverage
+2,2,What are its capital requirements?,CET1 tier 1 total capital and buffers
+2,3,How does it differ from Basel II?,Basel III strengthened capital liquidity and leverage requirements compared with Basel II
+3,1,What is a SAR?,suspicious activity report for potentially illegal transactions
+3,2,When is it required?,required when suspicious activity is detected and thresholds are met
+3,3,How is that different from a CTR?,SAR is suspicion-based while CTR is threshold-based cash reporting
+4,1,What is the repo rate?,rate at which RBI lends to commercial banks
+4,2,And the reverse repo rate?,rate at which RBI borrows from commercial banks
+4,3,How do both affect liquidity?,repo and reverse repo rates influence banking system liquidity and borrowing incentives
