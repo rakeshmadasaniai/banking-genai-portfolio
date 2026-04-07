@@ -22,8 +22,6 @@ Live product view, dashboard metrics, and a low-latency answer example from the 
 
 ![RAG space overview](01-rag-system/screenshots/rag-space-overview.png)
 
-![RAG dashboard metrics](01-rag-system/screenshots/rag-dashboard-metrics.png)
-
 ![RAG low-latency answer example](01-rag-system/screenshots/rag-low-latency-answer.png)
 
 ### 2. Banking & Finance QA Dataset
@@ -48,9 +46,6 @@ Published Hugging Face model page for the banking-domain QLoRA adapter:
 
 ![QLoRA model page screenshot](03-qlora-finetuning/screenshots/model-page-demo.png)
 
-Training progress from the QLoRA fine-tuning workflow used to publish the banking-domain adapter:
-
-![QLoRA training screenshot](03-qlora-finetuning/screenshots/qlora-training-progress.png)
 
 **Suggested live demo prompts**
 - What is the FDIC deposit insurance limit in the United States?
