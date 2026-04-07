@@ -5,6 +5,11 @@ This project contains the banking and finance instruction dataset used for downs
 ## Dataset
 [banking-finance-qa-dataset](https://huggingface.co/datasets/RakeshMadasani/banking-finance-qa-dataset)
 
+## Screenshot
+Published dataset page with train and validation splits:
+
+![Dataset on Hugging Face](screenshots/dataset-hf-splits.png)
+
 ## Summary
 - 3,002 instruction-response pairs
 - 2,701 train samples
@@ -28,3 +33,6 @@ This project contains the banking and finance instruction dataset used for downs
 - instruction dataset creation
 - validation and split design
 - Hugging Face dataset publishing
+
+## Why it stands out
+This project turns raw banking and compliance material into a reusable ML asset rather than stopping at prompt experimentation. It shows the data layer behind the model and application work in the rest of the portfolio.

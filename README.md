@@ -16,17 +16,33 @@ Live demo: [banking-finance-rag](https://huggingface.co/spaces/RakeshMadasani/ba
 
 A deployed RAG application built with Streamlit, LangChain, FAISS, and OpenAI for source-grounded banking and compliance question answering.
 
-![RAG assistant screenshot](01-rag-system/screenshots/rag-answer-demo.png)
+**Project 1 snapshots**
+
+Dashboard metrics and answer-level evidence from the deployed app:
+
+![RAG dashboard metrics](01-rag-system/screenshots/rag-dashboard-metrics.png)
+
+![RAG answer example](01-rag-system/screenshots/rag-answer-demo.png)
 
 ### 2. Banking & Finance QA Dataset
 Dataset: [banking-finance-qa-dataset](https://huggingface.co/datasets/RakeshMadasani/banking-finance-qa-dataset)
 
 A 3,002-sample Alpaca-style instruction dataset covering AML, KYC, Basel III, FDIC, RBI, compliance, and financial concepts.
 
+**Project 2 snapshot**
+
+Published Hugging Face dataset view showing train and validation splits:
+
+![Dataset screenshot](02-qa-dataset/screenshots/dataset-hf-splits.png)
+
 ### 3. Banking Finance QLoRA Fine-Tuned Model
 Model: [banking-finance-mistral-qlora](https://huggingface.co/RakeshMadasani/banking-finance-mistral-qlora)
 
 A domain-adapted Mistral-based model fine-tuned using QLoRA on the custom banking dataset.
+
+**Project 3 snapshot**
+
+Training progress from the QLoRA fine-tuning workflow used to publish the banking-domain adapter:
 
 ![QLoRA training screenshot](03-qlora-finetuning/screenshots/qlora-training-progress.png)
 

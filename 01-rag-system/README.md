@@ -5,7 +5,14 @@ This project is a live Retrieval-Augmented Generation (RAG) assistant for bankin
 ## Live Demo
 [banking-finance-rag](https://huggingface.co/spaces/RakeshMadasani/banking-finance-rag)
 
-## Screenshot
+## Screenshots
+### Dashboard metrics
+![RAG dashboard metrics](screenshots/rag-dashboard-metrics.png)
+
+### Question-answer example
+Question shown:
+`How does FDIC insurance work and what deposits are covered?`
+
 ![RAG assistant answering a banking question](screenshots/rag-answer-demo.png)
 
 ## Overview
@@ -25,6 +32,9 @@ The assistant retrieves relevant context from a curated domain knowledge base an
 - streaming responses
 - confidence indicators
 - lightweight evaluation metrics
+
+## Note on latency screenshots
+The current screenshots in this repository reflect one real app session and are included as product evidence. If you capture a stronger low-latency run later, you can replace the answer screenshot with that newer example without changing the rest of the README structure.
 
 ## Focus Areas
 - AML

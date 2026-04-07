@@ -36,3 +36,6 @@ Example sample outputs from the fine-tuned model included banking-domain answers
 - Basel-related banking questions
 
 These examples showed that the adapter was capable of producing domain-specific responses after fine-tuning, even though formal benchmark scoring is still a planned improvement.
+
+## Why it stands out
+This project shows that the portfolio goes beyond app development and dataset creation into actual model adaptation. Publishing the adapter with a model card, tokenizer files, and LoRA configuration makes the work visible and inspectable as a real model artifact.
