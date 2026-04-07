@@ -4,7 +4,7 @@
 
 An end-to-end GenAI portfolio focused on banking, finance, compliance, and regulatory question answering.
 
-This portfolio includes:
+ portfolio includes:
 - a live RAG assistant for grounded banking Q&A
 - a custom 3,002-sample banking instruction dataset
 - a QLoRA fine-tuned Mistral model adapted to the domain
