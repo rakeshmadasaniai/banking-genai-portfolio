@@ -1,6 +1,6 @@
 import streamlit as st
 
-from core.copilot_app import run_copilot_app
+from core.copilot_runtime import run_copilot_runtime
 
-run_copilot_app()
+run_copilot_runtime()
 st.stop()
