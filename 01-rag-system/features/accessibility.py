@@ -14,12 +14,16 @@ class AccessibilityOptions:
 
 
 def render_accessibility_controls() -> AccessibilityOptions:
-    enabled = st.toggle("Accessibility mode", value=False)
+    enabled = st.toggle("Accessibility mode", value=False, help="Enable readability-focused response and display options.")
     if not enabled:
         return AccessibilityOptions(False, False, False, False)
-    large_text = st.checkbox("Large text", value=True)
-    high_contrast = st.checkbox("High contrast", value=False)
-    simplified_answers = st.checkbox("Simplified response display", value=False)
+    large_text = st.checkbox("Large text", value=True, help="Increase the base reading size across chat and source cards.")
+    high_contrast = st.checkbox("High contrast", value=False, help="Increase separation between foreground content and the page background.")
+    simplified_answers = st.checkbox(
+        "Simplified response display",
+        value=False,
+        help="Shorten paragraph blocks and keep answer text easier to scan before the source cards.",
+    )
     return AccessibilityOptions(True, large_text, high_contrast, simplified_answers)
 
 
@@ -53,6 +57,10 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
             color: #475569;
             font-size: {font_size};
             line-height: 1.6;
+        }}
+        .stButton button, .stDownloadButton button {{
+            border-radius: 12px;
+            min-height: 2.6rem;
         }}
         .source-card {{
             border: 1px solid rgba(29,78,216,0.12);

@@ -18,11 +18,11 @@ def render_document_uploads() -> list:
 
 def render_image_uploads() -> list:
     uploaded_images = st.file_uploader(
-        "Upload images (experimental)",
+        "Image Upload (Preview)",
         type=["png", "jpg", "jpeg"],
         accept_multiple_files=True,
-        help="Image upload is prepared for future OCR or vision support. For now, images are previewed but not used in retrieval.",
+        help="Preview-only image upload. Images are displayed in the UI, but they are not analyzed for multimodal reasoning in this version.",
     )
     if uploaded_images:
-        st.caption("Image understanding is currently a placeholder. Uploaded images are shown for workflow completeness.")
+        st.caption("Preview only: uploaded images are shown back to you, but this version does not perform image reasoning.")
     return uploaded_images or []
