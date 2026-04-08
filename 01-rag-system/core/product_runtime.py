@@ -8,6 +8,7 @@ from features.file_upload import render_document_uploads, render_image_uploads
 from features.product_ui import (
     render_assistant_message,
     render_empty_state,
+    render_example_questions,
     render_footer,
     render_header,
     render_metrics,
@@ -80,6 +81,8 @@ def run_product_runtime() -> None:
     if not st.session_state.messages:
         render_empty_state()
 
+    example_question = render_example_questions()
+
     for index, message in enumerate(st.session_state.messages):
         with st.chat_message(message["role"]):
             if message["role"] == "user":
@@ -96,6 +99,8 @@ def run_product_runtime() -> None:
     question = st.chat_input("Ask about KYC, AML, RBI guidance, FDIC, Basel, or uploaded documents...")
     if not question and voice_transcript:
         question = voice_transcript
+    if not question and example_question:
+        question = example_question
 
     if not question:
         render_footer()

@@ -87,6 +87,25 @@ def render_empty_state() -> None:
     st.caption("Suggested prompts: Compare AML and KYC, explain Basel III, ask about FDIC coverage, or test an uploaded policy document.")
 
 
+def render_example_questions() -> str | None:
+    st.markdown("#### Try a question")
+    examples = [
+        "How does FDIC insurance work and what deposits are covered?",
+        "Compare CTR reporting thresholds in the U.S. and India.",
+        "Explain Regulation E liability limits for unauthorized transfers.",
+        "What is CECL and how does it change expected credit loss accounting?",
+        "What documents are usually required for KYC of an individual in India?",
+        "How does uploaded guidance change the answer to my policy question?",
+    ]
+    selected = None
+    columns = st.columns(2)
+    for index, prompt in enumerate(examples):
+        column = columns[index % 2]
+        if column.button(prompt, key=f"example-{index}", use_container_width=True):
+            selected = prompt
+    return selected
+
+
 def _simplify_answer(answer: str) -> str:
     text = re.sub(r"^[\-\*\u2022]\s*", "", answer, flags=re.MULTILINE)
     text = re.sub(r"\n{2,}", "\n", text).strip()

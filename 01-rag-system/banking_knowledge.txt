@@ -199,3 +199,43 @@ PCR (Provision Coverage Ratio): Provisions / Gross NPAs. Higher means better pro
 CASA Ratio: Current + Savings Deposits / Total Deposits. Higher CASA means lower cost of funds.
 
 Credit Deposit (CD) Ratio: Total Loans / Total Deposits. RBI monitors this; high ratio may indicate liquidity risk.
+
+=== SECTION 9: DIGITAL BANKING, FRAUD RISK, AND CONSUMER PROTECTION ===
+
+UPI Fraud and Unauthorized Transactions:
+- Customers should report unauthorized UPI, card, or internet-banking transactions immediately to reduce potential liability.
+- Banks are expected to provide reporting channels such as branch support, helplines, SMS, mobile apps, or email.
+- A delay in reporting can increase customer exposure depending on the facts of the case and the bank's policy framework.
+- Fraud review generally checks whether the compromise arose from customer negligence, third-party breach, or a system issue at the bank.
+
+Customer Liability Principles:
+- Zero liability may apply when the fraud is caused by contributory fraud, negligence, or a system deficiency on the bank side.
+- Limited liability may apply when a third-party breach occurs and the customer reports the issue within the prescribed period.
+- Higher liability risk arises when the customer shares credentials such as OTPs, PINs, or passwords or delays reporting significantly.
+
+Dormant and Inoperative Accounts:
+- Savings and current accounts with no customer-induced transactions for an extended period may be treated as inoperative.
+- Banks usually require re-KYC or customer confirmation before fully reactivating dormant relationships.
+- Dormancy controls are important because abandoned accounts can be targets for fraud or operational errors.
+
+Nomination and Deposit Claims:
+- Nomination helps banks release deposit balances more smoothly after the account holder's death.
+- Nominees receive the funds as trustees for legal heirs unless succession law says otherwise.
+- Joint account holding instructions such as "either or survivor" affect how banks handle settlement and access.
+
+=== SECTION 10: DEMO-READY INDIA QUESTIONS ===
+
+What documents are required for KYC of an individual in India?
+- Typical proof of identity includes Aadhaar, PAN, passport, voter ID, or driving licence.
+- Typical proof of address includes Aadhaar, passport, utility bills, or bank statements.
+- Banks also collect a photograph and may request PAN for tax-linked products or higher-risk profiles.
+
+How do CTR and STR reporting differ in India?
+- CTR covers cash transactions above the reporting threshold and is rule-based.
+- STR covers suspicious activity regardless of transaction size and is judgment-based.
+- Structuring, unusual layering, high-risk geographies, or activity inconsistent with customer profile can trigger STR review.
+
+What is V-CIP and why does it matter?
+- Video-based Customer Identification Process (V-CIP) is an RBI-approved digital onboarding process.
+- It allows remote identity verification using live video interaction and document checks.
+- It helps banks scale onboarding while maintaining stronger audit trails than simple document upload alone.
