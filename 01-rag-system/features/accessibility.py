@@ -93,16 +93,10 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
             font-size: {font_size};
             line-height: 1.6;
         }}
-        .welcome-card, .source-card, .answer-shell, .copilot-footer, .session-panel {{
+        .source-card, .answer-shell, .copilot-footer, .session-panel {{
             background: {panel_background};
             border: 1px solid {border_color};
             box-shadow: 0 14px 28px rgba(15,23,42,0.05);
-        }}
-        .welcome-card {{
-            border-radius: 20px;
-            padding: 1rem 1.05rem;
-            margin-bottom: 0.45rem;
-            color: #0f172a;
         }}
         .session-panel {{
             border-radius: 18px;
@@ -139,25 +133,6 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
             margin-bottom: 0.55rem;
             color: #0f172a;
         }}
-        .composer-shell {{
-            display:flex;
-            flex-wrap:wrap;
-            gap:0.55rem;
-            margin:0.4rem 0 0.75rem 0;
-            padding:0.18rem 0;
-        }}
-        .composer-chip {{
-            display:inline-flex;
-            align-items:center;
-            gap:0.35rem;
-            padding:0.45rem 0.8rem;
-            border-radius:999px;
-            border:1px solid {border_color};
-            background: rgba(255,255,255,0.9);
-            color:#334155;
-            font-size:0.84rem;
-            font-weight:600;
-        }}
         .meta-line {{
             color:#64748b;
             font-size:0.84rem;
@@ -174,6 +149,7 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
             border: 1px solid {border_color};
             box-shadow: 0 12px 28px rgba(15,23,42,0.08);
             padding: 0.15rem 0.2rem;
+            width: 100%;
         }}
         div[data-testid="stChatInput"] textarea {{
             font-size: 1rem;

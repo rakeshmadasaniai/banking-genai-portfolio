@@ -7,8 +7,6 @@ from features.accessibility import apply_accessibility_styles, render_accessibil
 from features.file_upload import render_document_uploads, render_image_uploads
 from features.product_ui import (
     render_assistant_message,
-    render_composer_hint,
-    render_empty_state,
     render_example_questions,
     render_footer,
     render_header,
@@ -40,24 +38,22 @@ def run_product_runtime() -> None:
 
     with st.sidebar:
         st.markdown("## Banking & Finance Copilot")
-        if st.button("＋ New chat", use_container_width=True):
+        if st.button("+ New chat", use_container_width=True):
             st.session_state.messages = []
             st.rerun()
 
         st.markdown("### Model")
         model_mode = st.selectbox("Model mode", ["OpenAI", "Fine-Tuned", "Auto"], index=0)
-        st.caption("OpenAI is the strongest stable baseline.")
 
         st.markdown("### Knowledge")
         document_files = render_document_uploads()
         image_files = render_image_uploads()
 
-        st.markdown("### Accessibility")
-        voice_transcript, _voice_used = render_voice_input_preview()
-        accessibility = render_accessibility_controls()
+        with st.expander("Accessibility & Voice", expanded=False):
+            accessibility = render_accessibility_controls()
+            voice_transcript, _voice_used = render_voice_input_preview()
 
-        render_sidebar_summary(base_doc_count, st.session_state.upload_doc_count, st.session_state.upload_chunk_count)
-        with st.expander("Advanced settings", expanded=False):
+        with st.expander("Advanced", expanded=False):
             show_source_cards = st.toggle(
                 "Detailed source cards",
                 value=True,
@@ -72,13 +68,13 @@ def run_product_runtime() -> None:
                 st.markdown("### Image previews")
                 for image in image_files[:2]:
                     st.image(image, caption=image.name, use_container_width=True)
+            render_sidebar_summary(base_doc_count, st.session_state.upload_doc_count, st.session_state.upload_chunk_count)
             render_session_insights(st.session_state.messages)
 
     apply_accessibility_styles(accessibility)
     render_header()
 
     if not st.session_state.messages:
-        render_empty_state()
         example_question = render_example_questions()
     else:
         example_question = None
@@ -96,7 +92,6 @@ def run_product_runtime() -> None:
                     show_auto_comparison=show_auto_comparison,
                 )
 
-    render_composer_hint(st.session_state.upload_doc_count)
     question = st.chat_input("Ask about AML, KYC, FDIC, Basel, RBI guidance, or uploaded documents...")
     if not question and voice_transcript:
         question = voice_transcript

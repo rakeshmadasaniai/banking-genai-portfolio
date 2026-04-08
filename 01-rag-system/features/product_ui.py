@@ -29,10 +29,6 @@ def render_header() -> None:
 
 
 def render_sidebar_summary(base_doc_count: int, upload_doc_count: int, upload_chunk_count: int) -> None:
-    st.markdown("### Accessibility Summary")
-    st.caption(
-        "Large text improves readability, high contrast strengthens visual separation, and simplified display shortens answer formatting while keeping sources separate."
-    )
     st.markdown("### Copilot Scope")
     st.markdown("- Grounded retrieval from embedded banking knowledge")
     st.markdown("- Session-friendly document uploads")
@@ -63,21 +59,6 @@ def render_session_insights(messages: list[dict]) -> None:
     )
 
 
-def render_empty_state() -> None:
-    st.markdown(
-        """
-        <div class="welcome-card">
-            <div style="font-weight:700;margin-bottom:0.45rem;font-size:1.05rem;">Ready when you are</div>
-            <div style="color:#475569;line-height:1.7;">
-                Ask a banking question, upload a policy document, or use Voice Input (Preview). The copilot will answer from retrieved evidence first and keep the supporting sources separate from the main response.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    st.caption("Suggested prompts: Compare AML and KYC, explain Basel III, ask about FDIC coverage, or test an uploaded policy document.")
-
-
 def render_example_questions() -> str | None:
     st.caption("Try asking about")
     examples = [
@@ -95,20 +76,6 @@ def render_example_questions() -> str | None:
         if column.button(prompt, key=f"example-{index}", use_container_width=True):
             selected = prompt
     return selected
-
-
-def render_composer_hint(upload_doc_count: int) -> None:
-    upload_text = f"{upload_doc_count} file{'s' if upload_doc_count != 1 else ''} ready" if upload_doc_count else "Upload from sidebar"
-    st.markdown(
-        f"""
-        <div class="composer-shell">
-            <div class="composer-chip">&#128206; {upload_text}</div>
-            <div class="composer-chip">&#127908; Voice Input</div>
-            <div class="composer-chip">&#128270; Grounded retrieval</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
 
 
 def _simplify_answer(answer: str) -> str:
