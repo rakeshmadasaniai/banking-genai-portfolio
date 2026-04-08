@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "question": "What is the FDIC deposit insurance limit in the United States?",
+    "mode": "OpenAI",
+    "goal": "single-turn grounded fact retrieval"
+  },
+  {
+    "id": 2,
+    "question": "Compare AML and KYC in simple terms.",
+    "mode": "Auto",
+    "goal": "comparison quality and completeness"
+  },
+  {
+    "id": 3,
+    "question": "What documents are required for KYC of an individual in India?",
+    "mode": "Fine-Tuned",
+    "goal": "domain-specific answer quality"
+  },
+  {
+    "id": 4,
+    "question": "Using the uploaded policy file, what additional due-diligence guidance applies to high-risk customers?",
+    "mode": "OpenAI",
+    "goal": "uploaded document grounding"
+  },
+  {
+    "id": 5,
+    "question": "Explain Basel III capital requirements in simple language.",
+    "mode": "Auto",
+    "goal": "clarity plus groundedness"
+  }
+]
