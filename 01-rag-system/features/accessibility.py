@@ -147,6 +147,25 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
             margin-bottom: 0.55rem;
             color: #0f172a;
         }}
+        .composer-shell {{
+            display:flex;
+            flex-wrap:wrap;
+            gap:0.55rem;
+            margin:0.25rem 0 0.8rem 0;
+            padding:0.2rem 0;
+        }}
+        .composer-chip {{
+            display:inline-flex;
+            align-items:center;
+            gap:0.35rem;
+            padding:0.45rem 0.8rem;
+            border-radius:999px;
+            border:1px solid {border_color};
+            background: rgba(255,255,255,0.9);
+            color:#334155;
+            font-size:0.88rem;
+            font-weight:600;
+        }}
         .meta-pill {{
             display: inline-block;
             margin: 0.1rem 0.35rem 0.35rem 0;
@@ -167,6 +186,13 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
             border: 1px solid {border_color};
             box-shadow: 0 12px 28px rgba(15,23,42,0.08);
             padding: 0.15rem 0.2rem;
+        }}
+        div[data-testid="stChatInput"] textarea {{
+            font-size: 1rem;
+        }}
+        div.stButton > button {{
+            background: rgba(255,255,255,0.92);
+            border: 1px solid {border_color};
         }}
         .copilot-footer {{
             border-radius: 20px;

@@ -14,9 +14,9 @@ def render_header() -> None:
         <div class="copilot-hero">
             <div class="brand-row">
                 <span class="brand-chip">Grounded Banking AI</span>
-                <span class="brand-chip brand-chip-muted">OpenAI • Fine-Tuned • Auto</span>
+                <span class="brand-chip brand-chip-muted">OpenAI &bull; Fine-Tuned &bull; Auto</span>
             </div>
-            <div style="font-size:2.4rem;font-weight:800;line-height:1.08;margin-bottom:0.45rem;">
+            <div style="font-size:2.35rem;font-weight:800;line-height:1.08;margin-bottom:0.45rem;">
                 &#127758; Banking &amp; Finance Copilot
             </div>
             <div class="copilot-subtitle">
@@ -106,6 +106,20 @@ def render_example_questions() -> str | None:
     return selected
 
 
+def render_composer_hint(upload_doc_count: int) -> None:
+    upload_text = f"{upload_doc_count} file{'s' if upload_doc_count != 1 else ''} ready" if upload_doc_count else "Upload from sidebar"
+    st.markdown(
+        f"""
+        <div class="composer-shell">
+            <div class="composer-chip">?? {upload_text}</div>
+            <div class="composer-chip">?? Voice Input</div>
+            <div class="composer-chip">?? Grounded retrieval</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def _simplify_answer(answer: str) -> str:
     text = re.sub(r"^[\-\*\u2022]\s*", "", answer, flags=re.MULTILINE)
     text = re.sub(r"\n{2,}", "\n", text).strip()
@@ -185,10 +199,10 @@ def render_footer() -> None:
             </div>
             <div class="copilot-footer-meta">
                 <span>Built by <strong>Rakesh Madasani</strong></span>
-                <span class="footer-divider">•</span>
-                <a href="https://www.linkedin.com/in/rakesh-madasani-b217b71b0/" target="_blank">LinkedIn</a>
-                <span class="footer-divider">•</span>
-                <a href="https://github.com/rakeshmadasaniai/banking-genai-portfolio" target="_blank">GitHub</a>
+                <span class="footer-divider">&bull;</span>
+                <a href="https://www.linkedin.com/in/rakesh-madasani-b217b71b0/" target="_blank" aria-label="LinkedIn">??</a>
+                <span class="footer-divider">&bull;</span>
+                <a href="https://github.com/rakeshmadasaniai/banking-genai-portfolio" target="_blank" aria-label="GitHub">??</a>
             </div>
         </div>
         """,

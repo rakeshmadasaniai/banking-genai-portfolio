@@ -7,6 +7,7 @@ from features.accessibility import apply_accessibility_styles, render_accessibil
 from features.file_upload import render_document_uploads, render_image_uploads
 from features.product_ui import (
     render_assistant_message,
+    render_composer_hint,
     render_empty_state,
     render_example_questions,
     render_footer,
@@ -82,6 +83,7 @@ def run_product_runtime() -> None:
         render_empty_state()
 
     example_question = render_example_questions()
+    render_composer_hint(st.session_state.upload_doc_count)
 
     for index, message in enumerate(st.session_state.messages):
         with st.chat_message(message["role"]):
