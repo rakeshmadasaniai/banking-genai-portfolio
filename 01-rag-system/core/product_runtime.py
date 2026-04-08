@@ -12,7 +12,7 @@ from features.product_ui import (
     render_example_questions,
     render_footer,
     render_header,
-    render_metrics,
+    render_session_insights,
     render_sidebar_summary,
 )
 from features.voice_controls import render_voice_input_preview
@@ -39,51 +39,49 @@ def run_product_runtime() -> None:
     base_doc_count = len(load_base_documents())
 
     with st.sidebar:
-        st.markdown("## Workspace")
-        st.markdown("### Model Selection")
-        model_mode = st.selectbox("Model mode", ["OpenAI", "Fine-Tuned", "Auto"], index=0)
-        st.caption("OpenAI is the strongest stable baseline. Auto compares grounded candidates on the same retrieved context.")
-
-        st.markdown("### Knowledge Inputs")
-        document_files = render_document_uploads()
-        image_files = render_image_uploads()
-
-        st.markdown("### Voice & Accessibility")
-        voice_transcript, _voice_used = render_voice_input_preview()
-        accessibility = render_accessibility_controls()
-
-        st.markdown("### Response Settings")
-        show_source_cards = st.toggle(
-            "Show detailed source cards",
-            value=True,
-            help="Keep supporting source cards visible beneath each answer.",
-        )
-        show_auto_comparison = st.toggle(
-            "Show Auto mode comparison details",
-            value=False,
-            help="Reveal how OpenAI and the fine-tuned path were scored when Auto mode chooses a winner.",
-        )
-
-        render_sidebar_summary(base_doc_count, st.session_state.upload_doc_count, st.session_state.upload_chunk_count)
-        if document_files:
-            st.caption("Uploaded documents are ready for session retrieval.")
-        if image_files:
-            st.markdown("### Uploaded image previews")
-            for image in image_files[:2]:
-                st.image(image, caption=image.name, use_container_width=True)
-        if st.button("Clear chat", use_container_width=True):
+        st.markdown("## Banking & Finance Copilot")
+        if st.button("＋ New chat", use_container_width=True):
             st.session_state.messages = []
             st.rerun()
 
+        st.markdown("### Model")
+        model_mode = st.selectbox("Model mode", ["OpenAI", "Fine-Tuned", "Auto"], index=0)
+        st.caption("OpenAI is the strongest stable baseline.")
+
+        st.markdown("### Knowledge")
+        document_files = render_document_uploads()
+        image_files = render_image_uploads()
+
+        st.markdown("### Accessibility")
+        voice_transcript, _voice_used = render_voice_input_preview()
+        accessibility = render_accessibility_controls()
+
+        render_sidebar_summary(base_doc_count, st.session_state.upload_doc_count, st.session_state.upload_chunk_count)
+        with st.expander("Advanced settings", expanded=False):
+            show_source_cards = st.toggle(
+                "Detailed source cards",
+                value=True,
+                help="Keep supporting source cards visible beneath each answer.",
+            )
+            show_auto_comparison = st.toggle(
+                "Auto mode comparison",
+                value=False,
+                help="Reveal how OpenAI and the fine-tuned path were scored when Auto mode chooses a winner.",
+            )
+            if image_files:
+                st.markdown("### Image previews")
+                for image in image_files[:2]:
+                    st.image(image, caption=image.name, use_container_width=True)
+            render_session_insights(st.session_state.messages)
+
     apply_accessibility_styles(accessibility)
     render_header()
-    render_metrics(st.session_state.messages)
 
     if not st.session_state.messages:
         render_empty_state()
-
-    example_question = render_example_questions()
-    render_composer_hint(st.session_state.upload_doc_count)
+        example_question = render_example_questions()
+    else:
+        example_question = None
 
     for index, message in enumerate(st.session_state.messages):
         with st.chat_message(message["role"]):
@@ -98,7 +96,8 @@ def run_product_runtime() -> None:
                     show_auto_comparison=show_auto_comparison,
                 )
 
-    question = st.chat_input("Ask about KYC, AML, RBI guidance, FDIC, Basel, or uploaded documents...")
+    render_composer_hint(st.session_state.upload_doc_count)
+    question = st.chat_input("Ask about AML, KYC, FDIC, Basel, RBI guidance, or uploaded documents...")
     if not question and voice_transcript:
         question = voice_transcript
     if not question and example_question:

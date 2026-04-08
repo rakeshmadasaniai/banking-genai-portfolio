@@ -16,14 +16,11 @@ def render_header() -> None:
                 <span class="brand-chip">Grounded Banking AI</span>
                 <span class="brand-chip brand-chip-muted">OpenAI &bull; Fine-Tuned &bull; Auto</span>
             </div>
-            <div style="font-size:2.35rem;font-weight:800;line-height:1.08;margin-bottom:0.45rem;">
+            <div style="font-size:2.1rem;font-weight:800;line-height:1.08;margin-bottom:0.38rem;">
                 &#127758; Banking &amp; Finance Copilot
             </div>
             <div class="copilot-subtitle">
                 Grounded AI assistant for banking and financial knowledge.
-            </div>
-            <div class="hero-note">
-                Retrieval-first answers, transparent source grounding, and a cleaner copilot workflow for banking and compliance questions.
             </div>
         </div>
         """,
@@ -46,30 +43,24 @@ def render_sidebar_summary(base_doc_count: int, upload_doc_count: int, upload_ch
     st.caption(f"Uploaded chunks: {upload_chunk_count}")
 
 
-def render_metrics(messages: list[dict]) -> None:
+def render_session_insights(messages: list[dict]) -> None:
     assistant_messages = [message for message in messages if message["role"] == "assistant"]
     avg_latency = round(mean(message["latency_ms"] for message in assistant_messages)) if assistant_messages else 0
     avg_chunks = round(mean(message["retrieved_chunks"] for message in assistant_messages), 1) if assistant_messages else 0
     avg_sources = round(mean(len(message["sources"]) for message in assistant_messages), 1) if assistant_messages else 0
     fallback_count = sum(1 for message in assistant_messages if message.get("confidence") == "Low")
-    stats = [
-        ("Session Answers", len(assistant_messages)),
-        ("Avg Latency", f"{avg_latency} ms"),
-        ("Avg Retrieved Chunks", avg_chunks),
-        ("Avg Sources / Answer", avg_sources),
-        ("Low-Confidence Responses", fallback_count),
-    ]
-    columns = st.columns(len(stats))
-    for column, (label, value) in zip(columns, stats):
-        column.markdown(
-            f"""
-            <div class="stat-card">
-                <div class="stat-label">{label}</div>
-                <div class="stat-value">{value}</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+    st.markdown(
+        f"""
+        <div class="session-panel">
+            <div class="session-item"><span>Answers</span><strong>{len(assistant_messages)}</strong></div>
+            <div class="session-item"><span>Avg latency</span><strong>{avg_latency} ms</strong></div>
+            <div class="session-item"><span>Avg chunks</span><strong>{avg_chunks}</strong></div>
+            <div class="session-item"><span>Avg sources</span><strong>{avg_sources}</strong></div>
+            <div class="session-item"><span>Low confidence</span><strong>{fallback_count}</strong></div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def render_empty_state() -> None:
@@ -88,7 +79,7 @@ def render_empty_state() -> None:
 
 
 def render_example_questions() -> str | None:
-    st.markdown("#### Try a question")
+    st.caption("Try asking about")
     examples = [
         "How does FDIC insurance work and what deposits are covered?",
         "Compare CTR reporting thresholds in the U.S. and India.",
@@ -111,9 +102,9 @@ def render_composer_hint(upload_doc_count: int) -> None:
     st.markdown(
         f"""
         <div class="composer-shell">
-            <div class="composer-chip">?? {upload_text}</div>
-            <div class="composer-chip">?? Voice Input</div>
-            <div class="composer-chip">?? Grounded retrieval</div>
+            <div class="composer-chip">&#128206; {upload_text}</div>
+            <div class="composer-chip">&#127908; Voice Input</div>
+            <div class="composer-chip">&#128270; Grounded retrieval</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -161,14 +152,11 @@ def render_assistant_message(
     st.markdown("<div class='answer-shell'>", unsafe_allow_html=True)
     st.markdown(answer)
     st.markdown(
-        " ".join(
-            [
-                f"<span class='meta-pill'>Model: {message['backend']}</span>",
-                f"<span class='meta-pill'>Response time: {message['latency_ms']} ms</span>",
-                f"<span class='meta-pill'>Retrieved chunks: {message['retrieved_chunks']}</span>",
-                f"<span class='meta-pill'>Confidence: {message['confidence']}</span>",
-            ]
-        ),
+        f"""
+        <div class="meta-line">
+            {message['backend']} &middot; {message['latency_ms']} ms &middot; {message['retrieved_chunks']} chunks &middot; {message['confidence']} confidence
+        </div>
+        """,
         unsafe_allow_html=True,
     )
     st.markdown("</div>", unsafe_allow_html=True)
@@ -200,9 +188,9 @@ def render_footer() -> None:
             <div class="copilot-footer-meta">
                 <span>Built by <strong>Rakesh Madasani</strong></span>
                 <span class="footer-divider">&bull;</span>
-                <a href="https://www.linkedin.com/in/rakesh-madasani-b217b71b0/" target="_blank" aria-label="LinkedIn">??</a>
+                <a href="https://www.linkedin.com/in/rakesh-madasani-b217b71b0/" target="_blank" aria-label="LinkedIn">&#128188;</a>
                 <span class="footer-divider">&bull;</span>
-                <a href="https://github.com/rakeshmadasaniai/banking-genai-portfolio" target="_blank" aria-label="GitHub">??</a>
+                <a href="https://github.com/rakeshmadasaniai/banking-genai-portfolio" target="_blank" aria-label="GitHub">&#128187;</a>
             </div>
         </div>
         """,

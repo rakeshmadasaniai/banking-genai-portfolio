@@ -93,13 +93,7 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
             font-size: {font_size};
             line-height: 1.6;
         }}
-        .hero-note {{
-            margin-top: 0.65rem;
-            color: #64748b;
-            line-height: 1.65;
-            font-size: 0.94rem;
-        }}
-        .welcome-card, .source-card, .stat-card, .answer-shell, .copilot-footer {{
+        .welcome-card, .source-card, .answer-shell, .copilot-footer, .session-panel {{
             background: {panel_background};
             border: 1px solid {border_color};
             box-shadow: 0 14px 28px rgba(15,23,42,0.05);
@@ -110,26 +104,24 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
             margin-bottom: 0.45rem;
             color: #0f172a;
         }}
-        .stat-card {{
+        .session-panel {{
             border-radius: 18px;
-            padding: 0.85rem 0.95rem;
-            min-height: 88px;
-            margin: 0.15rem 0 0.45rem 0;
+            padding: 0.8rem 0.9rem;
+            margin-top: 0.55rem;
             color: #0f172a;
         }}
-        .stat-label {{
-            font-size: 0.78rem;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 700;
-            margin-bottom: 0.35rem;
+        .session-item {{
+            display:flex;
+            justify-content:space-between;
+            gap:0.75rem;
+            align-items:center;
+            padding:0.28rem 0;
+            color:#475569;
+            font-size:0.9rem;
         }}
-        .stat-value {{
-            font-size: 1.75rem;
-            font-weight: 800;
-            line-height: 1.1;
-            color: #0f172a;
+        .session-item strong {{
+            color:#0f172a;
+            font-size:0.92rem;
         }}
         .stButton button, .stDownloadButton button {{
             border-radius: 12px;
@@ -151,8 +143,8 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
             display:flex;
             flex-wrap:wrap;
             gap:0.55rem;
-            margin:0.25rem 0 0.8rem 0;
-            padding:0.2rem 0;
+            margin:0.4rem 0 0.75rem 0;
+            padding:0.18rem 0;
         }}
         .composer-chip {{
             display:inline-flex;
@@ -163,18 +155,14 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
             border:1px solid {border_color};
             background: rgba(255,255,255,0.9);
             color:#334155;
-            font-size:0.88rem;
+            font-size:0.84rem;
             font-weight:600;
         }}
-        .meta-pill {{
-            display: inline-block;
-            margin: 0.1rem 0.35rem 0.35rem 0;
-            padding: 0.28rem 0.58rem;
-            border-radius: 999px;
-            background: rgba(29,78,216,0.12);
-            color: {accent};
-            font-size: 0.82rem;
-            font-weight: 700;
+        .meta-line {{
+            color:#64748b;
+            font-size:0.84rem;
+            line-height:1.55;
+            margin-top:0.55rem;
         }}
         div[data-testid="stChatMessage"] {{
             padding-top: 0.35rem;
@@ -193,6 +181,9 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
         div.stButton > button {{
             background: rgba(255,255,255,0.92);
             border: 1px solid {border_color};
+        }}
+        [data-testid="stVerticalBlock"] > [data-testid="stButton"] button {{
+            border-radius: 14px;
         }}
         .copilot-footer {{
             border-radius: 20px;
