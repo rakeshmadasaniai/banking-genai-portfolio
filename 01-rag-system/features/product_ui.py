@@ -12,14 +12,18 @@ def render_header() -> None:
     st.markdown(
         """
         <div class="copilot-hero">
-            <div style="font-size:0.82rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#0f766e;margin-bottom:0.35rem;">
-                Grounded Banking AI
+            <div class="brand-row">
+                <span class="brand-chip">Grounded Banking AI</span>
+                <span class="brand-chip brand-chip-muted">OpenAI • Fine-Tuned • Auto</span>
             </div>
-            <div style="font-size:2.2rem;font-weight:800;line-height:1.1;margin-bottom:0.35rem;">
+            <div style="font-size:2.4rem;font-weight:800;line-height:1.08;margin-bottom:0.45rem;">
                 &#127758; Banking &amp; Finance Copilot
             </div>
             <div class="copilot-subtitle">
                 Grounded AI assistant for banking and financial knowledge.
+            </div>
+            <div class="hero-note">
+                Retrieval-first answers, transparent source grounding, and a cleaner copilot workflow for banking and compliance questions.
             </div>
         </div>
         """,
@@ -48,31 +52,39 @@ def render_metrics(messages: list[dict]) -> None:
     avg_chunks = round(mean(message["retrieved_chunks"] for message in assistant_messages), 1) if assistant_messages else 0
     avg_sources = round(mean(len(message["sources"]) for message in assistant_messages), 1) if assistant_messages else 0
     fallback_count = sum(1 for message in assistant_messages if message.get("confidence") == "Low")
-
-    row1 = st.columns(3)
-    row1[0].metric("Session Answers", len(assistant_messages))
-    row1[1].metric("Avg Latency", f"{avg_latency} ms")
-    row1[2].metric("Avg Retrieved Chunks", avg_chunks)
-
-    row2 = st.columns(2)
-    row2[0].metric("Avg Sources / Answer", avg_sources)
-    row2[1].metric("Low-Confidence Responses", fallback_count)
+    stats = [
+        ("Session Answers", len(assistant_messages)),
+        ("Avg Latency", f"{avg_latency} ms"),
+        ("Avg Retrieved Chunks", avg_chunks),
+        ("Avg Sources / Answer", avg_sources),
+        ("Low-Confidence Responses", fallback_count),
+    ]
+    columns = st.columns(len(stats))
+    for column, (label, value) in zip(columns, stats):
+        column.markdown(
+            f"""
+            <div class="stat-card">
+                <div class="stat-label">{label}</div>
+                <div class="stat-value">{value}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
 
 def render_empty_state() -> None:
     st.markdown(
         """
-        <div class="source-card">
-            <div style="font-weight:700;margin-bottom:0.35rem;">Ready when you are</div>
-            <div style="color:#475569;line-height:1.6;">
-                Ask a banking question, upload a policy document, or try the Voice Input (Preview) control.  
-                The copilot will keep the answer grounded and show the supporting source cards separately.
+        <div class="welcome-card">
+            <div style="font-weight:700;margin-bottom:0.45rem;font-size:1.05rem;">Ready when you are</div>
+            <div style="color:#475569;line-height:1.7;">
+                Ask a banking question, upload a policy document, or use Voice Input (Preview). The copilot will answer from retrieved evidence first and keep the supporting sources separate from the main response.
             </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
-    st.caption("Suggested prompts: Compare AML and KYC, explain Basel III, or ask about uploaded due-diligence guidance.")
+    st.caption("Suggested prompts: Compare AML and KYC, explain Basel III, ask about FDIC coverage, or test an uploaded policy document.")
 
 
 def _simplify_answer(answer: str) -> str:
@@ -90,8 +102,10 @@ def render_source_cards(source_cards: list[dict]) -> None:
         st.markdown(
             f"""
             <div class="source-card">
-                <div style="font-weight:700;margin-bottom:0.25rem;">Source {card['rank']}: {card['label']}</div>
-                <div style="font-size:0.82rem;color:#475569;margin-bottom:0.35rem;">Type: {card['source_type']}</div>
+                <div style="display:flex;justify-content:space-between;gap:0.75rem;align-items:center;margin-bottom:0.25rem;">
+                    <div style="font-weight:700;">Source {card['rank']}: {card['label']}</div>
+                    <div style="font-size:0.76rem;color:#64748b;text-transform:uppercase;letter-spacing:0.04em;">{card['source_type']}</div>
+                </div>
                 <div style="color:#334155;line-height:1.6;">{card['preview']}</div>
             </div>
             """,
@@ -111,6 +125,7 @@ def render_assistant_message(
     if message.get("retrieval_note"):
         st.warning(message["retrieval_note"])
 
+    st.markdown("<div class='answer-shell'>", unsafe_allow_html=True)
     st.markdown(answer)
     st.markdown(
         " ".join(
@@ -123,9 +138,10 @@ def render_assistant_message(
         ),
         unsafe_allow_html=True,
     )
+    st.markdown("</div>", unsafe_allow_html=True)
 
     if show_source_cards:
-        with st.expander("Source cards", expanded=True):
+        with st.expander("Sources and grounding", expanded=False):
             render_source_cards(message["source_cards"])
 
     if show_auto_comparison and message.get("comparison"):
@@ -139,3 +155,23 @@ def render_assistant_message(
                 )
 
     render_voice_output(message["answer"], message_key)
+
+
+def render_footer() -> None:
+    st.markdown(
+        """
+        <div class="copilot-footer">
+            <div class="copilot-footer-note">
+                AI-generated responses can make mistakes. Verify important banking, compliance, legal, or regulatory details with official sources. Never share card numbers, account credentials, or sensitive personal data in chat.
+            </div>
+            <div class="copilot-footer-meta">
+                <span>Built by <strong>Rakesh Madasani</strong></span>
+                <span class="footer-divider">•</span>
+                <a href="https://www.linkedin.com/in/rakesh-madasani-b217b71b0/" target="_blank">LinkedIn</a>
+                <span class="footer-divider">•</span>
+                <a href="https://github.com/rakeshmadasaniai/banking-genai-portfolio" target="_blank">GitHub</a>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )

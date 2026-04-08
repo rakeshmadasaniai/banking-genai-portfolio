@@ -5,7 +5,14 @@ import streamlit as st
 from core.retriever import get_base_index, load_base_documents, retrieve_shared_context
 from features.accessibility import apply_accessibility_styles, render_accessibility_controls
 from features.file_upload import render_document_uploads, render_image_uploads
-from features.product_ui import render_assistant_message, render_empty_state, render_header, render_metrics, render_sidebar_summary
+from features.product_ui import (
+    render_assistant_message,
+    render_empty_state,
+    render_footer,
+    render_header,
+    render_metrics,
+    render_sidebar_summary,
+)
 from features.voice_controls import render_voice_input_preview
 from models.auto_router import run_auto_mode
 from models.finetuned_mode import generate_finetuned_response
@@ -13,7 +20,7 @@ from models.openai_mode import generate_openai_response
 
 
 def run_product_runtime() -> None:
-    st.set_page_config(page_title="🌎 Banking & Finance Copilot", page_icon="🌎", layout="wide")
+    st.set_page_config(page_title="Banking & Finance Copilot", page_icon=":earth_americas:", layout="wide")
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -44,7 +51,11 @@ def run_product_runtime() -> None:
         accessibility = render_accessibility_controls()
 
         st.markdown("### Response Settings")
-        show_source_cards = st.toggle("Show detailed source cards", value=True, help="Keep supporting source cards visible beneath each answer.")
+        show_source_cards = st.toggle(
+            "Show detailed source cards",
+            value=True,
+            help="Keep supporting source cards visible beneath each answer.",
+        )
         show_auto_comparison = st.toggle(
             "Show Auto mode comparison details",
             value=False,
@@ -65,11 +76,6 @@ def run_product_runtime() -> None:
     apply_accessibility_styles(accessibility)
     render_header()
     render_metrics(st.session_state.messages)
-
-    st.caption(
-        "This copilot keeps answers grounded in retrieved banking material, supports uploaded document search, "
-        "and lets you switch between OpenAI, Fine-Tuned, and Auto-selected response modes."
-    )
 
     if not st.session_state.messages:
         render_empty_state()
@@ -92,6 +98,7 @@ def run_product_runtime() -> None:
         question = voice_transcript
 
     if not question:
+        render_footer()
         return
 
     st.session_state.messages.append({"role": "user", "content": question})
@@ -133,3 +140,5 @@ def run_product_runtime() -> None:
             show_source_cards=show_source_cards,
             show_auto_comparison=show_auto_comparison,
         )
+
+    render_footer()

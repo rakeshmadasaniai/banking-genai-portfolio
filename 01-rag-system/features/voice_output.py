@@ -21,16 +21,10 @@ def _generate_audio(answer: str) -> bytes | None:
     client = OpenAI(api_key=api_key)
     model_name = os.environ.get("OPENAI_TTS_MODEL", "gpt-4o-mini-tts").strip()
     voice_name = os.environ.get("OPENAI_TTS_VOICE", "alloy").strip()
-    instructions = os.environ.get(
-        "OPENAI_TTS_STYLE",
-        "Speak clearly and professionally for a banking and finance assistant.",
-    ).strip()
-
     response = client.audio.speech.create(
         model=model_name,
         voice=voice_name,
         input=answer[:4000],
-        instructions=instructions,
         response_format="mp3",
     )
     if hasattr(response, "read"):
