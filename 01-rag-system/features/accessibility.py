@@ -39,67 +39,85 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
         f"""
         <style>
         .stApp {{
-            background:
-                radial-gradient(circle at top, rgba(191,219,254,0.45), transparent 34%),
-                linear-gradient(180deg, {background} 0%, #f8fbff 100%);
+            background: #fafaf8;
             color: {foreground};
         }}
         .block-container {{
-            max-width: 1080px;
-            padding-top: 1.2rem;
-            padding-bottom: 1.6rem;
-        }}
-        section[data-testid="stSidebar"] {{
-            background: {sidebar_background};
-            border-right: 1px solid {border_color};
-        }}
-        section[data-testid="stSidebar"] .block-container {{
-            padding-top: 1rem;
+            max-width: 1000px;
+            padding-top: 0.4rem;
             padding-bottom: 1rem;
         }}
+        section[data-testid="stSidebar"] {{
+            background: #f4f3ef;
+            border-right: 1px solid #e8e7e2;
+        }}
+        section[data-testid="stSidebar"] .block-container {{
+            padding-top: 0.35rem;
+            padding-bottom: 0.8rem;
+        }}
+        .sidebar-brand {{
+            padding: 0.2rem 0.35rem 0.8rem;
+            border-bottom: 1px solid #e8e7e2;
+            margin-bottom: 0.8rem;
+        }}
+        .sidebar-title {{
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: #1a1a18;
+            letter-spacing: -0.01em;
+        }}
+        .sidebar-subtitle {{
+            font-size: 0.68rem;
+            color: #9a9893;
+            margin-top: 0.12rem;
+        }}
+        .sidebar-section-label {{
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: #b0aea8;
+            padding: 0.4rem 0.35rem 0.2rem;
+        }}
         .copilot-hero {{
-            background: linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(248,250,252,0.94) 100%);
-            border-radius: 24px;
-            padding: 1.35rem 1.45rem;
-            border: 1px solid {border_color};
-            box-shadow: 0 18px 38px rgba(15,23,42,0.08);
-            margin-bottom: 0.9rem;
-            color: #0f172a;
+            padding: 1rem 0 0.8rem;
+            border-bottom: 1px solid #f0efeb;
+            margin-bottom: 1rem;
+            color: #1a1a18;
         }}
         .brand-row {{
             display:flex;
             flex-wrap:wrap;
-            gap:0.45rem;
-            margin-bottom:0.75rem;
+            gap:0.35rem;
+            margin-bottom:0.55rem;
         }}
         .brand-chip {{
             display:inline-flex;
             align-items:center;
-            padding:0.28rem 0.62rem;
+            padding:0.22rem 0.55rem;
             border-radius:999px;
-            background:#dbeafe;
+            background:#e6f1fb;
             color:#1d4ed8;
-            font-size:0.78rem;
-            font-weight:700;
-            letter-spacing:0.02em;
-            text-transform:uppercase;
+            font-size:0.62rem;
+            font-weight:600;
         }}
         .brand-chip-muted {{
-            background:#e2e8f0;
-            color:#334155;
+            background:#f0efe9;
+            color:#777;
+            border: 1px solid #e8e7e2;
         }}
         .copilot-subtitle {{
-            color: #475569;
-            font-size: {font_size};
+            color: #aaa;
+            font-size: 0.78rem;
             line-height: 1.6;
         }}
         .source-card, .answer-shell, .copilot-footer, .session-panel {{
-            background: {panel_background};
-            border: 1px solid {border_color};
-            box-shadow: 0 14px 28px rgba(15,23,42,0.05);
+            background: #fff;
+            border: 1px solid #eeede9;
+            box-shadow: none;
         }}
         .session-panel {{
-            border-radius: 18px;
+            border-radius: 10px;
             padding: 0.8rem 0.9rem;
             margin-top: 0.55rem;
             color: #0f172a;
@@ -122,72 +140,128 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
             min-height: 2.6rem;
         }}
         .source-card {{
-            border-radius: 16px;
-            padding: 0.8rem 0.9rem;
+            border-radius: 8px;
+            padding: 0.55rem 0.7rem;
             margin-bottom: 0.6rem;
             color: #0f172a;
+            background: #fafaf8;
         }}
         .answer-shell {{
-            border-radius: 18px;
-            padding: 0.95rem 1rem 0.55rem 1rem;
+            border-radius: 4px 16px 16px 16px;
+            padding: 0.95rem 1rem 0.65rem 1rem;
             margin-bottom: 0.55rem;
-            color: #0f172a;
+            color: #1a1a18;
         }}
         .meta-line {{
-            color:#64748b;
-            font-size:0.84rem;
+            color:#c0bdb6;
+            font-size:0.68rem;
             line-height:1.55;
-            margin-top:0.55rem;
+            margin-top:0.45rem;
+            padding-left:0.15rem;
         }}
         div[data-testid="stChatMessage"] {{
             padding-top: 0.35rem;
             padding-bottom: 0.35rem;
         }}
         div[data-testid="stChatInput"] {{
-            background: rgba(255,255,255,0.95);
-            border-radius: 18px;
-            border: 1px solid {border_color};
-            box-shadow: 0 12px 28px rgba(15,23,42,0.08);
-            padding: 0.15rem 0.2rem;
+            background: #f7f7f5;
+            border-radius: 28px;
+            border: 1.5px solid #e0deda;
+            box-shadow: none;
+            padding: 0.2rem 0.28rem;
             width: 100%;
         }}
         div[data-testid="stChatInput"] textarea {{
-            font-size: 1rem;
+            font-size: 0.82rem;
+            color: #1a1a18;
         }}
         div.stButton > button {{
-            background: rgba(255,255,255,0.92);
-            border: 1px solid {border_color};
+            background: #ffffff;
+            border: 1px solid #d8d7d2;
         }}
         [data-testid="stVerticalBlock"] > [data-testid="stButton"] button {{
-            border-radius: 14px;
+            border-radius: 10px;
+        }}
+        .input-toolbar {{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:0.5rem;
+            padding:0 0.15rem 0.35rem;
+            margin-top:0.2rem;
+        }}
+        .input-toolbar-left {{
+            display:flex;
+            gap:0.4rem;
+            align-items:center;
+        }}
+        .toolbar-pill {{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            width:1.9rem;
+            height:1.9rem;
+            border-radius:999px;
+            border:1px solid #e8e7e2;
+            background:#fff;
+            color:#888;
+            font-size:0.8rem;
+        }}
+        .model-badge {{
+            display:inline-flex;
+            align-items:center;
+            padding:0.24rem 0.6rem;
+            border-radius:999px;
+            background:#eeecea;
+            color:#666;
+            font-size:0.65rem;
+            font-weight:500;
         }}
         .copilot-footer {{
-            border-radius: 20px;
-            padding: 1rem 1.1rem;
-            margin-top: 1rem;
-            margin-bottom: 0.4rem;
-            color: #0f172a;
+            background: transparent;
+            border: none;
+            padding: 0.5rem 0 0.9rem;
+            margin-top: 0.4rem;
+            margin-bottom: 0.2rem;
         }}
-        .copilot-footer-note {{
-            color: #475569;
-            line-height: 1.7;
-            margin-bottom: 0.55rem;
-        }}
-        .copilot-footer-meta {{
+        .footer-pill {{
             display:flex;
             flex-wrap:wrap;
-            gap:0.45rem;
+            gap:0.55rem;
             align-items:center;
-            color:#334155;
-            font-size:0.92rem;
+            justify-content:center;
+            margin: 0 auto;
+            width: fit-content;
+            padding: 0.42rem 0.95rem;
+            border-radius: 999px;
+            border: 1px solid #eeede9;
+            background: #fafaf8;
         }}
-        .copilot-footer-meta a {{
-            color:#1d4ed8;
+        .rm-avatar {{
+            width: 1.4rem;
+            height: 1.4rem;
+            border-radius: 999px;
+            background: #1a1a18;
+            color: #fff;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size: 0.48rem;
+            font-weight: 700;
+        }}
+        .footer-name {{
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #444;
+            letter-spacing: -0.01em;
+        }}
+        .copilot-footer a {{
+            color:#888;
             text-decoration:none;
-            font-weight:600;
+            font-size:0.68rem;
         }}
         .footer-divider {{
-            color:#94a3b8;
+            color:#d0cdc7;
         }}
         .stChatMessage p, .stMarkdown p {{
             font-size: {font_size};

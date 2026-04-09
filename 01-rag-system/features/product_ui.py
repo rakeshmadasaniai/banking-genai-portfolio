@@ -16,8 +16,8 @@ def render_header() -> None:
                 <span class="brand-chip">Grounded Banking AI</span>
                 <span class="brand-chip brand-chip-muted">OpenAI &bull; Fine-Tuned &bull; Auto</span>
             </div>
-            <div style="font-size:2.1rem;font-weight:800;line-height:1.08;margin-bottom:0.38rem;">
-                &#127758; Banking &amp; Finance Copilot
+            <div style="font-size:1.95rem;font-weight:700;line-height:1.08;margin-bottom:0.32rem;color:#1a1a18;">
+                Banking &amp; Finance Copilot
             </div>
             <div class="copilot-subtitle">
                 Grounded AI assistant for banking and financial knowledge.
@@ -76,6 +76,23 @@ def render_example_questions() -> str | None:
         if column.button(prompt, key=f"example-{index}", use_container_width=True):
             selected = prompt
     return selected
+
+
+def render_input_toolbar(model_name: str) -> None:
+    st.markdown(
+        f"""
+        <div class="input-toolbar">
+            <div class="input-toolbar-left">
+                <span class="toolbar-pill">+</span>
+                <span class="toolbar-pill">&#127897;</span>
+            </div>
+            <div class="input-toolbar-right">
+                <span class="model-badge">{model_name}</span>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def _simplify_answer(answer: str) -> str:
@@ -149,15 +166,13 @@ def render_footer() -> None:
     st.markdown(
         """
         <div class="copilot-footer">
-            <div class="copilot-footer-note">
-                AI-generated responses can make mistakes. Verify important banking, compliance, legal, or regulatory details with official sources. Never share card numbers, account credentials, or sensitive personal data in chat.
-            </div>
-            <div class="copilot-footer-meta">
-                <span>Built by <strong>Rakesh Madasani</strong></span>
-                <span class="footer-divider">&bull;</span>
-                <a href="https://www.linkedin.com/in/rakesh-madasani-b217b71b0/" target="_blank" aria-label="LinkedIn">&#128188;</a>
-                <span class="footer-divider">&bull;</span>
-                <a href="https://github.com/rakeshmadasaniai/banking-genai-portfolio" target="_blank" aria-label="GitHub">&#128187;</a>
+            <div class="footer-pill">
+                <div class="rm-avatar">RM</div>
+                <span class="footer-name">Rakesh Madasani</span>
+                <span class="footer-divider">&vert;</span>
+                <a href="https://www.linkedin.com/in/rakesh-madasani-b217b71b0/" target="_blank" aria-label="LinkedIn">LinkedIn</a>
+                <span class="footer-divider">&vert;</span>
+                <a href="https://github.com/rakeshmadasaniai/banking-genai-portfolio" target="_blank" aria-label="GitHub">GitHub</a>
             </div>
         </div>
         """,

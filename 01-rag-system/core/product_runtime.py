@@ -10,6 +10,7 @@ from features.product_ui import (
     render_example_questions,
     render_footer,
     render_header,
+    render_input_toolbar,
     render_session_insights,
     render_sidebar_summary,
 )
@@ -20,7 +21,7 @@ from models.openai_mode import generate_openai_response
 
 
 def run_product_runtime() -> None:
-    st.set_page_config(page_title="Banking & Finance Copilot", page_icon=":earth_americas:", layout="wide")
+    st.set_page_config(page_title="Banking & Finance Copilot", page_icon="🏦", layout="wide", initial_sidebar_state="expanded")
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -37,15 +38,23 @@ def run_product_runtime() -> None:
     base_doc_count = len(load_base_documents())
 
     with st.sidebar:
-        st.markdown("## Banking & Finance Copilot")
+        st.markdown(
+            """
+            <div class="sidebar-brand">
+                <div class="sidebar-title">Banking &amp; Finance Copilot</div>
+                <div class="sidebar-subtitle">by Rakesh Madasani</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         if st.button("+ New chat", use_container_width=True):
             st.session_state.messages = []
             st.rerun()
 
-        st.markdown("### Model")
-        model_mode = st.selectbox("Model mode", ["OpenAI", "Fine-Tuned", "Auto"], index=0)
+        st.markdown('<div class="sidebar-section-label">Model</div>', unsafe_allow_html=True)
+        model_mode = st.selectbox("Model mode", ["OpenAI", "Fine-Tuned", "Auto"], index=0, label_visibility="collapsed")
 
-        st.markdown("### Knowledge")
+        st.markdown('<div class="sidebar-section-label">Knowledge</div>', unsafe_allow_html=True)
         document_files = render_document_uploads()
         image_files = render_image_uploads()
 
@@ -92,6 +101,7 @@ def run_product_runtime() -> None:
                     show_auto_comparison=show_auto_comparison,
                 )
 
+    render_input_toolbar(model_mode)
     question = st.chat_input("Ask about AML, KYC, FDIC, Basel, RBI guidance, or uploaded documents...")
     if not question and voice_transcript:
         question = voice_transcript
