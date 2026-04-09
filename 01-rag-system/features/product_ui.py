@@ -30,7 +30,7 @@ def render_header() -> None:
             <h1 class="hero-title">&#127757; Banking &amp; Finance Copilot</h1>
             <div class="hero-tagline">A grounded generative AI copilot for banking regulations, compliance, and financial knowledge</div>
             <div class="hero-oneliner">AI assistant for banking and financial questions with trusted, source-backed answers</div>
-            <div class="hero-description">This app helps you understand banking, compliance, and financial rules using verified documents. It provides clear explanations, shows supporting sources, and helps you explore financial topics safely and quickly.</div>
+            <div class="hero-description">This app helps you understand banking, compliance, and financial rules using verified documents. It gives clear explanations, shows supporting sources, and helps you explore financial topics safely and quickly.</div>
             <div class="hero-divider"></div>
         </div>
         """,
@@ -203,7 +203,7 @@ def render_safety_notice() -> None:
     st.markdown(
         """
         <div class="safety-note">
-            AI can make mistakes. Verify important information. Never share personal details such as card numbers, account details, CVVs, OTPs, or passwords.
+            AI can make mistakes. Verify important information independently. Never share personal details such as card numbers, account details, CVVs, OTPs, or passwords.
         </div>
         """,
         unsafe_allow_html=True,
@@ -216,7 +216,7 @@ def render_footer() -> None:
         <div class="copilot-footer">
             <div class="footer-pill">
                 <div class="rm-avatar">RM</div>
-                <span class="footer-name">Rakesh Madasani</span>
+                <span class="footer-name">Built by Rakesh Madasani</span>
                 <span class="footer-divider">|</span>
                 <a href="https://www.linkedin.com/in/rakesh-madasani-b217b71b0/" target="_blank" aria-label="LinkedIn">LinkedIn</a>
                 <span class="footer-divider">|</span>

@@ -28,9 +28,9 @@ from models.openai_mode import generate_openai_response
 
 
 MODEL_DESCRIPTIONS = {
-    "OpenAI": "Best stable path for grounded live answers.",
-    "Fine-Tuned": "Domain-adapted banking model path.",
-    "Auto": "Chooses the strongest grounded answer.",
+    "OpenAI": "Most stable live mode for grounded financial answers.",
+    "Fine-Tuned": "Domain-adapted banking model path for specialized tone and phrasing.",
+    "Auto": "Selects the strongest grounded answer across available model paths.",
 }
 
 
@@ -166,7 +166,7 @@ def run_product_runtime() -> None:
             _load_active_chat()
             st.rerun()
 
-        with st.expander("Settings", expanded=False):
+        with st.expander("Workspace", expanded=False):
             model_mode = st.radio(
                 "Model mode",
                 ["OpenAI", "Fine-Tuned", "Auto"],
