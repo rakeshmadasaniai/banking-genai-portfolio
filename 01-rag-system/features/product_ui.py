@@ -233,7 +233,7 @@ def render_safety_notice() -> None:
     st.markdown(
         """
         <div class="safety-note">
-            For informational use only. Verify critical decisions with official guidance.
+            AI can make mistakes. Verify important information with official sources.
         </div>
         """,
         unsafe_allow_html=True,

@@ -236,7 +236,6 @@ def run_product_runtime() -> None:
         st.markdown(f"<div class='composer-badge'>{st.session_state.model_mode}</div>", unsafe_allow_html=True)
     question = st.chat_input("Ask about AML, KYC, FDIC, Basel III, or upload a document...")
     st.markdown("</div>", unsafe_allow_html=True)
-    render_safety_notice()
 
     if not question and voice_transcript:
         question = voice_transcript
@@ -245,6 +244,7 @@ def run_product_runtime() -> None:
 
     if not question:
         render_footer()
+        render_safety_notice()
         return
 
     st.session_state.messages.append({"role": "user", "content": question})
@@ -288,4 +288,5 @@ def run_product_runtime() -> None:
         )
 
     render_footer()
+    render_safety_notice()
 
