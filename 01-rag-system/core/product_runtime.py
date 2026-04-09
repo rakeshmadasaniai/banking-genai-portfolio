@@ -225,16 +225,23 @@ def run_product_runtime() -> None:
                 )
 
     st.markdown("<div class='composer-shell'>", unsafe_allow_html=True)
-    composer_cols = st.columns([0.9, 0.9, 5.6, 1.2])
+    question = st.chat_input("Ask about AML, KYC, FDIC, Basel III, or upload a document...")
+    st.markdown("<div class='composer-tools'>", unsafe_allow_html=True)
+    composer_cols = st.columns([0.75, 0.8, 1.2, 4.25])
     with composer_cols[0]:
-        with st.popover("Attach", use_container_width=True):
+        st.markdown("<div class='composer-control'>", unsafe_allow_html=True)
+        with st.popover("＋", use_container_width=True):
             render_document_uploads()
+        st.markdown("</div>", unsafe_allow_html=True)
     with composer_cols[1]:
+        mic_class = "composer-control mic-control mic-live" if voice_enabled else "composer-control mic-control"
+        st.markdown(f"<div class='{mic_class}'>", unsafe_allow_html=True)
         with st.popover("Mic", use_container_width=True):
             voice_transcript, voice_enabled = render_voice_input_preview()
-    with composer_cols[3]:
+        st.markdown("</div>", unsafe_allow_html=True)
+    with composer_cols[2]:
         st.markdown(f"<div class='composer-badge'>{st.session_state.model_mode}</div>", unsafe_allow_html=True)
-    question = st.chat_input("Ask about AML, KYC, FDIC, Basel III, or upload a document...")
+    st.markdown("</div>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
     if not question and voice_transcript:

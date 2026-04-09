@@ -108,19 +108,21 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
         .source-meta {{ font-size: 0.7rem; color: {secondary}; margin-top: 0.18rem; }}
         .source-preview {{ margin-top: 0.4rem; font-size: 0.76rem; line-height: 1.55; color: {secondary}; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }}
 
-        .composer-shell {{ margin-top: 1rem; }}
-        .composer-topbar {{ display: grid; grid-template-columns: auto auto 1fr auto; gap: 0.55rem; align-items: center; margin-bottom: 0.45rem; }}
-        .composer-badge {{ justify-self: end; display: inline-flex; align-items: center; padding: 0.38rem 0.8rem; border: 1px solid {border}; border-radius: 999px; background: {card_background}; color: {secondary}; font-size: 0.74rem; }}
-        .composer-icon-note {{ font-size: 0.72rem; color: {secondary}; }}
-        div[data-testid="stPopover"] button {{ border-radius: 999px !important; min-height: 2.2rem !important; padding: 0 0.82rem !important; background: {card_background} !important; color: {foreground} !important; border: 1px solid {border} !important; }}
-        .mic-live button, .mic-live button:hover {{ color: #991B1B !important; border-color: #FCA5A5 !important; background: #FEE2E2 !important; }}
+        .composer-shell {{ max-width: 1120px; margin: 1rem auto 0; padding: 0.95rem 1rem 0.8rem; background: #1E1E1E; border: 1px solid rgba(255,255,255,0.08); border-radius: 26px; box-shadow: none; }}
+        .composer-tools {{ display: flex; align-items: center; gap: 0.7rem; margin-top: 0.45rem; }}
+        .composer-control {{ display: flex; align-items: center; }}
+        .composer-badge {{ justify-self: start; display: inline-flex; align-items: center; width: fit-content; padding: 0.38rem 0.82rem; border: 1px solid rgba(255,255,255,0.08); border-radius: 999px; background: rgba(255,255,255,0.04); color: #D4D4D8; font-size: 0.78rem; }}
+        .composer-shell div[data-testid="stPopover"] button {{ border-radius: 999px !important; min-height: 2.05rem !important; padding: 0 0.75rem !important; background: transparent !important; color: #D4D4D8 !important; border: 1px solid transparent !important; box-shadow: none !important; }}
+        .composer-shell div[data-testid="stPopover"] button:hover {{ background: rgba(255,255,255,0.06) !important; color: #FFFFFF !important; }}
+        .mic-live div[data-testid="stPopover"] button, .mic-live div[data-testid="stPopover"] button:hover {{ color: #FCA5A5 !important; background: rgba(127,29,29,0.25) !important; border-color: rgba(252,165,165,0.3) !important; }}
 
         div[data-testid="stChatInput"] {{ background: transparent !important; border: none !important; padding: 0 !important; box-shadow: none !important; }}
-        div[data-testid="stChatInput"] > div {{ background: {card_background} !important; border: 1px solid {input_border} !important; border-radius: 20px !important; padding: 0.5rem 0.55rem 0.5rem 0.9rem !important; }}
-        div[data-testid="stChatInput"] > div:focus-within {{ border-color: {accent} !important; }}
-        div[data-testid="stChatInput"] textarea {{ font-size: 15px !important; color: {foreground} !important; background: transparent !important; }}
-        div[data-testid="stChatInput"] textarea::placeholder {{ color: {secondary} !important; }}
-        div[data-testid="stChatInput"] button {{ background: {accent} !important; color: #FFFFFF !important; border: none !important; border-radius: 999px !important; min-height: 2.35rem !important; padding: 0 1rem !important; }}
+        div[data-testid="stChatInput"] > div {{ background: transparent !important; border: none !important; border-radius: 0 !important; padding: 0 !important; }}
+        div[data-testid="stChatInput"] > div:focus-within {{ border: none !important; box-shadow: none !important; }}
+        div[data-testid="stChatInput"] textarea {{ font-size: 18px !important; line-height: 1.5 !important; color: #F4F4F5 !important; background: transparent !important; min-height: 3.2rem !important; padding: 0.1rem 0.1rem 0.35rem !important; }}
+        div[data-testid="stChatInput"] textarea::placeholder {{ color: #71717A !important; }}
+        div[data-testid="stChatInput"] button {{ background: #A1A1AA !important; color: #1E1E1E !important; border: none !important; border-radius: 999px !important; min-height: 2.5rem !important; min-width: 2.5rem !important; padding: 0 !important; }}
+        div[data-testid="stChatInput"] button:hover {{ background: #E4E4E7 !important; }}
 
         .safety-note {{ max-width: 720px; text-align: center; color: {secondary}; font-size: 11px; line-height: 1.5; margin: 0.5rem auto 0; opacity: 0.78; }}
         .copilot-footer {{ padding: 0.65rem 0 0.4rem; }}
