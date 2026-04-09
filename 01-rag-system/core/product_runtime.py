@@ -14,7 +14,6 @@ from features.product_ui import (
     render_assistant_message,
     render_footer,
     render_header,
-    render_safety_notice,
     render_session_insights,
     render_sidebar_summary,
     render_stack_section,
@@ -262,7 +261,6 @@ def run_product_runtime() -> None:
 
     if not question:
         render_footer()
-        render_safety_notice()
         return
 
     st.session_state.messages.append({"role": "user", "content": question})
@@ -306,5 +304,4 @@ def run_product_runtime() -> None:
         )
 
     render_footer()
-    render_safety_notice()
 

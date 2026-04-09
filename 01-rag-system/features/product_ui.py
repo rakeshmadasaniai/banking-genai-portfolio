@@ -229,28 +229,19 @@ def render_assistant_message(
                 )
 
 
-def render_safety_notice() -> None:
-    st.markdown(
-        """
-        <div class="safety-note">
-            AI can make mistakes. Verify important information with official sources.
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-
 def render_footer() -> None:
     st.markdown(
         """
         <div class="copilot-footer">
-            <div class="footer-pill">
+            <div class="footer-inline">
                 <div class="rm-avatar">RM</div>
                 <span class="footer-name">Rakesh Madasani</span>
                 <span class="footer-divider">|</span>
                 <a href="https://www.linkedin.com/in/rakesh-madasani-b217b71b0/" target="_blank" aria-label="LinkedIn">LinkedIn</a>
                 <span class="footer-divider">|</span>
                 <a href="https://github.com/rakeshmadasaniai/banking-genai-portfolio" target="_blank" aria-label="GitHub">GitHub</a>
+                <span class="footer-divider">|</span>
+                <span class="footer-note">AI can make mistakes. Verify important information with official sources.</span>
             </div>
         </div>
         """,
