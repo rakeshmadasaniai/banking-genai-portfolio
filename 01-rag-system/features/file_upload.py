@@ -13,7 +13,7 @@ def render_document_uploads() -> list:
         help=None,
     )
     update_uploaded_index_state(uploaded_docs)
-    st.caption("PDF · DOCX · TXT")
+    st.caption("PDF | DOCX | TXT")
     return uploaded_docs or []
 
 

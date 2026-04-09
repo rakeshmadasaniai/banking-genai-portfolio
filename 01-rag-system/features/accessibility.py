@@ -68,6 +68,9 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
         .hero-oneliner {{ margin-top: 0.65rem; font-size: 15px; color: {secondary}; }}
         .hero-description {{ margin: 0.85rem auto 0; max-width: 760px; font-size: 15px; line-height: 1.7; color: {secondary}; }}
         .hero-divider {{ height: 1px; background: {border}; margin-top: 1.2rem; }}
+        .welcome-card {{ margin: 1rem auto 0.25rem; max-width: 760px; }}
+        .welcome-title {{ font-size: 1rem; font-weight: 700; color: {foreground}; margin-bottom: 0.55rem; }}
+        .welcome-copy {{ font-size: 0.94rem; color: {secondary}; line-height: 1.72; }}
 
         .starter-label {{ text-align: center; color: {secondary}; font-size: 0.84rem; margin: 1.2rem 0 0.9rem; }}
         .stButton button, .stDownloadButton button {{ border-radius: 14px; border: 1px solid {border}; box-shadow: none !important; min-height: 2.15rem; }}

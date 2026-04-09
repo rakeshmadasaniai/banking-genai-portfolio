@@ -9,9 +9,12 @@ import streamlit as st
 from features.voice_output import render_voice_output
 
 STARTER_PROMPTS = [
-    "Explain FDIC insurance coverage",
-    "Compare KYC and AML requirements",
-    "What documents are required for a business account",
+    "What are the main KYC requirements for banks?",
+    "Compare AML obligations in India and the U.S.",
+    "Summarize RBI due diligence guidelines",
+    "Explain CECL in simple terms",
+    "Capital adequacy explained simply",
+    "What deposits does FDIC insurance cover?",
 ]
 
 
@@ -28,7 +31,7 @@ def render_header() -> None:
                 <span class="brand-chip brand-chip-muted">OpenAI &middot; Fine-Tuned &middot; Auto</span>
             </div>
             <h1 class="hero-title">&#127757; Banking &amp; Finance Copilot</h1>
-            <div class="hero-tagline">A grounded generative AI copilot for banking regulations, compliance, and financial knowledge</div>
+            <div class="hero-tagline">Grounded AI for banking, compliance, and financial intelligence.</div>
             <div class="hero-oneliner">AI assistant for banking and financial questions with trusted, source-backed answers</div>
             <div class="hero-description">This app helps you understand banking, compliance, and financial rules using verified documents. It gives clear explanations, shows supporting sources, and helps you explore financial topics safely and quickly.</div>
             <div class="hero-divider"></div>
@@ -38,14 +41,29 @@ def render_header() -> None:
     )
 
 
+def render_welcome_card() -> None:
+    st.markdown(
+        """
+        <div class="answer-shell welcome-card">
+            <div class="welcome-title">Hi — I'm your &#127757; Banking &amp; Finance Copilot.</div>
+            <div class="welcome-copy">
+                I provide clear, source-backed answers for AML and KYC, FDIC and Basel III, RBI guidance, and financial regulations.
+                You can also upload documents for contextual answers. I'll always show where each answer comes from.
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def render_starter_prompts() -> str | None:
-    st.markdown('<div class="starter-label">Try asking about</div>', unsafe_allow_html=True)
-    outer_left, center, outer_right = st.columns([1.2, 5.6, 1.2])
+    st.markdown('<div class="starter-label">Try asking:</div>', unsafe_allow_html=True)
+    outer_left, center, outer_right = st.columns([0.6, 6.8, 0.6])
     selected = None
     with center:
         columns = st.columns(3)
         for index, prompt in enumerate(STARTER_PROMPTS):
-            with columns[index]:
+            with columns[index % 3]:
                 if st.button(prompt, key=f"starter-{index}", use_container_width=True):
                     selected = prompt
     return selected
@@ -172,13 +190,13 @@ def render_assistant_message(
     st.markdown(
         f"""
         <div class="meta-line">
-            {html.escape(message['backend'])} | {round(message['latency_ms'] / 1000, 1)}s | {message['retrieved_chunks']} chunks | {grounded_label} | Confidence: {html.escape(message['confidence'])}
+            {html.escape(message['backend'])} | {message['latency_ms']} ms | {message['retrieved_chunks']} chunks | {html.escape(message['confidence'])} confidence
         </div>
         """,
         unsafe_allow_html=True,
     )
     if message.get("selection_reason"):
-        st.caption(f"Routing: {message['selection_reason']}")
+        st.caption(f"Auto routing: {message['selection_reason']}")
     if message.get("candidate_scores") and any(score is not None for score in message["candidate_scores"].values()):
         openai_score = message["candidate_scores"].get("openai")
         fine_tuned_score = message["candidate_scores"].get("fine_tuned")
@@ -215,7 +233,7 @@ def render_safety_notice() -> None:
     st.markdown(
         """
         <div class="safety-note">
-            AI can make mistakes. Verify important information independently. Never share personal details such as card numbers, account details, CVVs, OTPs, or passwords.
+            AI responses may be imperfect. Verify critical financial decisions with official sources.
         </div>
         """,
         unsafe_allow_html=True,

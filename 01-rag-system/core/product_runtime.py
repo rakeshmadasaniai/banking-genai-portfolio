@@ -20,6 +20,7 @@ from features.product_ui import (
     render_stack_section,
     render_starter_prompts,
     render_user_message,
+    render_welcome_card,
 )
 from features.voice_controls import render_voice_input_preview
 from models.auto_router import run_auto_mode
@@ -203,6 +204,7 @@ def run_product_runtime() -> None:
     render_header()
 
     if not st.session_state.messages:
+        render_welcome_card()
         starter_prompt = render_starter_prompts()
         render_about_section()
         render_stack_section()
@@ -232,7 +234,7 @@ def run_product_runtime() -> None:
             voice_transcript, voice_enabled = render_voice_input_preview()
     with composer_cols[3]:
         st.markdown(f"<div class='composer-badge'>{st.session_state.model_mode}</div>", unsafe_allow_html=True)
-    question = st.chat_input("Ask about banking regulations, KYC, AML, compliance, or uploaded documents")
+    question = st.chat_input("Ask about AML, KYC, FDIC, Basel III, or upload a document...")
     st.markdown("</div>", unsafe_allow_html=True)
     render_safety_notice()
 
@@ -286,3 +288,4 @@ def run_product_runtime() -> None:
         )
 
     render_footer()
+
