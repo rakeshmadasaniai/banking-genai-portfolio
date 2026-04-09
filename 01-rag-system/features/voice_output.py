@@ -43,7 +43,7 @@ def render_voice_output(answer: str, message_key: str) -> None:
         st.session_state.generated_audio = {}
 
     button_key = f"tts-button-{message_key}"
-    if st.button("Read Answer Aloud", key=button_key, use_container_width=False):
+    if st.button("Read aloud", key=button_key, use_container_width=False):
         with st.spinner("Generating spoken answer..."):
             audio_bytes = _generate_audio(answer)
         if audio_bytes:

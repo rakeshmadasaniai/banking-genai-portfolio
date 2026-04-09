@@ -34,6 +34,8 @@ def run_product_runtime() -> None:
         st.session_state.upload_doc_count = 0
     if "upload_chunk_count" not in st.session_state:
         st.session_state.upload_chunk_count = 0
+    if "model_mode" not in st.session_state:
+        st.session_state.model_mode = "OpenAI"
 
     base_index = get_base_index()
     base_doc_count = len(load_base_documents())
@@ -44,6 +46,7 @@ def run_product_runtime() -> None:
             <div class="sidebar-brand">
                 <div class="sidebar-title">Banking &amp; Finance Copilot</div>
                 <div class="sidebar-subtitle">by Rakesh Madasani</div>
+                <div class="sidebar-caption">Grounded banking AI</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -53,17 +56,34 @@ def run_product_runtime() -> None:
             st.rerun()
 
         st.markdown('<div class="sidebar-section-label">Model</div>', unsafe_allow_html=True)
-        model_mode = st.selectbox("Model mode", ["OpenAI", "Fine-Tuned", "Auto"], index=0, label_visibility="collapsed")
+        model_options = ["OpenAI", "Fine-Tuned", "Auto"]
+        default_index = model_options.index(st.session_state.model_mode) if st.session_state.model_mode in model_options else 0
+        model_mode = st.radio(
+            "Model mode",
+            model_options,
+            index=default_index,
+            horizontal=True,
+            label_visibility="collapsed",
+            key="model_mode_selector",
+        )
+        st.session_state.model_mode = model_mode
+        model_descriptions = {
+            "OpenAI": "Strongest stable path for live grounded answers.",
+            "Fine-Tuned": "Banking-domain response path for portfolio demos.",
+            "Auto": "Retrieves once, compares candidates, and picks the stronger answer.",
+        }
+        st.caption(model_descriptions[model_mode])
 
         st.markdown('<div class="sidebar-section-label">Knowledge</div>', unsafe_allow_html=True)
         document_files = render_document_uploads()
-        image_files = render_image_uploads()
+        image_files: list = []
 
         with st.expander("Accessibility & Voice", expanded=False):
             accessibility = render_accessibility_controls()
-            voice_transcript, _voice_used = render_voice_input_preview()
+            voice_transcript, voice_enabled = render_voice_input_preview()
 
-        with st.expander("Advanced", expanded=False):
+        st.markdown("<div class='sidebar-advanced-spacer'></div>", unsafe_allow_html=True)
+        with st.expander("Advanced & Stats", expanded=False):
             show_source_cards = st.toggle(
                 "Detailed source cards",
                 value=True,
@@ -74,6 +94,7 @@ def run_product_runtime() -> None:
                 value=False,
                 help="Reveal how OpenAI and the fine-tuned path were scored when Auto mode chooses a winner.",
             )
+            image_files = render_image_uploads()
             if image_files:
                 st.markdown("### Image previews")
                 for image in image_files[:2]:
@@ -102,7 +123,7 @@ def run_product_runtime() -> None:
                     show_auto_comparison=show_auto_comparison,
                 )
 
-    render_input_toolbar(model_mode)
+    render_input_toolbar(model_mode, mic_active=voice_enabled)
     question = st.chat_input("Ask about AML, KYC, FDIC, Basel, RBI guidance, or uploaded documents...")
     if not question and voice_transcript:
         question = voice_transcript

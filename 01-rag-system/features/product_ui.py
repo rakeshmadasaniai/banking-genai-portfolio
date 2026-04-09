@@ -26,25 +26,14 @@ def render_header() -> None:
 
 
 def render_sidebar_summary(base_doc_count: int, upload_doc_count: int, upload_chunk_count: int) -> None:
-    st.markdown("### Project")
-    st.caption("Retrieval-grounded banking copilot for compliance, regulatory, and policy Q&A.")
-
     st.markdown("### Stack")
-    st.markdown("- Streamlit UI")
-    st.markdown("- FAISS retrieval")
-    st.markdown("- sentence-transformers embeddings")
-    st.markdown("- OpenAI for answers, STT, and TTS")
-    st.markdown("- Hugging Face fine-tuned banking model path")
+    st.caption("Streamlit UI, FAISS retrieval, sentence-transformers embeddings, OpenAI, and a Hugging Face fine-tuned path.")
 
     st.markdown("### Model Modes")
-    st.markdown("- `OpenAI`: strongest stable answer path")
-    st.markdown("- `Fine-Tuned`: banking-domain adapter/model path")
-    st.markdown("- `Auto`: compare candidates on shared retrieval")
+    st.caption("OpenAI is the strongest stable baseline. Fine-Tuned uses the banking-domain model path. Auto compares grounded candidates on shared retrieval.")
 
-    st.markdown("### What It Shows")
-    st.markdown("- grounded answers with visible sources")
-    st.markdown("- uploaded document retrieval in-session")
-    st.markdown("- explainable model routing")
+    st.markdown("### What This Shows")
+    st.caption("A retrieval-grounded copilot for regulated-domain Q&A, uploaded document search, and explainable model routing.")
     st.caption(f"Base knowledge files: {base_doc_count}")
     st.caption(f"Uploaded documents: {upload_doc_count}")
     st.caption(f"Uploaded chunks: {upload_chunk_count}")
@@ -89,13 +78,16 @@ def render_example_questions() -> str | None:
     return selected
 
 
-def render_input_toolbar(model_name: str) -> None:
+def render_input_toolbar(model_name: str, mic_active: bool = False) -> None:
+    mic_classes = "toolbar-pill toolbar-icon toolbar-mic"
+    if mic_active:
+        mic_classes += " toolbar-mic-active"
     st.markdown(
         f"""
         <div class="input-toolbar">
             <div class="input-toolbar-left">
-                <span class="toolbar-pill">+</span>
-                <span class="toolbar-pill">&#127897;</span>
+                <span class="toolbar-pill toolbar-icon" aria-hidden="true">+</span>
+                <span class="{mic_classes}" aria-hidden="true">&#127897;</span>
             </div>
             <div class="input-toolbar-right">
                 <span class="model-badge">{html.escape(model_name)}</span>

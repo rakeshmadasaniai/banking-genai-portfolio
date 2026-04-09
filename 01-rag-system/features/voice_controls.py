@@ -28,11 +28,14 @@ def _transcribe_audio(audio_payload: dict) -> str:
 
 
 def render_voice_input_preview() -> tuple[str, bool]:
-    st.markdown("### Voice Input (Preview)")
-    st.caption("Browser microphone capture with cloud transcription. Best effort on supported browsers.")
+    voice_enabled = st.toggle("Voice input", value=False, help="Use browser microphone capture with cloud transcription.")
+    if not voice_enabled:
+        return "", False
+
+    st.caption("Preview mode. Best effort on supported browsers.")
 
     audio_payload = mic_recorder(
-        start_prompt="\U0001F399 Start recording",
+        start_prompt="Start recording",
         stop_prompt="\u23F9 Stop recording",
         just_once=True,
         use_container_width=False,
