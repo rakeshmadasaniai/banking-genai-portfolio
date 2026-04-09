@@ -45,7 +45,7 @@ def render_welcome_card() -> None:
     st.markdown(
         """
         <div class="answer-shell welcome-card">
-            <div class="welcome-title">Hi — I'm your &#127757; Banking &amp; Finance Copilot.</div>
+            <div class="welcome-title">Hi, I'm your &#127757; Banking &amp; Finance Copilot.</div>
             <div class="welcome-copy">
                 I provide clear, source-backed answers for AML and KYC, FDIC and Basel III, RBI guidance, and financial regulations.
                 You can also upload documents for contextual answers. I'll always show where each answer comes from.
@@ -233,7 +233,7 @@ def render_safety_notice() -> None:
     st.markdown(
         """
         <div class="safety-note">
-            AI responses may be imperfect. Verify critical financial decisions with official sources.
+            AI can make mistakes. Please verify important financial decisions with official sources.
         </div>
         """,
         unsafe_allow_html=True,
@@ -256,3 +256,4 @@ def render_footer() -> None:
         """,
         unsafe_allow_html=True,
     )
+
