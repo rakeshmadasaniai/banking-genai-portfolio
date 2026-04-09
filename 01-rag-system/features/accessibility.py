@@ -112,19 +112,19 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
         .composer-tools {{ position: absolute; left: 0.9rem; right: 0.9rem; top: 0.78rem; display: flex; align-items: center; gap: 0.7rem; z-index: 20; pointer-events: none; }}
         .composer-control {{ display: flex; align-items: center; }}
         .composer-control, .composer-tools div[data-testid="stPopover"], .composer-tools div[data-testid="stSelectbox"] {{ pointer-events: auto; }}
-        .composer-shell div[data-testid="stPopover"] button {{ border-radius: 999px !important; min-height: 2.05rem !important; padding: 0 0.75rem !important; background: transparent !important; color: #D4D4D8 !important; border: 1px solid transparent !important; box-shadow: none !important; }}
-        .composer-shell div[data-testid="stPopover"] button:hover {{ background: rgba(255,255,255,0.06) !important; color: #FFFFFF !important; }}
-        .mic-live div[data-testid="stPopover"] button, .mic-live div[data-testid="stPopover"] button:hover {{ color: #FCA5A5 !important; background: rgba(127,29,29,0.25) !important; border-color: rgba(252,165,165,0.3) !important; }}
-        .composer-shell div[data-testid="stSelectbox"] > div[data-baseweb="select"] > div {{ min-height: 2.05rem !important; border-radius: 999px !important; background: transparent !important; color: #D4D4D8 !important; border: 1px solid transparent !important; padding-left: 0.2rem !important; box-shadow: none !important; }}
-        .composer-shell div[data-testid="stSelectbox"] svg {{ fill: #A1A1AA !important; }}
+        .composer-shell div[data-testid="stPopover"] button {{ border-radius: 999px !important; min-height: 2.05rem !important; padding: 0 0.75rem !important; background: transparent !important; color: #4B5563 !important; border: 1px solid transparent !important; box-shadow: none !important; }}
+        .composer-shell div[data-testid="stPopover"] button:hover {{ background: #F3F4F6 !important; color: #111827 !important; }}
+        .mic-live div[data-testid="stPopover"] button, .mic-live div[data-testid="stPopover"] button:hover {{ color: #B91C1C !important; background: #FEE2E2 !important; border-color: #FECACA !important; }}
+        .composer-shell div[data-testid="stSelectbox"] > div[data-baseweb="select"] > div {{ min-height: 2.05rem !important; border-radius: 999px !important; background: transparent !important; color: #374151 !important; border: 1px solid transparent !important; padding-left: 0.2rem !important; box-shadow: none !important; }}
+        .composer-shell div[data-testid="stSelectbox"] svg {{ fill: #6B7280 !important; }}
 
         div[data-testid="stChatInput"] {{ background: transparent !important; border: none !important; padding: 0 !important; box-shadow: none !important; }}
-        div[data-testid="stChatInput"] > div {{ background: #1E1E1E !important; border: 1px solid rgba(255,255,255,0.08) !important; border-radius: 26px !important; padding: 3.2rem 0.9rem 0.95rem 0.95rem !important; }}
-        div[data-testid="stChatInput"] > div:focus-within {{ border: none !important; box-shadow: none !important; }}
-        div[data-testid="stChatInput"] textarea {{ font-size: 18px !important; line-height: 1.5 !important; color: #F4F4F5 !important; background: transparent !important; min-height: 3.2rem !important; padding: 0.1rem 0.1rem 0.35rem !important; }}
-        div[data-testid="stChatInput"] textarea::placeholder {{ color: #71717A !important; }}
-        div[data-testid="stChatInput"] button {{ background: #A1A1AA !important; color: #1E1E1E !important; border: none !important; border-radius: 999px !important; min-height: 2.5rem !important; min-width: 2.5rem !important; padding: 0 !important; }}
-        div[data-testid="stChatInput"] button:hover {{ background: #E4E4E7 !important; }}
+        div[data-testid="stChatInput"] > div {{ background: #FFFFFF !important; border: 1px solid {input_border} !important; border-radius: 26px !important; padding: 3.2rem 0.9rem 0.95rem 0.95rem !important; }}
+        div[data-testid="stChatInput"] > div:focus-within {{ border-color: {accent} !important; box-shadow: none !important; }}
+        div[data-testid="stChatInput"] textarea {{ font-size: 18px !important; line-height: 1.5 !important; color: #111827 !important; background: transparent !important; min-height: 3.2rem !important; padding: 0.1rem 0.1rem 0.35rem !important; }}
+        div[data-testid="stChatInput"] textarea::placeholder {{ color: #9CA3AF !important; }}
+        div[data-testid="stChatInput"] button {{ background: #111827 !important; color: #FFFFFF !important; border: none !important; border-radius: 999px !important; min-height: 2.5rem !important; min-width: 2.5rem !important; padding: 0 !important; }}
+        div[data-testid="stChatInput"] button:hover {{ background: #1F2937 !important; }}
 
         .safety-note {{ max-width: 720px; text-align: center; color: {secondary}; font-size: 11px; line-height: 1.5; margin: 0.5rem auto 0; opacity: 0.78; }}
         .copilot-footer {{ padding: 0.65rem 0 0.4rem; }}
