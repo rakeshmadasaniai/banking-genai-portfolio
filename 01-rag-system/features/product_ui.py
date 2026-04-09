@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import html
 import re
 from statistics import mean
 
@@ -14,14 +15,10 @@ def render_header() -> None:
         <div class="copilot-hero">
             <div class="brand-row">
                 <span class="brand-chip">Grounded Banking AI</span>
-                <span class="brand-chip brand-chip-muted">OpenAI &bull; Fine-Tuned &bull; Auto</span>
+                <span class="brand-chip brand-chip-muted">OpenAI &middot; Fine-Tuned &middot; Auto</span>
             </div>
-            <div style="font-size:1.95rem;font-weight:700;line-height:1.08;margin-bottom:0.32rem;color:#1a1a18;">
-                Banking &amp; Finance Copilot
-            </div>
-            <div class="copilot-subtitle">
-                Grounded AI assistant for banking and financial knowledge.
-            </div>
+            <div class="hero-title">Banking &amp; Finance Copilot</div>
+            <div class="copilot-subtitle">Grounded AI assistant for banking and financial knowledge.</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -36,18 +33,18 @@ def render_sidebar_summary(base_doc_count: int, upload_doc_count: int, upload_ch
     st.markdown("- Streamlit UI")
     st.markdown("- FAISS retrieval")
     st.markdown("- sentence-transformers embeddings")
-    st.markdown("- OpenAI responses, speech-to-text, and text-to-speech")
-    st.markdown("- Fine-tuned banking model path via Hugging Face")
+    st.markdown("- OpenAI for answers, STT, and TTS")
+    st.markdown("- Hugging Face fine-tuned banking model path")
 
     st.markdown("### Model Modes")
-    st.markdown("- `OpenAI`: strongest stable answer path for live use")
-    st.markdown("- `Fine-Tuned`: banking-domain model path using the custom adapter setup")
-    st.markdown("- `Auto`: retrieves once, compares candidates, and chooses the stronger grounded response")
+    st.markdown("- `OpenAI`: strongest stable answer path")
+    st.markdown("- `Fine-Tuned`: banking-domain adapter/model path")
+    st.markdown("- `Auto`: compare candidates on shared retrieval")
 
     st.markdown("### What It Shows")
     st.markdown("- grounded answers with visible sources")
-    st.markdown("- uploaded document search in the same session")
-    st.markdown("- explainable model routing instead of black-box generation")
+    st.markdown("- uploaded document retrieval in-session")
+    st.markdown("- explainable model routing")
     st.caption(f"Base knowledge files: {base_doc_count}")
     st.caption(f"Uploaded documents: {upload_doc_count}")
     st.caption(f"Uploaded chunks: {upload_chunk_count}")
@@ -74,21 +71,21 @@ def render_session_insights(messages: list[dict]) -> None:
 
 
 def render_example_questions() -> str | None:
-    st.caption("Try asking about")
-    examples = [
+    st.markdown('<div class="empty-label">Try asking about</div>', unsafe_allow_html=True)
+    prompts = [
         "How does FDIC insurance work and what deposits are covered?",
         "Compare CTR reporting thresholds in the U.S. and India.",
         "Explain Regulation E liability limits for unauthorized transfers.",
         "What is CECL and how does it change expected credit loss accounting?",
-        "What documents are usually required for KYC of an individual in India?",
-        "How does uploaded guidance change the answer to my policy question?",
+        "What documents are required for KYC of an individual in India?",
+        "How does uploaded guidance change answers to policy questions?",
     ]
     selected = None
     columns = st.columns(2)
-    for index, prompt in enumerate(examples):
-        column = columns[index % 2]
-        if column.button(prompt, key=f"example-{index}", use_container_width=True):
-            selected = prompt
+    for index, prompt in enumerate(prompts):
+        with columns[index % 2]:
+            if st.button(prompt, key=f"chip_{index}", use_container_width=True):
+                selected = prompt
     return selected
 
 
@@ -101,8 +98,19 @@ def render_input_toolbar(model_name: str) -> None:
                 <span class="toolbar-pill">&#127897;</span>
             </div>
             <div class="input-toolbar-right">
-                <span class="model-badge">{model_name}</span>
+                <span class="model-badge">{html.escape(model_name)}</span>
             </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def render_user_message(text: str) -> None:
+    st.markdown(
+        f"""
+        <div class="user-row">
+            <div class="user-bubble">{html.escape(text)}</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -124,11 +132,9 @@ def render_source_cards(source_cards: list[dict]) -> None:
         st.markdown(
             f"""
             <div class="source-card">
-                <div style="display:flex;justify-content:space-between;gap:0.75rem;align-items:center;margin-bottom:0.25rem;">
-                    <div style="font-weight:700;">Source {card['rank']}: {card['label']}</div>
-                    <div style="font-size:0.76rem;color:#64748b;text-transform:uppercase;letter-spacing:0.04em;">{card['source_type']}</div>
-                </div>
-                <div style="color:#334155;line-height:1.6;">{card['preview']}</div>
+                <div class="source-title">{html.escape(card['label'])}</div>
+                <div class="source-meta">Chunk {card['rank']} &middot; {html.escape(card['source_type'])}</div>
+                <div class="source-preview">{html.escape(card['preview'])}</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -147,17 +153,21 @@ def render_assistant_message(
     if message.get("retrieval_note"):
         st.warning(message["retrieval_note"])
 
-    st.markdown("<div class='answer-shell'>", unsafe_allow_html=True)
-    st.markdown(answer)
+    st.markdown(f"<div class='answer-shell'>{html.escape(answer)}</div>", unsafe_allow_html=True)
     st.markdown(
         f"""
         <div class="meta-line">
-            {message['backend']} &middot; {message['latency_ms']} ms &middot; {message['retrieved_chunks']} chunks &middot; {message['confidence']} confidence
+            {html.escape(message['backend'])} &middot; {round(message['latency_ms'] / 1000, 1)} s &middot; {message['retrieved_chunks']} chunks &middot; {html.escape(message['confidence'])} confidence
         </div>
         """,
         unsafe_allow_html=True,
     )
-    st.markdown("</div>", unsafe_allow_html=True)
+
+    action_columns = st.columns([1.4, 1.0, 8])
+    with action_columns[0]:
+        render_voice_output(message["answer"], message_key)
+    with action_columns[1]:
+        st.button("Copy", key=f"copy-{message_key}", use_container_width=True)
 
     if show_source_cards:
         with st.expander("Sources and grounding", expanded=False):
@@ -173,8 +183,6 @@ def render_assistant_message(
                     f"Completeness={candidate['score']['completeness']} | Latency score={candidate['score']['latency']}"
                 )
 
-    render_voice_output(message["answer"], message_key)
-
 
 def render_footer() -> None:
     st.markdown(
@@ -183,9 +191,9 @@ def render_footer() -> None:
             <div class="footer-pill">
                 <div class="rm-avatar">RM</div>
                 <span class="footer-name">Rakesh Madasani</span>
-                <span class="footer-divider">&vert;</span>
+                <span class="footer-divider">|</span>
                 <a href="https://www.linkedin.com/in/rakesh-madasani-b217b71b0/" target="_blank" aria-label="LinkedIn">LinkedIn</a>
-                <span class="footer-divider">&vert;</span>
+                <span class="footer-divider">|</span>
                 <a href="https://github.com/rakeshmadasaniai/banking-genai-portfolio" target="_blank" aria-label="GitHub">GitHub</a>
             </div>
         </div>

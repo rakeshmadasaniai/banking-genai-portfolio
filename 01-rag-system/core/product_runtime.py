@@ -13,6 +13,7 @@ from features.product_ui import (
     render_input_toolbar,
     render_session_insights,
     render_sidebar_summary,
+    render_user_message,
 )
 from features.voice_controls import render_voice_input_preview
 from models.auto_router import run_auto_mode
@@ -91,7 +92,7 @@ def run_product_runtime() -> None:
     for index, message in enumerate(st.session_state.messages):
         with st.chat_message(message["role"]):
             if message["role"] == "user":
-                st.markdown(message["content"])
+                render_user_message(message["content"])
             else:
                 render_assistant_message(
                     message,
@@ -114,7 +115,7 @@ def run_product_runtime() -> None:
 
     st.session_state.messages.append({"role": "user", "content": question})
     with st.chat_message("user"):
-        st.markdown(question)
+        render_user_message(question)
 
     retrieval = retrieve_shared_context(question, base_index, st.session_state.upload_index)
 

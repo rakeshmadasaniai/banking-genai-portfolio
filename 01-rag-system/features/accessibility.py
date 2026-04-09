@@ -29,31 +29,36 @@ def render_accessibility_controls() -> AccessibilityOptions:
 
 def apply_accessibility_styles(options: AccessibilityOptions) -> None:
     font_size = "1.08rem" if options.large_text else "0.98rem"
-    background = "#0b1120" if options.high_contrast else "#eef4fb"
+    background = "#0b1120" if options.high_contrast else "#fafaf8"
     foreground = "#f8fafc" if options.high_contrast else "#0f172a"
-    accent = "#38bdf8" if options.high_contrast else "#1d4ed8"
-    sidebar_background = "#111827" if options.high_contrast else "#f8fbff"
-    panel_background = "#111827" if options.high_contrast else "rgba(255,255,255,0.82)"
-    border_color = "rgba(148,163,184,0.45)" if options.high_contrast else "rgba(148,163,184,0.18)"
+    border_color = "rgba(148,163,184,0.45)" if options.high_contrast else "#e8e7e2"
     st.markdown(
         f"""
         <style>
+        #MainMenu, footer, header {{
+            visibility: hidden;
+        }}
+        .stDeployButton {{
+            display: none !important;
+        }}
         .stApp {{
-            background: #fafaf8;
+            background: {background} !important;
             color: {foreground};
         }}
+        .stApp > div {{
+            background: {background} !important;
+        }}
         .block-container {{
-            max-width: 1000px;
-            padding-top: 0.4rem;
-            padding-bottom: 1rem;
+            padding: 0 !important;
+            max-width: 100% !important;
         }}
         section[data-testid="stSidebar"] {{
             background: #f4f3ef;
-            border-right: 1px solid #e8e7e2;
+            border-right: 1px solid #e8e7e2 !important;
         }}
         section[data-testid="stSidebar"] .block-container {{
-            padding-top: 0.35rem;
-            padding-bottom: 0.8rem;
+            padding-top: 0.35rem !important;
+            padding-bottom: 0.8rem !important;
         }}
         .sidebar-brand {{
             padding: 0.2rem 0.35rem 0.8rem;
@@ -80,26 +85,32 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
             padding: 0.4rem 0.35rem 0.2rem;
         }}
         .copilot-hero {{
-            padding: 1rem 0 0.8rem;
+            padding: 1.1rem 0 0.85rem;
             border-bottom: 1px solid #f0efeb;
             margin-bottom: 1rem;
             color: #1a1a18;
         }}
+        .hero-title {{
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a18;
+            letter-spacing: -0.02em;
+        }}
         .brand-row {{
             display:flex;
             flex-wrap:wrap;
-            gap:0.35rem;
-            margin-bottom:0.55rem;
+            gap:6px;
+            margin-bottom:9px;
         }}
         .brand-chip {{
             display:inline-flex;
             align-items:center;
-            padding:0.22rem 0.55rem;
+            padding:3px 9px;
             border-radius:999px;
             background:#e6f1fb;
-            color:#1d4ed8;
-            font-size:0.62rem;
-            font-weight:600;
+            color:#0C447C;
+            font-size:10px;
+            font-weight:500;
         }}
         .brand-chip-muted {{
             background:#f0efe9;
@@ -108,19 +119,16 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
         }}
         .copilot-subtitle {{
             color: #aaa;
-            font-size: 0.78rem;
+            font-size: 12px;
             line-height: 1.6;
         }}
-        .source-card, .answer-shell, .copilot-footer, .session-panel {{
-            background: #fff;
-            border: 1px solid #eeede9;
-            box-shadow: none;
-        }}
         .session-panel {{
-            border-radius: 10px;
-            padding: 0.8rem 0.9rem;
-            margin-top: 0.55rem;
+            border-radius: 8px;
+            padding: 0.7rem 0.8rem;
+            margin-top: 0.4rem;
             color: #0f172a;
+            background:#fff;
+            border:1px solid #eeede9;
         }}
         .session-item {{
             display:flex;
@@ -128,16 +136,27 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
             gap:0.75rem;
             align-items:center;
             padding:0.28rem 0;
-            color:#475569;
-            font-size:0.9rem;
+            color:#777;
+            font-size:0.72rem;
         }}
         .session-item strong {{
-            color:#0f172a;
-            font-size:0.92rem;
+            color:#1a1a18;
+            font-size:0.75rem;
         }}
         .stButton button, .stDownloadButton button {{
-            border-radius: 12px;
-            min-height: 2.6rem;
+            border-radius: 10px;
+            min-height: 2.3rem;
+        }}
+        div[data-testid="stSidebar"] .stButton > button {{
+            width: 100% !important;
+            background: #ffffff !important;
+            border: 1px solid #d8d7d2 !important;
+            border-radius: 10px !important;
+            font-size: 12px !important;
+            font-weight: 500 !important;
+            color: #1a1a18 !important;
+            padding: 8px 10px !important;
+            text-align: left !important;
         }}
         .source-card {{
             border-radius: 8px;
@@ -145,23 +164,57 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
             margin-bottom: 0.6rem;
             color: #0f172a;
             background: #fafaf8;
+            border: 1px solid #eeede9;
+        }}
+        .source-title {{
+            font-size: 11px;
+            font-weight: 500;
+            color: #1a1a18;
+        }}
+        .source-meta {{
+            font-size: 10px;
+            color: #aaa;
+            margin-top: 2px;
+        }}
+        .source-preview {{
+            font-size: 10px;
+            color: #7d7a74;
+            margin-top: 4px;
+            line-height: 1.45;
+        }}
+        .user-row {{
+            display: flex;
+            justify-content: flex-end;
+            margin: 4px 0;
+        }}
+        .user-bubble {{
+            background: #f4f3ef;
+            border: 1px solid #e8e7e2;
+            border-radius: 16px 16px 4px 16px;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #1a1a18;
+            max-width: 66%;
+            line-height: 1.55;
         }}
         .answer-shell {{
             border-radius: 4px 16px 16px 16px;
-            padding: 0.95rem 1rem 0.65rem 1rem;
-            margin-bottom: 0.55rem;
+            padding: 14px 16px;
+            margin-bottom: 0.28rem;
             color: #1a1a18;
+            background: #fff;
+            border: 1px solid #eeede9;
         }}
         .meta-line {{
             color:#c0bdb6;
-            font-size:0.68rem;
+            font-size:10px;
             line-height:1.55;
-            margin-top:0.45rem;
+            margin-top:5px;
             padding-left:0.15rem;
         }}
         div[data-testid="stChatMessage"] {{
-            padding-top: 0.35rem;
-            padding-bottom: 0.35rem;
+            padding-top: 0.15rem;
+            padding-bottom: 0.15rem;
         }}
         div[data-testid="stChatInput"] {{
             background: #f7f7f5;
@@ -172,49 +225,43 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
             width: 100%;
         }}
         div[data-testid="stChatInput"] textarea {{
-            font-size: 0.82rem;
+            font-size: 13px;
             color: #1a1a18;
-        }}
-        div.stButton > button {{
-            background: #ffffff;
-            border: 1px solid #d8d7d2;
-        }}
-        [data-testid="stVerticalBlock"] > [data-testid="stButton"] button {{
-            border-radius: 10px;
         }}
         .input-toolbar {{
             display:flex;
             align-items:center;
             justify-content:space-between;
-            gap:0.5rem;
-            padding:0 0.15rem 0.35rem;
+            gap:8px;
+            padding:0 2px 4px;
             margin-top:0.2rem;
         }}
         .input-toolbar-left {{
             display:flex;
-            gap:0.4rem;
+            gap:8px;
             align-items:center;
         }}
         .toolbar-pill {{
             display:inline-flex;
             align-items:center;
             justify-content:center;
-            width:1.9rem;
-            height:1.9rem;
+            min-width:32px;
+            height:32px;
             border-radius:999px;
             border:1px solid #e8e7e2;
             background:#fff;
             color:#888;
-            font-size:0.8rem;
+            font-size:11px;
+            padding: 0 8px;
         }}
         .model-badge {{
             display:inline-flex;
             align-items:center;
-            padding:0.24rem 0.6rem;
+            padding:3px 11px;
             border-radius:999px;
             background:#eeecea;
             color:#666;
-            font-size:0.65rem;
+            font-size:10px;
             font-weight:500;
         }}
         .copilot-footer {{
@@ -227,30 +274,30 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
         .footer-pill {{
             display:flex;
             flex-wrap:wrap;
-            gap:0.55rem;
+            gap:10px;
             align-items:center;
             justify-content:center;
             margin: 0 auto;
             width: fit-content;
-            padding: 0.42rem 0.95rem;
-            border-radius: 999px;
+            padding: 6px 18px;
+            border-radius: 30px;
             border: 1px solid #eeede9;
             background: #fafaf8;
         }}
         .rm-avatar {{
-            width: 1.4rem;
-            height: 1.4rem;
+            width: 22px;
+            height: 22px;
             border-radius: 999px;
             background: #1a1a18;
             color: #fff;
             display:flex;
             align-items:center;
             justify-content:center;
-            font-size: 0.48rem;
+            font-size: 8px;
             font-weight: 700;
         }}
         .footer-name {{
-            font-size: 0.7rem;
+            font-size: 11px;
             font-weight: 500;
             color: #444;
             letter-spacing: -0.01em;
@@ -258,7 +305,7 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
         .copilot-footer a {{
             color:#888;
             text-decoration:none;
-            font-size:0.68rem;
+            font-size:11px;
         }}
         .footer-divider {{
             color:#d0cdc7;
