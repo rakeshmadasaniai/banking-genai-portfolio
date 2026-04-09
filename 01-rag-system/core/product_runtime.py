@@ -21,7 +21,7 @@ from models.openai_mode import generate_openai_response
 
 
 def run_product_runtime() -> None:
-    st.set_page_config(page_title="Banking & Finance Copilot", page_icon="🏦", layout="wide", initial_sidebar_state="expanded")
+    st.set_page_config(page_title="Banking & Finance Copilot", page_icon=":bank:", layout="wide", initial_sidebar_state="expanded")
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -153,3 +153,4 @@ def run_product_runtime() -> None:
         )
 
     render_footer()
+

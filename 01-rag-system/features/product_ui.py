@@ -29,11 +29,25 @@ def render_header() -> None:
 
 
 def render_sidebar_summary(base_doc_count: int, upload_doc_count: int, upload_chunk_count: int) -> None:
-    st.markdown("### Copilot Scope")
-    st.markdown("- Grounded retrieval from embedded banking knowledge")
-    st.markdown("- Session-friendly document uploads")
-    st.markdown("- OpenAI, Fine-Tuned, and Auto model modes")
-    st.markdown("- Preview voice input and working answer read-aloud")
+    st.markdown("### Project")
+    st.caption("Retrieval-grounded banking copilot for compliance, regulatory, and policy Q&A.")
+
+    st.markdown("### Stack")
+    st.markdown("- Streamlit UI")
+    st.markdown("- FAISS retrieval")
+    st.markdown("- sentence-transformers embeddings")
+    st.markdown("- OpenAI responses, speech-to-text, and text-to-speech")
+    st.markdown("- Fine-tuned banking model path via Hugging Face")
+
+    st.markdown("### Model Modes")
+    st.markdown("- `OpenAI`: strongest stable answer path for live use")
+    st.markdown("- `Fine-Tuned`: banking-domain model path using the custom adapter setup")
+    st.markdown("- `Auto`: retrieves once, compares candidates, and chooses the stronger grounded response")
+
+    st.markdown("### What It Shows")
+    st.markdown("- grounded answers with visible sources")
+    st.markdown("- uploaded document search in the same session")
+    st.markdown("- explainable model routing instead of black-box generation")
     st.caption(f"Base knowledge files: {base_doc_count}")
     st.caption(f"Uploaded documents: {upload_doc_count}")
     st.caption(f"Uploaded chunks: {upload_chunk_count}")
