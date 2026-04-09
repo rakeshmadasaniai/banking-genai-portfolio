@@ -233,7 +233,7 @@ def render_safety_notice() -> None:
     st.markdown(
         """
         <div class="safety-note">
-            AI can make mistakes. Please verify important financial decisions with official sources.
+            For informational use only. Verify critical decisions with official guidance.
         </div>
         """,
         unsafe_allow_html=True,
@@ -246,7 +246,7 @@ def render_footer() -> None:
         <div class="copilot-footer">
             <div class="footer-pill">
                 <div class="rm-avatar">RM</div>
-                <span class="footer-name">Built by Rakesh Madasani</span>
+                <span class="footer-name">Rakesh Madasani</span>
                 <span class="footer-divider">|</span>
                 <a href="https://www.linkedin.com/in/rakesh-madasani-b217b71b0/" target="_blank" aria-label="LinkedIn">LinkedIn</a>
                 <span class="footer-divider">|</span>

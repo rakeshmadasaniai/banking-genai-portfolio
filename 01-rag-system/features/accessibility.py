@@ -122,11 +122,11 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
         div[data-testid="stChatInput"] textarea::placeholder {{ color: {secondary} !important; }}
         div[data-testid="stChatInput"] button {{ background: {accent} !important; color: #FFFFFF !important; border: none !important; border-radius: 999px !important; min-height: 2.35rem !important; padding: 0 1rem !important; }}
 
-        .safety-note {{ text-align: center; color: {secondary}; font-size: 12px; line-height: 1.6; margin-top: 0.55rem; }}
-        .copilot-footer {{ padding: 0.8rem 0 0.5rem; }}
+        .safety-note {{ max-width: 720px; text-align: center; color: {secondary}; font-size: 11px; line-height: 1.5; margin: 0.5rem auto 0; opacity: 0.78; }}
+        .copilot-footer {{ padding: 0.65rem 0 0.4rem; }}
         .footer-pill {{ display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.65rem; margin: 0 auto; width: fit-content; padding: 0.55rem 1rem; border-radius: 999px; border: 1px solid {border}; background: {card_background}; }}
         .rm-avatar {{ width: 24px; height: 24px; border-radius: 999px; background: {foreground}; color: {card_background}; display: flex; align-items: center; justify-content: center; font-size: 0.58rem; font-weight: 700; }}
-        .footer-name {{ font-size: 0.82rem; font-weight: 600; color: {foreground}; }}
+        .footer-name {{ font-size: 0.82rem; font-weight: 600; color: {foreground}; letter-spacing: -0.01em; }}
         .footer-divider {{ color: {secondary}; }}
         .copilot-footer a {{ color: {secondary}; text-decoration: none; font-size: 0.82rem; }}
         .copilot-footer a:hover {{ color: {accent}; }}
