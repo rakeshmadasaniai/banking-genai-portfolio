@@ -227,20 +227,28 @@ def run_product_runtime() -> None:
     st.markdown("<div class='composer-shell'>", unsafe_allow_html=True)
     question = st.chat_input("Ask about AML, KYC, FDIC, Basel III, or upload a document...")
     st.markdown("<div class='composer-tools'>", unsafe_allow_html=True)
-    composer_cols = st.columns([0.75, 0.8, 1.2, 4.25])
+    composer_cols = st.columns([0.65, 1.45, 3.6, 0.75])
     with composer_cols[0]:
         st.markdown("<div class='composer-control'>", unsafe_allow_html=True)
         with st.popover("＋", use_container_width=True):
             render_document_uploads()
+            render_image_uploads()
         st.markdown("</div>", unsafe_allow_html=True)
     with composer_cols[1]:
+        composer_mode = st.selectbox(
+            "Composer model",
+            ["OpenAI", "Fine-Tuned", "Auto"],
+            index=["OpenAI", "Fine-Tuned", "Auto"].index(st.session_state.model_mode),
+            label_visibility="collapsed",
+            key="composer_model_mode",
+        )
+        st.session_state.model_mode = composer_mode
+    with composer_cols[3]:
         mic_class = "composer-control mic-control mic-live" if voice_enabled else "composer-control mic-control"
         st.markdown(f"<div class='{mic_class}'>", unsafe_allow_html=True)
-        with st.popover("Mic", use_container_width=True):
+        with st.popover("🎤", use_container_width=True):
             voice_transcript, voice_enabled = render_voice_input_preview()
         st.markdown("</div>", unsafe_allow_html=True)
-    with composer_cols[2]:
-        st.markdown(f"<div class='composer-badge'>{st.session_state.model_mode}</div>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
