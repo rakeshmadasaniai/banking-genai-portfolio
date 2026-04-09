@@ -177,6 +177,18 @@ def render_assistant_message(
         """,
         unsafe_allow_html=True,
     )
+    if message.get("selection_reason"):
+        st.caption(f"Routing: {message['selection_reason']}")
+    if message.get("candidate_scores") and any(score is not None for score in message["candidate_scores"].values()):
+        openai_score = message["candidate_scores"].get("openai")
+        fine_tuned_score = message["candidate_scores"].get("fine_tuned")
+        score_parts = []
+        if openai_score is not None:
+            score_parts.append(f"OpenAI {openai_score:.3f}")
+        if fine_tuned_score is not None:
+            score_parts.append(f"Fine-Tuned {fine_tuned_score:.3f}")
+        if score_parts:
+            st.caption("Candidate scores: " + " | ".join(score_parts))
 
     action_columns = st.columns([1.15, 0.9, 8])
     with action_columns[0]:

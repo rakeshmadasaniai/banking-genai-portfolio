@@ -263,6 +263,9 @@ def run_product_runtime() -> None:
         "source_cards": retrieval["source_cards"],
         "confidence": result["confidence"],
         "comparison": result.get("comparison"),
+        "route_reason": result.get("route_reason"),
+        "selection_reason": result.get("selection_reason"),
+        "candidate_scores": result.get("candidate_scores"),
         "retrieval_note": (
             "The retriever found weak supporting context for this question. The answer may be incomplete. Try uploading a more relevant document or asking a narrower follow-up."
             if retrieval["weak_retrieval"]
