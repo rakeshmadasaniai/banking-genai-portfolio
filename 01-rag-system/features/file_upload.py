@@ -19,11 +19,12 @@ def render_document_uploads() -> list:
 
 def render_image_uploads() -> list:
     uploaded_images = st.file_uploader(
-        "Image Upload (Preview)",
+        "Image Upload",
         type=["png", "jpg", "jpeg"],
         accept_multiple_files=True,
         help=None,
     )
+    st.session_state.uploaded_images = uploaded_images or []
     if uploaded_images:
-        st.caption("Preview only: uploaded images are shown back to you, but this version does not perform image reasoning.")
+        st.caption(f"{len(uploaded_images)} image file(s) attached")
     return uploaded_images or []

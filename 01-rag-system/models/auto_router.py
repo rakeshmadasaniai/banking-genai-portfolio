@@ -8,6 +8,7 @@ from models.openai_mode import generate_openai_response
 
 
 ROUTE_REASON_LABELS = {
+    "image_reasoning_prefer_openai": "OpenAI selected because image reasoning is only available on the multimodal path",
     "fine_tuned_unavailable": "Fine-Tuned unavailable in this environment",
     "openai_unavailable": "OpenAI unavailable, using Fine-Tuned path",
     "low_retrieval_prefer_openai": "OpenAI selected due to limited retrieval confidence",
@@ -21,10 +22,11 @@ ROUTE_REASON_LABELS = {
 }
 
 
-def run_auto_mode(question: str, retrieval: dict, prefer_openai_on_tie: bool = True) -> dict:
+def run_auto_mode(question: str, retrieval: dict, uploaded_images: list | None = None, prefer_openai_on_tie: bool = True) -> dict:
     documents = retrieval["documents"]
+    uploaded_images = uploaded_images or []
 
-    if not documents:
+    if not documents and not uploaded_images:
         return _build_auto_response(
             answer=(
                 "I could not find enough relevant supporting context for this question. "
@@ -41,8 +43,16 @@ def run_auto_mode(question: str, retrieval: dict, prefer_openai_on_tie: bool = T
             candidate_scores={"openai": None, "fine_tuned": None},
         )
 
-    openai_result = _normalize_candidate(question, retrieval, generate_openai_response(question, retrieval))
-    finetuned_result = _normalize_candidate(question, retrieval, generate_finetuned_response(question, retrieval))
+    openai_result = _normalize_candidate(question, retrieval, generate_openai_response(question, retrieval, uploaded_images=uploaded_images))
+    finetuned_result = _normalize_candidate(question, retrieval, generate_finetuned_response(question, retrieval, uploaded_images=uploaded_images))
+
+    if uploaded_images and openai_result["available"]:
+        return _finalize_winner(
+            winner=openai_result,
+            route_reason="image_reasoning_prefer_openai",
+            comparison={"openai": openai_result, "finetuned": finetuned_result},
+            candidate_scores={"openai": None, "fine_tuned": None},
+        )
 
     if retrieval["weak_retrieval"]:
         if openai_result["available"]:

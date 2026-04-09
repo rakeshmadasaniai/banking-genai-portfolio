@@ -19,7 +19,17 @@ def _build_client() -> tuple[InferenceClient | None, str]:
     return InferenceClient(model=target, token=token), model_id
 
 
-def generate_finetuned_response(question: str, retrieval: dict) -> dict:
+def generate_finetuned_response(question: str, retrieval: dict, uploaded_images: list | None = None) -> dict:
+    if uploaded_images:
+        return {
+            "answer": "Fine-Tuned mode does not currently support image reasoning. Use OpenAI or Auto for image questions.",
+            "backend": "Fine-Tuned",
+            "model_name": "image_unsupported",
+            "latency_ms": 0,
+            "confidence": "Low",
+            "score": score_candidate(question, FALLBACK_ANSWER, retrieval["documents"], 0),
+            "available": False,
+        }
     client, model_name = _build_client()
     if client is None:
         fallback_answer = extractive_answer(question, retrieval["documents"]) or FALLBACK_ANSWER

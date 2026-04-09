@@ -104,11 +104,12 @@ def _stream_answer_preview(answer: str) -> None:
 
 
 def _run_selected_model(question: str, retrieval: dict, model_mode: str) -> dict:
+    uploaded_images = st.session_state.get("uploaded_images", [])
     if model_mode == "OpenAI":
-        return generate_openai_response(question, retrieval)
+        return generate_openai_response(question, retrieval, uploaded_images=uploaded_images)
     if model_mode == "Fine-Tuned":
-        return generate_finetuned_response(question, retrieval)
-    return run_auto_mode(question, retrieval)
+        return generate_finetuned_response(question, retrieval, uploaded_images=uploaded_images)
+    return run_auto_mode(question, retrieval, uploaded_images=uploaded_images)
 
 
 def run_product_runtime() -> None:
@@ -124,6 +125,8 @@ def run_product_runtime() -> None:
         st.session_state.upload_doc_count = 0
     if "upload_chunk_count" not in st.session_state:
         st.session_state.upload_chunk_count = 0
+    if "uploaded_images" not in st.session_state:
+        st.session_state.uploaded_images = []
     if "model_mode" not in st.session_state:
         st.session_state.model_mode = "OpenAI"
 
