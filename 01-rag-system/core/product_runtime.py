@@ -183,10 +183,6 @@ def run_product_runtime() -> None:
             accessibility = render_accessibility_controls()
             show_source_cards = st.toggle("Detailed source cards", value=True)
             show_auto_comparison = st.toggle("Auto mode comparison", value=False)
-            image_files = render_image_uploads()
-            if image_files:
-                for image in image_files[:2]:
-                    st.image(image, caption=image.name, use_container_width=True)
             render_sidebar_summary(base_doc_count, st.session_state.upload_doc_count, st.session_state.upload_chunk_count)
             render_session_insights(st.session_state.messages)
 
@@ -229,10 +225,10 @@ def run_product_runtime() -> None:
     st.markdown("<div class='composer-shell'>", unsafe_allow_html=True)
     question = st.chat_input("Ask about AML, KYC, FDIC, Basel III, or upload a document...")
     st.markdown("<div class='composer-tools'>", unsafe_allow_html=True)
-    composer_cols = st.columns([0.65, 1.45, 3.6, 0.75])
+    composer_cols = st.columns([0.8, 1.7, 4.0, 0.8])
     with composer_cols[0]:
         st.markdown("<div class='composer-control'>", unsafe_allow_html=True)
-        with st.popover("＋", use_container_width=True):
+        with st.popover("+", use_container_width=True):
             render_document_uploads()
             render_image_uploads()
         st.markdown("</div>", unsafe_allow_html=True)
@@ -248,7 +244,7 @@ def run_product_runtime() -> None:
     with composer_cols[3]:
         mic_class = "composer-control mic-control mic-live" if voice_enabled else "composer-control mic-control"
         st.markdown(f"<div class='{mic_class}'>", unsafe_allow_html=True)
-        with st.popover("🎤", use_container_width=True):
+        with st.popover("Mic", use_container_width=True):
             voice_transcript, voice_enabled = render_voice_input_preview()
         st.markdown("</div>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)

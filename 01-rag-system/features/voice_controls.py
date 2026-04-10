@@ -28,17 +28,11 @@ def _transcribe_audio(audio_payload: dict) -> str:
 
 
 def render_voice_input_preview() -> tuple[str, bool]:
-    voice_enabled = st.toggle("Voice input", value=False, help="Use browser microphone capture with cloud transcription.")
-    if not voice_enabled:
-        return "", False
-
-    st.caption("Preview mode. Best effort on supported browsers.")
-
     audio_payload = mic_recorder(
-        start_prompt="Start recording",
-        stop_prompt="\u23F9 Stop recording",
+        start_prompt="Record now",
+        stop_prompt="Stop",
         just_once=True,
-        use_container_width=False,
+        use_container_width=True,
         format="webm",
         key="copilot_mic_preview",
     )
@@ -56,8 +50,7 @@ def render_voice_input_preview() -> tuple[str, bool]:
     st.session_state.last_voice_transcript = transcript
 
     if transcript:
-        st.success(f"Transcript ready: {transcript}")
         return transcript, True
 
-    st.warning("The recording was captured, but transcription did not return usable text.")
+    st.caption("Recording captured, but transcription did not return usable text.")
     return "", True
