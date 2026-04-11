@@ -47,7 +47,7 @@ If you are reviewing this portfolio as a recruiter, engineer, or hiring manager,
 3. Read **Project 2** to see the domain dataset behind the model work.
 4. Read **Project 3** to see the QLoRA fine-tuning workflow and published adapter.
 5. Read **Project 4** to see how the system evolves into a backend-ready, memory-aware architecture.
-6. Use **Projects 5 and 6** to understand how I thought about a more integrated V2 system and frontend/backend separation.
+6. Review the evaluation and deployment sections to see how the system was measured and shipped as a live product.
 
 ## System Story
 
@@ -77,15 +77,6 @@ After the dataset and fine-tuned model existed, I moved into backend architectur
 - compare mode
 - backend switching
 - memory-aware conversation flow
-
-### Stage 5: Product/system integration
-
-Finally, I explored how the system could evolve into a cleaner V2 architecture with:
-
-- backend/frontend separation
-- shared retrieval once
-- compare mode on identical context
-- stronger product UX for a live demo
 
 ## Architecture
 
@@ -199,16 +190,6 @@ Key points:
 - health and reset endpoints
 - clearer separation between frontend and orchestration logic
 
-### 5. [05-integrated-banking-genai-v2](05-integrated-banking-genai-v2)
-
-**What it is:** a cleaner V2 architecture proposal and integration path.  
-**Why it matters:** it shows how I think about evolving a prototype into a more modular platform.
-
-### 6. [06-banking-genai-v2-space](06-banking-genai-v2-space)
-
-**What it is:** a frontend concept for the V2 backend-driven flow.  
-**Why it matters:** it shows product continuity while the architecture shifts underneath.
-
 ## Project Evolution
 
 | Stage | Repo folder | What changed |
@@ -217,8 +198,6 @@ Key points:
 | Data layer | `02-qa-dataset` | Turned domain knowledge into a reusable instruction dataset |
 | Model layer | `03-qlora-finetuning` | Fine-tuned a banking-domain adapter with QLoRA |
 | Backend layer | `04-conversational-memory` | Added session memory, compare mode, and API structure |
-| System integration | `05-integrated-banking-genai-v2` | Explored a cleaner orchestration architecture |
-| Frontend integration | `06-banking-genai-v2-space` | Showed how the UI could sit on top of the new backend |
 
 ## What Improved From Project 1 To The Current Product
 
@@ -283,9 +262,7 @@ banking-genai-portfolio/
 |-- 01-rag-system/
 |-- 02-qa-dataset/
 |-- 03-qlora-finetuning/
-|-- 04-conversational-memory/
-|-- 05-integrated-banking-genai-v2/
-`-- 06-banking-genai-v2-space/
+`-- 04-conversational-memory/
 ```
 
 ## Best Code Entry Points

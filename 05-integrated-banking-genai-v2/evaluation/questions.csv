@@ -1,7 +1,0 @@
-session_id,turn,question,expected_context
-kyc-flow,1,What is KYC?,customer identity verification and due diligence
-kyc-flow,2,What are its main components?,customer identification document verification risk assessment and ongoing monitoring
-kyc-flow,3,How does it relate to AML?,KYC supports AML through identity verification and customer risk assessment
-basel-flow,1,What is Basel III?,post-crisis banking framework for capital liquidity and leverage
-basel-flow,2,What are its capital requirements?,CET1 tier 1 total capital and buffers
-basel-flow,3,How does it differ from Basel II?,Basel III strengthened capital liquidity and leverage requirements compared with Basel II
