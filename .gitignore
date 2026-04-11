@@ -1,6 +1,7 @@
 
 01-rag-system/.venv/
 01-rag-system/__pycache__/
+01-rag-system/evaluation/__pycache__/
 01-rag-system/app_backup_before_copilot.py
 
 04-conversational-memory/.venv/

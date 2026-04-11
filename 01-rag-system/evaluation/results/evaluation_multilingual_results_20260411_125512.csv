@@ -1,0 +1,308 @@
+id,set_name,mode_requested,mode_used,language,query,answer,latency_ms,source_count,sources,confidence,grounded_flag,available,route_reason
+1,evaluation_multilingual,OpenAI,OpenAI,English,What are the three stages of money laundering?,"THREE STAGES OF MONEY LAUNDERING
+1. Three Stages of Money Laundering:
+1.",0,2,us_banking_knowledge.txt | banking_knowledge.txt,High,yes,no,openai_api_key_missing
+2,evaluation_multilingual,OpenAI,OpenAI,Spanish,¿Cuáles son los requisitos mínimos de capital bajo Basilea III?,"Suspicious Activity      | SAR ($5,000+)                    | STR (no minimum)
+Deposit Insurance        | $250,000 (FDIC)                  | ₹5 lakh (DICGC)
+Capital Adequacy         | Basel III (8% minimum)            | Basel III (9% minimum)
+KYC Framework            | FinCEN CDD Rule                  | RBI KYC Master Direction Capital Adequacy Ratio (CAR): Also known as CRAR.",0,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+3,evaluation_multilingual,OpenAI,OpenAI,French,Qu'est-ce que le ratio de liquidité à court terme et que mesure-t-il?,"- Net Stable Funding Ratio (NSFR): Long-term stable funding must cover long-term assets. NATIONAL BANK REQUIREMENTS
+- Must maintain minimum capital ratios
+- Tier 1 Capital Ratio: minimum 6%
+- Total Capital Ratio: minimum 8%
+- Leverage Ratio: minimum 4%
+- Well-capitalized banks: Tier 1 ≥ 8%, Total ≥ 10%",0,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+4,evaluation_multilingual,OpenAI,OpenAI,German,Was ist die Mindestanforderung an das Kernkapital unter Basel III?,"Minimum CAR under Basel III is 9% in India (RBI requirement), higher than Basel III's 8% global minimum. Suspicious Activity      | SAR ($5,000+)                    | STR (no minimum)
+Deposit Insurance        | $250,000 (FDIC)                  | ₹5 lakh (DICGC)
+Capital Adequacy         | Basel III (8% minimum)            | Basel III (9% minimum)
+KYC Framework            | FinCEN CDD Rule                  | RBI KYC Master Direction",0,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+5,evaluation_multilingual,OpenAI,OpenAI,Portuguese,O que é KYC e quais são seus quatro componentes principais?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",0,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+6,evaluation_multilingual,OpenAI,OpenAI,Italian,Che cos'è il rischio di credito e come viene misurato dalle banche?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+7,evaluation_multilingual,OpenAI,OpenAI,Dutch,Wat is de minimale kapitaaltoereikendheidsratio onder Basel III?,"Minimum CAR under Basel III is 9% in India (RBI requirement), higher than Basel III's 8% global minimum. Suspicious Activity      | SAR ($5,000+)                    | STR (no minimum)
+Deposit Insurance        | $250,000 (FDIC)                  | ₹5 lakh (DICGC)
+Capital Adequacy         | Basel III (8% minimum)            | Basel III (9% minimum)
+KYC Framework            | FinCEN CDD Rule                  | RBI KYC Master Direction",0,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+8,evaluation_multilingual,OpenAI,OpenAI,Russian,Что такое подозрительная транзакция и когда банк обязан её сообщить?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+9,evaluation_multilingual,OpenAI,OpenAI,Chinese (Simplified),什么是了解您的客户（KYC）以及银行为什么需要执行它？,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",0,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,no,openai_api_key_missing
+10,evaluation_multilingual,OpenAI,OpenAI,Chinese (Traditional),什麼是反洗錢，銀行有哪些主要義務？,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+11,evaluation_multilingual,OpenAI,OpenAI,Japanese,マネーロンダリングの3つの段階とは何ですか？,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+12,evaluation_multilingual,OpenAI,OpenAI,Korean,바젤 III에 따른 최소 자본 적정성 비율은 얼마입니까?,"Minimum CAR under Basel III is 9% in India (RBI requirement), higher than Basel III's 8% global minimum. Suspicious Activity      | SAR ($5,000+)                    | STR (no minimum)
+Deposit Insurance        | $250,000 (FDIC)                  | ₹5 lakh (DICGC)
+Capital Adequacy         | Basel III (8% minimum)            | Basel III (9% minimum)
+KYC Framework            | FinCEN CDD Rule                  | RBI KYC Master Direction",0,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,no,openai_api_key_missing
+13,evaluation_multilingual,OpenAI,OpenAI,Arabic,ما هي متطلبات اعرف عميلك وما هي المستندات المطلوبة؟,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+14,evaluation_multilingual,OpenAI,OpenAI,Hindi,मनी लॉन्ड्रिंग के तीन चरण क्या हैं और बैंक इसे कैसे रोकते हैं?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+15,evaluation_multilingual,OpenAI,OpenAI,Bengali,ব্যাংকিং-এ কেওয়াইসি কী এবং এর চারটি প্রধান উপাদান কী কী?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+16,evaluation_multilingual,OpenAI,OpenAI,Turkish,Basel III kapsamında minimum sermaye yeterlilik oranı nedir?,"Minimum CAR under Basel III is 9% in India (RBI requirement), higher than Basel III's 8% global minimum. Suspicious Activity      | SAR ($5,000+)                    | STR (no minimum)
+Deposit Insurance        | $250,000 (FDIC)                  | ₹5 lakh (DICGC)
+Capital Adequacy         | Basel III (8% minimum)            | Basel III (9% minimum)
+KYC Framework            | FinCEN CDD Rule                  | RBI KYC Master Direction",0,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+17,evaluation_multilingual,OpenAI,OpenAI,Vietnamese,KYC là gì và tại sao các ngân hàng phải thực hiện nó?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",0,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,no,openai_api_key_missing
+18,evaluation_multilingual,OpenAI,OpenAI,Polish,Co to jest pranie pieniędzy i jakie są jego trzy etapy?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+19,evaluation_multilingual,OpenAI,OpenAI,Ukrainian,Що таке підозріла транзакція і коли банк зобов'язаний її повідомити?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+20,evaluation_multilingual,OpenAI,OpenAI,Romanian,Ce este raportul de acoperire a lichidității și ce măsoară acesta?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+21,evaluation_multilingual,OpenAI,OpenAI,Greek,Ποιες είναι οι ελάχιστες κεφαλαιακές απαιτήσεις βάσει της Βασιλείας III;,"Minimum CAR under Basel III is 9% in India (RBI requirement), higher than Basel III's 8% global minimum. Suspicious Activity      | SAR ($5,000+)                    | STR (no minimum)
+Deposit Insurance        | $250,000 (FDIC)                  | ₹5 lakh (DICGC)
+Capital Adequacy         | Basel III (8% minimum)            | Basel III (9% minimum)
+KYC Framework            | FinCEN CDD Rule                  | RBI KYC Master Direction",0,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,no,openai_api_key_missing
+22,evaluation_multilingual,OpenAI,OpenAI,Czech,Co je to praní peněz a jaké jsou jeho tři fáze?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+23,evaluation_multilingual,OpenAI,OpenAI,Swedish,Vad är minimikapitalkravet under Basel III?,"Minimum CAR under Basel III is 9% in India (RBI requirement), higher than Basel III's 8% global minimum. Suspicious Activity      | SAR ($5,000+)                    | STR (no minimum)
+Deposit Insurance        | $250,000 (FDIC)                  | ₹5 lakh (DICGC)
+Capital Adequacy         | Basel III (8% minimum)            | Basel III (9% minimum)
+KYC Framework            | FinCEN CDD Rule                  | RBI KYC Master Direction",0,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,no,openai_api_key_missing
+24,evaluation_multilingual,OpenAI,OpenAI,Norwegian,Hva er de tre stadiene av hvitvasking av penger?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+25,evaluation_multilingual,OpenAI,OpenAI,Danish,Hvad er likviditetsdækningsgraden og hvad måler den?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+26,evaluation_multilingual,OpenAI,OpenAI,Finnish,Mikä on vähimmäispääomavaatimus Basel III:n mukaan?,"Minimum CAR under Basel III is 9% in India (RBI requirement), higher than Basel III's 8% global minimum. Suspicious Activity      | SAR ($5,000+)                    | STR (no minimum)
+Deposit Insurance        | $250,000 (FDIC)                  | ₹5 lakh (DICGC)
+Capital Adequacy         | Basel III (8% minimum)            | Basel III (9% minimum)
+KYC Framework            | FinCEN CDD Rule                  | RBI KYC Master Direction",0,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+27,evaluation_multilingual,OpenAI,OpenAI,Hungarian,Mi a pénzmosás három szakasza?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+28,evaluation_multilingual,OpenAI,OpenAI,Slovak,Čo je to KYC a aké sú jeho štyri hlavné zložky?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",0,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+29,evaluation_multilingual,OpenAI,OpenAI,Bulgarian,Какви са минималните капиталови изисквания съгласно Базел III?,"Minimum CAR under Basel III is 9% in India (RBI requirement), higher than Basel III's 8% global minimum. Suspicious Activity      | SAR ($5,000+)                    | STR (no minimum)
+Deposit Insurance        | $250,000 (FDIC)                  | ₹5 lakh (DICGC)
+Capital Adequacy         | Basel III (8% minimum)            | Basel III (9% minimum)
+KYC Framework            | FinCEN CDD Rule                  | RBI KYC Master Direction",0,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,no,openai_api_key_missing
+30,evaluation_multilingual,OpenAI,OpenAI,Croatian,Što je pranje novca i koje su njegove tri faze?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+31,evaluation_multilingual,OpenAI,OpenAI,Serbian,Шта је KYC и која су четири главна компонента?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",0,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,no,openai_api_key_missing
+32,evaluation_multilingual,OpenAI,OpenAI,Lithuanian,Kas yra pinigų plovimas ir kokie yra trys jo etapai?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+33,evaluation_multilingual,OpenAI,OpenAI,Latvian,Kas ir naudas atmazgāšana un kādi ir tās trīs posmi?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+34,evaluation_multilingual,OpenAI,OpenAI,Estonian,Mis on rahapesu ja millised on selle kolm etappi?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+35,evaluation_multilingual,OpenAI,OpenAI,Slovenian,Kaj je pranje denarja in kakšne so njegove tri faze?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+36,evaluation_multilingual,OpenAI,OpenAI,Albanian,Çfarë është pastrimi i parave dhe cilat janë tre fazat e tij?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+37,evaluation_multilingual,OpenAI,OpenAI,Macedonian,Што е перење пари и кои се трите фази?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+38,evaluation_multilingual,OpenAI,OpenAI,Bosnian,Što je KYC i koji su četiri glavna elementa?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",0,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+39,evaluation_multilingual,OpenAI,OpenAI,Montenegrin,Što je pranje novca i koje su tri faze?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,1,banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+40,evaluation_multilingual,OpenAI,OpenAI,Maltese,X'inhu l-ħasil tal-flus u x'inhuma t-tliet fażijiet tiegħu?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,0,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,no,openai_api_key_missing
+41,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Urdu,بینک کے لیے KYC کی ضروریات کیا ہیں اور مشتبہ لین دین کی رپورٹ کب کریں؟,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2029,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+42,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Persian (Farsi),الزامات KYC برای بانک‌ها چیست و چه اسنادی لازم است؟,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2040,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+43,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Punjabi,ਬੈਂਕਾਂ ਲਈ KYC ਦੀਆਂ ਲੋੜਾਂ ਕੀ ਹਨ?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2058,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+44,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Gujarati,બેન્કોમાં KYC ની જરૂરિયાતો શું છે?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2028,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+45,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Marathi,बँकांसाठी KYC आवश्यकता काय आहेत?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2030,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+46,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Tamil,வங்கிகளுக்கான KYC தேவைகள் என்ன?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2019,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+47,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Telugu,బ్యాంకులకు KYC అవసరాలు ఏమిటి?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2032,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+48,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Kannada,ಬ್ಯಾಂಕ್‌ಗಳಿಗೆ KYC ಅವಶ್ಯಕತೆಗಳು ಯಾವುವು?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2037,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+49,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Malayalam,ബാങ്കുകൾക്കുള്ള KYC ആവശ്യകതകൾ എന്തൊക്കെയാണ്?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2024,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+50,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Sinhala,බැංකු සඳහා KYC අවශ්‍යතා මොනවාද?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2024,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+51,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Nepali,बैंकहरूका लागि KYC आवश्यकताहरू के हुन्?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2024,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+52,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Burmese,ဘဏ်များအတွက် KYC လိုအပ်ချက်များကား အဘယ်နည်း?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2041,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+53,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Thai,ข้อกำหนด KYC สำหรับธนาคารคืออะไร?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2037,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+54,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Indonesian,Apa saja persyaratan KYC untuk bank dan dokumen apa yang diperlukan?,"KYC Documents for Individuals:
+- Proof of Identity: Aadhaar, PAN Card, Passport, Voter ID, Driving License
+- Proof of Address: Utility bills, bank statements, Aadhaar, Passport
+- Photograph
+
+KYC Documents for Companies:
+- Certificate of Incorporation
+- Memorandum and Articles of Association
+- Board Resolution
+- List of Directors and Beneficial Owners === SECTION 10: DEMO-READY INDIA QUESTIONS ===
+
+What documents are required for KYC of an individual in India?",2043,1,banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+55,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Malay,Apakah keperluan KYC untuk bank dan dokumen apa yang diperlukan?,"KYC Documents for Individuals:
+- Proof of Identity: Aadhaar, PAN Card, Passport, Voter ID, Driving License
+- Proof of Address: Utility bills, bank statements, Aadhaar, Passport
+- Photograph
+
+KYC Documents for Companies:
+- Certificate of Incorporation
+- Memorandum and Articles of Association
+- Board Resolution
+- List of Directors and Beneficial Owners === SECTION 10: DEMO-READY INDIA QUESTIONS ===
+
+What documents are required for KYC of an individual in India?",2044,1,banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+56,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Tagalog,Ano ang mga kinakailangan ng KYC para sa mga bangko?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2033,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+57,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Cebuano,Unsa ang mga kinahanglanon sa KYC alang sa mga bangko?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2029,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+58,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Javanese,Apa persyaratan KYC kanggo bank lan dokumen apa sing dibutuhake?,"KYC Documents for Individuals:
+- Proof of Identity: Aadhaar, PAN Card, Passport, Voter ID, Driving License
+- Proof of Address: Utility bills, bank statements, Aadhaar, Passport
+- Photograph
+
+KYC Documents for Companies:
+- Certificate of Incorporation
+- Memorandum and Articles of Association
+- Board Resolution
+- List of Directors and Beneficial Owners === SECTION 10: DEMO-READY INDIA QUESTIONS ===
+
+What documents are required for KYC of an individual in India?",2024,1,banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+59,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Swahili,Mahitaji ya KYC kwa benki ni nini na nyaraka gani zinahitajika?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2040,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+60,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Amharic,ለባንኮች የKYC መስፈርቶች ምን ናቸው?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2016,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+61,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Hausa,Menene bukatun KYC don bankunan kuma wadanne takardu ake bukata?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2029,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+62,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Yoruba,Kini awọn ibeere KYC fun awọn banki ati awọn iwe aṣẹ wo ni a nilo?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2033,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+63,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Igbo,Gịnị bụ ihe achọrọ maka KYC maka ụlọ akụ na ihe ndekọ ndị a chọrọ?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2025,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+64,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Zulu,Yini izidingo zeKYC zamabanki futhi yimaphi amaphepha adingekayo?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2022,1,banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+65,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Xhosa,Zintoni iimfuno zeKYC zeebhanki kunye namanani amaphepha afunekayo?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2024,1,banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+66,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Afrikaans,Wat is die KYC-vereistes vir banke en watter dokumente word benodig?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2026,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+67,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Somali,Maxay yihiin shuruudaha KYC ee bangiyada iyo dukumentiyada la baahan yahay?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2035,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+68,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Malagasy,Inona ny fepetra KYC ho an'ny banky ary inona ny antontan-taratasy ilaina?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2031,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+69,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Sesotho,Ke eng ditlhokehelo tsa KYC bakeng sa dibanka le mantsoe a adingekang?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2033,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+70,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Shona,Zvinodiwa zvei zvine chekuita neKYC kubhangi uye mabhuku api anodikanwa?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2020,1,banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+71,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Azerbaijani,Banklar üçün KYC tələbləri nələrdir və hansı sənədlər tələb olunur?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2044,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+72,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Kazakh,Банктер үшін KYC талаптары қандай және қандай құжаттар қажет?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2017,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+73,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Uzbek,Banklar uchun KYC talablari qanday va qanday hujjatlar kerak?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2035,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+74,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Kyrgyz,Банктар үчүн KYC талаптары кандай жана кандай документтер керек?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2032,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+75,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Tajik,Талабот ба KYC барои бонкҳо чист ва чه ҳуҷҷатҳо лозиманд?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2037,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+76,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Turkmen,Banklar üçin KYC talaplar nämeler we haýsy resminamalar gerek?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2063,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,finetuned_direct
+77,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Georgian,რა არის KYC მოთხოვნები ბანკებისთვის და რა დოკუმენტებია საჭირო?,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2021,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+78,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Armenian,Որո՞նք են KYC-ի պահանջները բանկերի համար և ի՞նչ փաստաթղթեր են անհրաժեշտ:,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2035,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+79,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Mongolian,"Банкуудад KYC-ийн шаардлага юу вэ, ямар баримт бичиг хэрэгтэй вэ?","=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2021,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+80,evaluation_multilingual,Fine-Tuned,Fine-Tuned,Tibetan,དངུལ་ཁང་ལ་ KYC གི་དགོས་མཁོ་གང་ཡིན་ནམ།,"=== SECTION 4: KYC (KNOW YOUR CUSTOMER) ===
+
+KYC is a mandatory process for banks and financial institutions to verify customer identity and assess risk. KYC FOUR PILLARS
+1.",2046,2,banking_knowledge.txt | us_banking_knowledge.txt,High,yes,yes,finetuned_direct
+81,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Hebrew,מהן שלוש שלבי הלבנת הון וכיצד הבנקים מזהים אותן?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2031,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+82,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Yiddish,וואָס איז מאָני לאָנדערינג און וואָס זענען די דריי סטאַדיעס?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2035,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+83,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Catalan,Quins són els tres estadis del blanqueig de diners?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2032,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+84,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Basque,Zer da dirua zuritzea eta zeintzuk dira hiru faseak?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2025,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+85,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Galician,Cales son as tres etapas do branqueamento de capitais?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2028,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+86,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Welsh,Beth yw golchi arian a beth yw'r tair cam?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2032,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+87,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Irish,Cad é sciúradh airgid agus cad iad na trí chéim?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2025,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+88,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Scottish Gaelic,Dè a th' ann an sgleog airgid agus dè na trì ìrean?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2030,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+89,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Icelandic,Hvað er peningaþvætti og hverjar eru þrjár stigin?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2029,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+90,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Faroese,Hvat er peningavasking og hvørjar eru tríggjar stigini?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2033,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+91,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Luxembourgish,Wat ass Geldwäschen a wat sinn déi dräi Phasen?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2035,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+92,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Romansh,Che cosa è il riciclaggio di denaro e quali sono le tre fasi?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2037,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+93,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Occitan,Qu'es lo blanquiment d'argent e quinas son las tres etapas?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2031,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+94,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Breton,Petra eo an argant glanaat ha petra eo ar teir kammenn?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2029,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+95,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Corsican,Cosa hè u riciclaghju di soldi è quali sò i trè tappe?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2020,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+96,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Latin,Quid est lavatio pecuniae et quae sunt tres gradus eius?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2020,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+97,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Esperanto,Kio estas monlavatado kaj kiuj estas la tri etapoj?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2046,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+98,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Ido,Quala esas monlavadar e qua esas la tri stadi?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2048,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+99,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Interlingua,Que es lavage de moneta e quales son le tres stadios?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2022,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+100,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Swati,Lihanjelo lemali ngumiphi futsi yini ekunye?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2043,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+101,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Tswana,Go twala madi ke eng le mekgwa e meraro ke efe?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2042,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+102,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Tsonga,Ku hlambulula mali i yini na swiga-swiga swin'we?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2047,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+103,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Venda,Tshiimiswa tsha u phasa iimali ndi tshinyi na mirado miraru?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2030,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+104,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Ndebele,Ukuhlamula imali kuyini futhi izigaba ezintathu zini?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2033,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+105,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Kinyarwanda,Gutakaza amafaranga ni iki kandi ibyiciro bitatu ni ibihe?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2031,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+106,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Kirundi,Gutakaza amafaranga ni iki na gahinga gatatu ni iki?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2019,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+107,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Lingala,Ko sunga mbongo ezali nini mpe mibu misato ezali nini?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2034,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+108,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Kikuyu,Guthukuma buri ni kii na ndeto cia ikumi cia atatu ni ii?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2024,2,banking_knowledge.txt | us_banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+109,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Luo,Lupo pesa en ang'o kendo tenge adek en ang'o?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2032,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+110,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Wolof,Lu tax la xaalis boole ak xaalis ak ñett yëgël yi?,- Banks also collect a photograph and may request PAN for tax-linked products or higher-risk profiles.,2032,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+111,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Bambara,Wari kasigi nafa ye mun ye ani nɔgɔn sabaa ye?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2026,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+112,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Fulani,Ko ɗum laawol peewi kudi koo annduɗo tati?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2015,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+113,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Tigrinya,ምጥፋእ ገንዘብ እንታይ እዩ ከምኡ'ውን ሰለስተ ደረጃታቱ ምንታይ?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2026,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+114,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Oromo,Maallaqni maxxanfamu maali fi sadarkaalee sadii maali?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2032,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+115,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Sindhi,ماني لانڊرنگ ڇا آهي ۽ اهان جا ٽي مرحلا ڪهڙا آهن؟,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2038,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+116,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Pashto,د پیسو وینځل څه دي او درې مرحلې یې کومې دي؟,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2029,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+117,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Balochi,پیسگانی شستن چیش و سیا پایه چیست؟,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2031,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+118,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Kurdish (Kurmanji),Şuştina pere çi ye û sê qonaxên wê çi ne?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2038,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+119,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Kurdish (Sorani),داشتنی پارە چییە و سێ قۆناغەکانی چین؟,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2036,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
+120,evaluation_multilingual,Auto,Auto -> Fine-Tuned,Assyrian Neo-Aramaic,ܡܘܕܝ ܗܘ ܫܝܦܐ ܕܕܗܒܐ ܘܡܘܕܝ ܐܝܢܐ ܬܠܬܐ ܕܪܓܐ?,- Expected Loss (EL) = PD × LGD × EAD === SECTION 6: BANKING PRODUCTS & SERVICES ===,2034,1,banking_knowledge.txt,Moderate,yes,yes,multilingual_fallback_finetuned
