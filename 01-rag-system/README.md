@@ -17,6 +17,19 @@ This is the product layer of the broader portfolio. The goal was not just to mak
 - multilingual interaction
 - reproducible evaluation, not just screenshots
 
+## Where The Code Is
+
+The live Hugging Face Space is only the deployment target. The actual product implementation is committed here in this project:
+
+- [`core`](./core)
+  retrieval orchestration, runtime flow, prompts, and shared utilities
+- [`features`](./features)
+  UI rendering, uploads, read-aloud, answer formatting, and user interaction
+- [`models`](./models)
+  OpenAI mode, Fine-Tuned mode, and Auto routing logic
+
+That is important because I wanted the repo to stand on its own as a real product codebase, not just point outward to a demo URL.
+
 ## What The User Can Do
 
 - ask banking, AML, KYC, FDIC, Basel III, RBI, and compliance questions
@@ -110,7 +123,7 @@ This view shows Auto mode comparing available answer paths and choosing the fast
 
 ## Evaluation
 
-The [`evaluation`](./evaluation) folder now includes two larger committed evaluation packs:
+The [`evaluation`](./evaluation) folder includes two larger committed evaluation packs:
 
 - `evaluation_queries.md`
   120 domain-specific prompts across OpenAI, Fine-Tuned, and Auto
@@ -130,6 +143,16 @@ Latest committed result snapshots live in [`evaluation/results`](./evaluation/re
 |---|---:|---:|---:|---:|
 | Domain set | 120 | 80 | 2037.0 ms | 2036.0 ms |
 | Multilingual set | 120 | 80 | 2031.8 ms | 2031.5 ms |
+
+### Reading the snapshot correctly
+
+Those numbers are the committed run snapshot, not a made-up "best case" table:
+
+- each pack contains 120 prompts
+- 80 rows were available in the committed export
+- the missing rows reflect backend availability in that local run, not missing evaluation logic
+
+I prefer that level of honesty because anyone reviewing the repo can inspect the CSVs and JSON summaries directly and see what was measured versus what was unavailable in that environment.
 
 ## Run Locally
 
@@ -165,6 +188,6 @@ streamlit run app.py
 
 ## Notes
 
-- Fine-Tuned mode depends on a configured hosted endpoint to reflect full production behavior.
+- Fine-Tuned mode becomes fully live when a hosted endpoint is configured. The adapter, routing logic, and evaluation path are in the repo today; the hosted endpoint is the last operational piece for a fully public demo of that mode.
 - Voice input and some upload flows are still environment-sensitive because they depend on browser/runtime behavior.
 - The app is built for groundedness and explainability first, not raw throughput.

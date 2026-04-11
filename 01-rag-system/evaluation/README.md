@@ -115,6 +115,25 @@ The latest committed snapshots in `results/` are:
 | Average latency | 2031.8 ms |
 | Median latency | 2031.5 ms |
 
+## What A Reviewer Should Notice
+
+These committed snapshots are not meant to be vanity metrics. They are meant to show that:
+
+- the question packs exist in the repo
+- the runners exist in the repo
+- the result files are committed in the repo
+- the summaries are derived from those raw result files
+
+The runs are also intentionally honest about backend availability. In the committed snapshot, 80 rows were available because the OpenAI path was not active in that local export. Rather than hide that, the repo keeps the CSVs and JSON files so the run is auditable.
+
+That gives a reviewer something stronger than "trust me, I tested it." They can inspect:
+
+- which prompts were used
+- which modes were active
+- which rows were unavailable
+- what the measured latency looked like
+- what the summary scripts report from the raw CSV
+
 ## Practical Note
 
 These committed summaries reflect the configured local environment that was available for the run. That is why the evaluation setup keeps the raw CSV and JSON files as well as the summary. It makes the run auditable instead of relying on a single polished metric table.
