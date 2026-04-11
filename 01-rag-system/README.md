@@ -82,19 +82,31 @@ flowchart LR
    - source cards
    - confidence label
 
-## Current Product Screens
+## Product Walkthrough
 
-### Live home screen
+### Home screen
 
-![Live app overview](screenshots/rag-space-overview.png)
+This is the first impression of the product: the Banking & Finance Copilot shell, the sidebar, and the live model controls.
 
-### Answer card example
+![Banking Copilot home screen](screenshots/banking-copilot-home-screen.png)
 
-![Grounded answer example](screenshots/rag-low-latency-answer.png)
+### English grounded answer
 
-### Auto mode comparison
+This example shows how the product answers an English banking question with a direct explanation, source cards, and visible latency.
 
-![Auto mode comparison](screenshots/rag-dashboard-metrics.png)
+![Grounded English answer example](screenshots/grounded-english-answer-example.png)
+
+### Telugu grounded answer
+
+This example shows the same answer format working for a Telugu banking question while keeping the evidence visible.
+
+![Grounded Telugu answer example](screenshots/grounded-telugu-answer-example.png)
+
+### Auto routing comparison
+
+This view shows Auto mode comparing available answer paths and choosing the faster route while keeping the reasoning visible.
+
+![Auto routing comparison view](screenshots/auto-routing-comparison-view.png)
 
 ## Evaluation
 
