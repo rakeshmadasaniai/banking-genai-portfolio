@@ -1,91 +1,125 @@
-# ?? Banking & Finance Copilot
+# Banking & Finance Copilot
 
-Banking & Finance Copilot is a grounded AI assistant for banking and financial knowledge. It combines retrieval over curated banking material with multiple model modes, document upload support, accessibility controls, and transparent source cards so the product feels trustworthy in live demos and portfolio reviews.
+Banking & Finance Copilot is a grounded AI product for USA and India banking, compliance, and financial intelligence. It combines retrieval over curated banking material with multiple model paths, source-backed answer cards, uploads, multilingual support, and evaluation workflows that are committed in the repo alongside the app itself.
 
-## Hugging Face Demo Link
-[banking-finance-rag](https://huggingface.co/spaces/RakeshMadasani/banking-finance-rag)
+## Live Product
 
-## Project Overview
+[banking-finance-rag on Hugging Face](https://huggingface.co/spaces/RakeshMadasani/banking-finance-rag)
 
-This project upgrades a banking RAG assistant into a more product-like copilot experience. It preserves the core grounding value of the original assistant while improving explainability, UI clarity, upload workflows, model orchestration, and accessibility.
+## What This Project Is
 
-## Why This Project Matters
+This is the product layer of the broader portfolio. The goal was not just to make a banking chatbot answer questions. The goal was to make it behave like a product someone could open, test, trust, and discuss seriously:
 
-Most AI demos answer questions. Fewer show why the answer should be trusted. This project is designed around that trust layer:
+- grounded answers instead of free-floating generation
+- visible source support
+- multiple model modes with clear routing behavior
+- uploads for real user documents
+- multilingual interaction
+- reproducible evaluation, not just screenshots
+
+## What The User Can Do
+
+- ask banking, AML, KYC, FDIC, Basel III, RBI, and compliance questions
+- switch between `OpenAI`, `Fine-Tuned`, and `Auto` modes
+- upload PDF, DOCX, TXT, and image files
+- inspect retrieved sources under each answer
+- use read-aloud on the final response
+- test multilingual questions
+
+## Why The Product Is Structured This Way
+
+Trust was the main design constraint. For finance and compliance questions, a polished answer alone is not enough. The product needs to show where the answer came from and make its behavior explainable.
+
+That is why the app is built around:
 
 - shared retrieval before generation
-- visible source cards and chunk previews
-- fallback behavior when support is weak
-- explicit model-mode selection
-- honest labeling for partial preview features
-
-## Core Features
-
-- OpenAI mode as the strongest stable baseline
-- Fine-Tuned mode for a custom banking-domain model path
-- Auto mode that retrieves once, scores candidates, and chooses the stronger response
-- PDF, DOCX, and TXT upload support for session retrieval
-- Image Upload (Preview) with clear non-multimodal labeling
-- Voice Input (Preview) with browser recording and transcription
-- Read Answer Aloud using generated speech for the final assistant answer
-- Accessibility controls for large text, high contrast, and simplified response display
-- Source-grounded response cards with metadata and chunk rank
+- source cards and chunk previews
+- model-mode transparency
+- latency and confidence visibility
+- evaluation packs committed in the repository
 
 ## Model Modes
 
 ### OpenAI
 
-Uses the strongest current RAG path and is the recommended baseline mode for live demos.
+This is the strongest general-purpose answer path and the most stable baseline for live testing.
 
 ### Fine-Tuned
 
-Uses a banking-domain fine-tuned model path when the backend is configured. This mode is kept honest in the UI and should only be treated as fully production-ready when the hosted model path is verified.
+This uses the banking-domain Mistral adapter. It is valuable when the hosted path is configured and when lower-latency or domain-style responses are desirable.
 
 ### Auto
 
-Retrieves context once, asks each available model path to answer on the same grounding, and chooses the winner using a simple weighted score:
+Auto retrieves once, evaluates candidate answer paths, and selects the winner. That makes the routing logic easier to reason about than a hidden black-box switch.
 
-- groundedness
-- completeness
-- latency
-
-This keeps the logic explainable in interviews and makes the routing behavior transparent.
-
-## Accessibility Features
-
-- Large text for better readability
-- High contrast for stronger visual separation
-- Simplified response display for shorter paragraph formatting
-- clear section labels and grouped sidebar controls
-- source cards separated from the answer for easier scanning
-
-## Architecture
+## Product Architecture
 
 ```mermaid
 flowchart LR
     A["Built-in banking knowledge + uploaded docs"] --> B["Chunking and preprocessing"]
-    B --> C["Embeddings with all-MiniLM-L6-v2"]
+    B --> C["Embeddings"]
     C --> D["FAISS retrieval"]
     D --> E["Shared grounded context"]
-    E --> F["OpenAI mode | Fine-Tuned mode | Auto mode"]
-    F --> G["Answer + source cards + metadata + read aloud"]
+    E --> F["OpenAI mode"]
+    E --> G["Fine-Tuned mode"]
+    E --> H["Auto routing"]
+    F --> I["Answer card"]
+    G --> I
+    H --> I
+    I --> J["Sources, confidence, latency, read aloud"]
 ```
 
 ## How It Works
 
-1. The app loads the built-in banking knowledge files and optional uploaded documents.
-2. Documents are chunked and embedded with `sentence-transformers/all-MiniLM-L6-v2`.
-3. FAISS retrieves the most relevant chunks for the user question.
-4. The selected model mode generates a response from the same grounded context.
-5. The UI shows:
-   - the answer
-   - the selected model
-   - response time
-   - retrieved chunk count
-   - source cards with chunk previews
-6. If retrieval is weak, the app lowers confidence and asks the user to narrow the question or upload more relevant material.
+1. The app loads curated banking knowledge files and any uploaded user documents.
+2. Documents are chunked and embedded.
+3. FAISS retrieves the most relevant context for the question.
+4. The selected model mode answers from that shared context.
+5. The UI renders the answer together with:
+   - mode
+   - latency
+   - chunk count
+   - source cards
+   - confidence label
 
-## How to Run Locally
+## Current Product Screens
+
+### Live home screen
+
+![Live app overview](screenshots/rag-space-overview.png)
+
+### Answer card example
+
+![Grounded answer example](screenshots/rag-low-latency-answer.png)
+
+### Auto mode comparison
+
+![Auto mode comparison](screenshots/rag-dashboard-metrics.png)
+
+## Evaluation
+
+The [`evaluation`](./evaluation) folder now includes two larger committed evaluation packs:
+
+- `evaluation_queries.md`
+  120 domain-specific prompts across OpenAI, Fine-Tuned, and Auto
+- `evaluation_multilingual.md`
+  120 multilingual prompts across the same three modes
+
+Supporting scripts:
+
+- `run_eval_sets.py`
+- `summarize_eval_sets.py`
+
+Latest committed result snapshots live in [`evaluation/results`](./evaluation/results).
+
+### Latest committed summaries
+
+| Evaluation set | Total prompts | Available evaluated rows | Average latency | Median latency |
+|---|---:|---:|---:|---:|
+| Domain set | 120 | 80 | 2037.0 ms | 2036.0 ms |
+| Multilingual set | 120 | 80 | 2031.8 ms | 2031.5 ms |
+
+## Run Locally
 
 ### Prerequisites
 
@@ -100,8 +134,6 @@ pip install -r requirements.txt
 
 ### Environment
 
-Create a `.env` file or export the variables in your shell:
-
 ```bash
 OPENAI_API_KEY=your_api_key_here
 OPENAI_MODEL=gpt-4o-mini
@@ -113,44 +145,14 @@ FINETUNED_ENDPOINT_URL=
 HF_TOKEN=your_hugging_face_token
 ```
 
-### Run
+### Start the app
 
 ```bash
 streamlit run app.py
 ```
 
-## Screenshots
+## Notes
 
-### Live app overview
-This screenshot shows the deployed Space header, product framing, and dashboard metrics in one view.
-
-![RAG Space overview](screenshots/rag-space-overview.png)
-
-### Low-latency answer example
-Question shown:
-`Explain Regulation E liability limits for unauthorized transfers?`
-
-![RAG assistant low-latency answer](screenshots/rag-low-latency-answer.png)
-
-## Evaluation
-
-The repository includes lightweight evaluation support in [`evaluation`](./evaluation) with:
-
-- starter questions for OpenAI, Fine-Tuned, and Auto modes
-- notes for comparing groundedness, completeness, latency, and fallback behavior
-- room to expand into a stronger benchmark over time
-
-## Current Limitations
-
-- Fine-Tuned mode depends on a configured hosted model path to feel fully production-ready.
-- Voice Input is labeled as a preview because browser recording reliability can vary by environment.
-- Image Upload is a preview workflow and does not claim full multimodal reasoning.
-- The app is optimized for trust and explainability, not high-throughput production traffic.
-
-## Roadmap
-
-- stronger hosted fine-tuned model deployment
-- better chunk ranking and citation styling
-- richer evaluation tables across all model modes
-- optional OCR or image reasoning once a real multimodal backend is wired
-- further polish for mobile layout and accessibility
+- Fine-Tuned mode depends on a configured hosted endpoint to reflect full production behavior.
+- Voice input and some upload flows are still environment-sensitive because they depend on browser/runtime behavior.
+- The app is built for groundedness and explainability first, not raw throughput.

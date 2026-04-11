@@ -1,60 +1,120 @@
-# RAG Evaluation Pack
+# Evaluation
 
-This folder contains a simple 50-question evaluation pack for the Banking Finance RAG Assistant.
+This folder contains the evaluation layer for the Banking & Finance Copilot. I wanted the project to have something stronger than screenshots and one-off examples, so this folder keeps the question packs, runners, and result snapshots together in one place.
 
-## Files
+## What Is Included
 
-- `questions.csv` - 50 domain questions across AML, KYC, FDIC, RBI, Basel, CTR, SAR, and core banking concepts
-- `results_template.csv` - template for recording latency, source count, grounded flag, confidence, and accuracy
-- `run_eval.py` - generates a timestamped 50-question results CSV ready to fill during a live app pass
-- `batch_eval.py` - runs an automated local batch evaluation against the same knowledge files and prompt logic used by the app
-- `compute_metrics.py` - small script to summarize the completed results sheet
+- `questions.csv`
+  the original 50-question evaluation sheet
+- `evaluation_queries.md`
+  a 120-question domain evaluation pack
+- `evaluation_multilingual.md`
+  a 120-question multilingual evaluation pack
+- `run_eval.py`
+  generates a timestamped 50-question results sheet
+- `batch_eval.py`
+  runs the older local batch evaluation path
+- `run_eval_sets.py`
+  runs the two larger markdown-based evaluation packs automatically
+- `summarize_eval_sets.py`
+  summarizes any generated CSV
+- `results/`
+  committed result snapshots from completed runs
 
-## How to use it
+## Why This Matters
 
-1. Generate a fresh results sheet:
+For a product like this, the interesting question is not only whether it can answer a banking prompt once. The real question is whether it can do that repeatedly, across modes, across languages, and with results that can be inspected later.
+
+That is why the evaluation folder is committed to the repo instead of living as a private notebook or a local-only script.
+
+## Two Main Evaluation Packs
+
+### 1. Domain pack
+
+`evaluation_queries.md` contains 120 banking and compliance prompts grouped across:
+
+- OpenAI
+- Fine-Tuned
+- Auto
+
+The set covers topics such as:
+
+- KYC
+- AML
+- Basel III
+- FDIC
+- RBI
+- CECL
+- payments
+- credit risk
+
+### 2. Multilingual pack
+
+`evaluation_multilingual.md` contains 120 multilingual prompts, again grouped across:
+
+- OpenAI
+- Fine-Tuned
+- Auto
+
+The purpose here is to check how the product behaves when the same banking system is used beyond one language or one demo-friendly prompt style.
+
+## How To Run
+
+From `01-rag-system/evaluation`:
 
 ```bash
-python run_eval.py
+python run_eval_sets.py
 ```
 
-2. Run the 50 questions through the deployed RAG app or your local app instance.
-3. For each answer, record:
-   - `latency_ms`
-   - `source_count`
-   - `grounded_flag`
-   - `confidence`
-   - `accuracy_rating`
-4. Save the completed rows in the generated `results_*.csv` file.
-5. Run:
+This writes timestamped outputs into `results/`:
+
+- `evaluation_queries_results_YYYYMMDD_HHMMSS.csv`
+- `evaluation_queries_summary_YYYYMMDD_HHMMSS.json`
+- `evaluation_multilingual_results_YYYYMMDD_HHMMSS.csv`
+- `evaluation_multilingual_summary_YYYYMMDD_HHMMSS.json`
+
+You can also run only one set:
 
 ```bash
-python compute_metrics.py results_YYYYMMDD_HHMMSS.csv
+python run_eval_sets.py --set domain
+python run_eval_sets.py --set multilingual
 ```
 
-## Automated local batch path
-
-If you have `OPENAI_API_KEY` available locally, you can run:
+To summarize any generated CSV:
 
 ```bash
-python batch_eval.py
+python summarize_eval_sets.py results/evaluation_queries_results_YYYYMMDD_HHMMSS.csv
 ```
 
-This uses the same `*knowledge*.txt` files, retrieval strategy, prompt templates, and confidence logic as the Streamlit app, then writes a timestamped JSON file with:
+## Current Committed Result Snapshots
 
-- answer text
-- latency in milliseconds
-- source count
-- confidence label
-- simple automatic quality flags
+The latest committed snapshots in `results/` are:
 
-## Important note
+- `evaluation_queries_results_20260411_125512.csv`
+- `evaluation_queries_summary_20260411_125512.json`
+- `evaluation_multilingual_results_20260411_125512.csv`
+- `evaluation_multilingual_summary_20260411_125512.json`
 
-This evaluation pack is intended to produce honest portfolio metrics. It should not be used to claim:
-- sub-1 second latency
-- 90%+ grounded response rate
-- high accuracy
+## Latest Committed Summary
 
-unless those numbers are actually observed from a completed run.
+### Domain evaluation pack
 
-The deployed Hugging Face Space is a Streamlit app, so the UI-driven workflow remains the safest way to measure the exact production experience. The automated local batch path is useful for faster iteration and reproducible offline evaluation with the same source documents and prompt logic.
+| Metric | Result |
+|---|---|
+| Total prompts | 120 |
+| Available evaluated rows | 80 |
+| Average latency | 2037.0 ms |
+| Median latency | 2036.0 ms |
+
+### Multilingual evaluation pack
+
+| Metric | Result |
+|---|---|
+| Total prompts | 120 |
+| Available evaluated rows | 80 |
+| Average latency | 2031.8 ms |
+| Median latency | 2031.5 ms |
+
+## Practical Note
+
+These committed summaries reflect the configured local environment that was available for the run. That is why the evaluation setup keeps the raw CSV and JSON files as well as the summary. It makes the run auditable instead of relying on a single polished metric table.
