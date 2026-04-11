@@ -281,10 +281,4 @@ If you want to inspect the implementation directly, these are the highest-signal
 - `04-conversational-memory/app/rag_chain.py`
 - `04-conversational-memory/evaluation/coherence_eval.py`
 
-## What I Would Say In An Interview
 
-I built this portfolio to show an end-to-end view of applied GenAI in a narrow domain. I started with a grounded banking RAG assistant, then built the data layer behind it, then fine-tuned a domain adapter, then added backend memory and compare-mode orchestration. The result is not just a chatbot demo. It is a layered system that demonstrates product design, retrieval, model adaptation, evaluation, and deployment in one coherent banking use case.
-
-## License
-
-Apache-2.0 where applicable. See project folders for any project-specific details.
