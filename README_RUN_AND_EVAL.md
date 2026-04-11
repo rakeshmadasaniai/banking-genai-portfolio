@@ -11,14 +11,9 @@ This repo links together three Hugging Face assets and now surfaces the main eng
 - `03-qlora-finetuning/Banking_QLoRA_Mistral7B_updated.ipynb`
 - `03-qlora-finetuning/inference_demo.py`
 
-## Recommended recruiter review path
 
-1. Open the main README for the portfolio overview.
-2. Open `01-rag-system/README.md` for the deployed app, screenshots, and local run instructions.
-3. Open `02-qa-dataset/README.md` to see how the dataset was built and published.
-4. Open `03-qlora-finetuning/README.md` for the model artifact and fine-tuning summary.
 
-## Recommended engineer review path
+## Engineer review path
 
 1. Read `01-rag-system/app.py`
 2. Read `01-rag-system/evaluation/compute_metrics.py`
