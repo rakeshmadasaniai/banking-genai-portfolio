@@ -108,13 +108,31 @@ What it does well:
 - multilingual answer support
 - evaluation workflows committed alongside the app
 
-### Current Product Screens
+### Product Walkthrough
 
-![Live product overview](01-rag-system/screenshots/rag-space-overview.png)
+#### Home screen
 
-![Example answer card](01-rag-system/screenshots/rag-low-latency-answer.png)
+This is the first view of the product: the live Banking & Finance Copilot shell, stable sidebar, and model modes.
 
-![Auto mode routing comparison](01-rag-system/screenshots/rag-dashboard-metrics.png)
+![Banking Copilot home screen](01-rag-system/screenshots/banking-copilot-home-screen.png)
+
+#### English grounded answer
+
+This example shows a structured English answer with visible sources, latency, and confidence.
+
+![Grounded English answer example](01-rag-system/screenshots/grounded-english-answer-example.png)
+
+#### Telugu grounded answer
+
+This example shows the same product answering a banking question in Telugu while keeping the same grounded answer card format.
+
+![Grounded Telugu answer example](01-rag-system/screenshots/grounded-telugu-answer-example.png)
+
+#### Auto routing comparison
+
+This view shows Auto mode selecting the faster answer path while still exposing the routing comparison to the user.
+
+![Auto routing comparison view](01-rag-system/screenshots/auto-routing-comparison-view.png)
 
 ## Evaluation
 
