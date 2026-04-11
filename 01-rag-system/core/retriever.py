@@ -125,6 +125,14 @@ def retrieve_shared_context(question: str, base_index: VectorIndex | None, uploa
         "context": format_context_sections(candidates, limit=460),
         "retrieved_chunks": len(candidates),
         "sources": list(dict.fromkeys(source_label(doc.metadata) for doc in candidates)),
-        "source_cards": [{"label": source_label(doc.metadata), "preview": preview_text(doc.page_content, 260)} for doc in candidates],
+        "source_cards": [
+            {
+                "rank": index,
+                "label": source_label(doc.metadata),
+                "preview": preview_text(doc.page_content, 260),
+                "source_type": doc.metadata.get("type", "base"),
+            }
+            for index, doc in enumerate(candidates, start=1)
+        ],
         "weak_retrieval": weak_retrieval(question, candidates),
     }

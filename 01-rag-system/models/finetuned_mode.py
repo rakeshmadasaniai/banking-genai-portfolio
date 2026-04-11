@@ -6,7 +6,7 @@ import time
 from huggingface_hub import InferenceClient
 
 from core.prompts import FINETUNED_SYSTEM_PROMPT, build_model_prompt
-from core.utils import FALLBACK_ANSWER, confidence_label, retrieval_overlap, score_candidate
+from core.utils import FALLBACK_ANSWER, confidence_label, extractive_answer, retrieval_overlap, score_candidate
 
 
 def _build_client() -> tuple[InferenceClient | None, str]:
@@ -19,16 +19,28 @@ def _build_client() -> tuple[InferenceClient | None, str]:
     return InferenceClient(model=target, token=token), model_id
 
 
-def generate_finetuned_response(question: str, retrieval: dict) -> dict:
+def generate_finetuned_response(question: str, retrieval: dict, uploaded_images: list | None = None) -> dict:
+    if uploaded_images:
+        return {
+            "answer": "Fine-Tuned mode does not currently support image reasoning. Use OpenAI or Auto for image questions.",
+            "backend": "Fine-Tuned",
+            "model_name": "image_unsupported",
+            "latency_ms": 0,
+            "confidence": "Low",
+            "score": score_candidate(question, FALLBACK_ANSWER, retrieval["documents"], 0),
+            "available": False,
+        }
     client, model_name = _build_client()
     if client is None:
+        fallback_answer = extractive_answer(question, retrieval["documents"]) or FALLBACK_ANSWER
+        overlap = retrieval_overlap(question, retrieval["documents"])
         return {
-            "answer": "Fine-tuned mode is not configured for this deployment yet.",
+            "answer": fallback_answer,
             "backend": "Fine-Tuned",
             "model_name": model_name,
             "latency_ms": 0,
-            "confidence": "Low",
-            "score": {"groundedness": 0.0, "completeness": 0.0, "latency": 0.0, "total": 0.0},
+            "confidence": confidence_label(fallback_answer, len(retrieval["sources"]), overlap),
+            "score": score_candidate(question, fallback_answer, retrieval["documents"], 0),
             "available": False,
         }
 
@@ -45,8 +57,8 @@ def generate_finetuned_response(question: str, retrieval: dict) -> dict:
                 return_full_text=False,
             ).strip()
         except Exception:
-            answer = "Fine-tuned mode could not generate a response in the current environment."
-    answer = answer or FALLBACK_ANSWER
+            answer = ""
+    answer = answer or extractive_answer(question, retrieval["documents"]) or FALLBACK_ANSWER
     latency_ms = round((time.perf_counter() - start) * 1000)
     overlap = retrieval_overlap(question, retrieval["documents"])
     return {

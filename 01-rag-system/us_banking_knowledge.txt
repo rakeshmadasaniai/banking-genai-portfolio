@@ -1,4 +1,32 @@
 ================================================================
+
+SECTION 12: DEMO-READY U.S. QUESTIONS
+================================================================
+
+What is the FDIC insurance limit?
+- The standard FDIC insurance amount is $250,000 per depositor, per insured bank, per ownership category.
+- Coverage can be higher when the same customer holds funds in different ownership categories, such as single and joint accounts.
+- FDIC insurance applies automatically at insured institutions; depositors do not file a separate application.
+
+How do CTR and SAR rules differ in the U.S.?
+- CTRs are required for cash transactions above $10,000 in a single business day and are threshold-based.
+- SARs are required when a bank suspects suspicious or potentially illegal activity and generally involve transactions of $5,000 or more.
+- A transaction can trigger a SAR even if it is below the CTR threshold when the pattern appears suspicious.
+
+What does Regulation E say about unauthorized transfers?
+- If a consumer reports an unauthorized electronic fund transfer within 2 business days after learning of loss or theft of an access device, liability is generally capped at $50.
+- If reported after 2 business days but within 60 days after the statement is sent, liability can rise to $500.
+- After 60 days, the consumer may face much greater liability for transfers occurring after that point.
+
+What is CECL?
+- Current Expected Credit Loss (CECL) requires institutions to recognize expected lifetime credit losses earlier than the older incurred-loss approach.
+- CECL is more forward-looking and relies on historical experience, current conditions, and reasonable forecasts.
+- It materially affects reserves, provisioning, model governance, and documentation expectations for credit portfolios.
+
+How does OFAC screening affect banking operations?
+- Banks must screen customers and transactions against sanctions lists such as the SDN list.
+- Potential matches can require blocking, rejecting, escalation, and regulatory reporting.
+- OFAC compliance is especially important for wires, trade finance, correspondent banking, and cross-border payments.
 U.S. BANKING & FINANCIAL REGULATIONS KNOWLEDGE BASE
 ================================================================
 Sources: FDIC, FinCEN, Federal Reserve, OCC, CFPB, SEC

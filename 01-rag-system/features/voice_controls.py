@@ -8,11 +8,11 @@ from openai import OpenAI
 from streamlit_mic_recorder import mic_recorder
 
 
-def _get_transcript(audio_payload: dict) -> str:
+def _transcribe_audio(audio_payload: dict) -> str:
     api_key = os.environ.get("OPENAI_API_KEY", "").strip()
     model_name = os.environ.get("OPENAI_STT_MODEL", "gpt-4o-mini-transcribe").strip()
     if not api_key:
-        st.warning("Voice input needs OPENAI_API_KEY to transcribe microphone audio.")
+        st.warning("Voice Input (Preview) needs OPENAI_API_KEY to transcribe microphone audio.")
         return ""
 
     audio_bytes = audio_payload.get("bytes")
@@ -27,35 +27,30 @@ def _get_transcript(audio_payload: dict) -> str:
     return (getattr(transcript, "text", "") or "").strip()
 
 
-def render_voice_input() -> tuple[str, bool]:
-    st.markdown("### Voice Input")
-    st.caption("Use the microphone button to speak your banking question.")
-
+def render_voice_input_preview() -> tuple[str, bool]:
     audio_payload = mic_recorder(
-        start_prompt="🎙️",
-        stop_prompt="⏹️",
+        start_prompt="Record now",
+        stop_prompt="Stop",
         just_once=True,
-        use_container_width=False,
+        use_container_width=True,
         format="webm",
-        key="copilot_mic",
+        key="copilot_mic_preview",
     )
     if not audio_payload:
         return "", False
 
-    last_voice_id = st.session_state.get("last_voice_id")
     current_voice_id = audio_payload.get("id")
-    if last_voice_id == current_voice_id:
+    if st.session_state.get("last_voice_id") == current_voice_id:
         return "", True
 
     with st.spinner("Transcribing your voice input..."):
-        transcript = _get_transcript(audio_payload)
+        transcript = _transcribe_audio(audio_payload)
 
     st.session_state.last_voice_id = current_voice_id
     st.session_state.last_voice_transcript = transcript
 
     if transcript:
-        st.success(f"Voice transcript ready: {transcript}")
         return transcript, True
 
-    st.warning("Voice input was recorded, but transcription did not return usable text.")
+    st.caption("Recording captured, but transcription did not return usable text.")
     return "", True

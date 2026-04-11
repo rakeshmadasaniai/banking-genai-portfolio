@@ -1,35 +1,63 @@
-# 🌎 Banking & Finance Copilot
+# ?? Banking & Finance Copilot
 
-This project is a grounded banking and finance AI copilot built with Streamlit, FAISS retrieval, OpenAI generation, and a fine-tuned model integration path. It is designed for regulatory question answering, document-assisted workflows, and product-style demo readiness.
+Banking & Finance Copilot is a grounded AI assistant for banking and financial knowledge. It combines retrieval over curated banking material with multiple model modes, document upload support, accessibility controls, and transparent source cards so the product feels trustworthy in live demos and portfolio reviews.
 
-## Live Demo
+## Hugging Face Demo Link
 [banking-finance-rag](https://huggingface.co/spaces/RakeshMadasani/banking-finance-rag)
 
-## Product Upgrade Highlights
+## Project Overview
 
-- OpenAI mode for the strongest baseline RAG path
-- Fine-Tuned mode wired for a banking-domain model backend
-- Auto mode that compares candidates and chooses the better answer
+This project upgrades a banking RAG assistant into a more product-like copilot experience. It preserves the core grounding value of the original assistant while improving explainability, UI clarity, upload workflows, model orchestration, and accessibility.
+
+## Why This Project Matters
+
+Most AI demos answer questions. Fewer show why the answer should be trusted. This project is designed around that trust layer:
+
+- shared retrieval before generation
+- visible source cards and chunk previews
+- fallback behavior when support is weak
+- explicit model-mode selection
+- honest labeling for partial preview features
+
+## Core Features
+
+- OpenAI mode as the strongest stable baseline
+- Fine-Tuned mode for a custom banking-domain model path
+- Auto mode that retrieves once, scores candidates, and chooses the stronger response
 - PDF, DOCX, and TXT upload support for session retrieval
-- image upload placeholder for future OCR or vision analysis
-- voice input and voice output hooks
-- accessibility mode with large text, high contrast, and simplified answer display
-- source-grounded response cards with response metadata
+- Image Upload (Preview) with clear non-multimodal labeling
+- Voice Input (Preview) with browser recording and transcription
+- Read Answer Aloud using generated speech for the final assistant answer
+- Accessibility controls for large text, high contrast, and simplified response display
+- Source-grounded response cards with metadata and chunk rank
 
-## Screenshots
-### Live app overview
-This screenshot shows the deployed Space header, product framing, and dashboard metrics in one view.
+## Model Modes
 
-![RAG Space overview](screenshots/rag-space-overview.png)
+### OpenAI
 
-### Low-latency answer example
-Question shown:
-`Explain Regulation E liability limits for unauthorized transfers?`
+Uses the strongest current RAG path and is the recommended baseline mode for live demos.
 
-![RAG assistant low-latency answer](screenshots/rag-low-latency-answer.png)
+### Fine-Tuned
 
-## Overview
-The copilot retrieves context from the built-in banking knowledge base plus optional uploaded documents, then routes the question through OpenAI mode, fine-tuned mode, or auto-selection mode. The answer is displayed with source cards, response metadata, and grounded fallback behavior when the retrieval signal is weak.
+Uses a banking-domain fine-tuned model path when the backend is configured. This mode is kept honest in the UI and should only be treated as fully production-ready when the hosted model path is verified.
+
+### Auto
+
+Retrieves context once, asks each available model path to answer on the same grounding, and chooses the winner using a simple weighted score:
+
+- groundedness
+- completeness
+- latency
+
+This keeps the logic explainable in interviews and makes the routing behavior transparent.
+
+## Accessibility Features
+
+- Large text for better readability
+- High contrast for stronger visual separation
+- Simplified response display for shorter paragraph formatting
+- clear section labels and grouped sidebar controls
+- source cards separated from the answer for easier scanning
 
 ## Architecture
 
@@ -40,53 +68,29 @@ flowchart LR
     C --> D["FAISS retrieval"]
     D --> E["Shared grounded context"]
     E --> F["OpenAI mode | Fine-Tuned mode | Auto mode"]
-    F --> G["Answer + sources + confidence + metadata"]
+    F --> G["Answer + source cards + metadata + read aloud"]
 ```
 
-## Why These Design Choices
+## How It Works
 
-- **FAISS for retrieval:** lightweight, fast, and easy to deploy for a focused portfolio-scale knowledge base
-- **RAG over model-only answers:** keeps source grounding visible and easier to inspect during demos
-- **Multiple model modes:** shows orchestration depth instead of a single fixed backend
-- **Accessible UI controls:** makes the product feel more intentional and usable
-- **Uploaded document support:** demonstrates document augmentation instead of relying only on static built-in knowledge
+1. The app loads the built-in banking knowledge files and optional uploaded documents.
+2. Documents are chunked and embedded with `sentence-transformers/all-MiniLM-L6-v2`.
+3. FAISS retrieves the most relevant chunks for the user question.
+4. The selected model mode generates a response from the same grounded context.
+5. The UI shows:
+   - the answer
+   - the selected model
+   - response time
+   - retrieved chunk count
+   - source cards with chunk previews
+6. If retrieval is weak, the app lowers confidence and asks the user to narrow the question or upload more relevant material.
 
-## Stack
-- Streamlit
-- LangChain
-- OpenAI
-- Hugging Face Inference Client
-- FAISS
-- sentence-transformers
-- pypdf
-- python-docx
-
-## Code Entry Points
-- `app.py` - main Streamlit application
-- `core/copilot_app.py` - upgraded product-style app flow
-- `core/retriever.py` - shared retrieval, upload parsing, and grounded context assembly
-- `models/openai_mode.py` - OpenAI response mode
-- `models/finetuned_mode.py` - fine-tuned model response mode
-- `models/auto_router.py` - auto-selection logic across model candidates
-- `requirements.txt` - Python dependencies for local reproduction
-- `evaluation/test_questions.json` - starter evaluation set for mode comparison
-- `evaluation/evaluation_notes.md` - evaluation plan and reporting notes
-
-## Key Features
-- source-grounded banking Q&A
-- OpenAI, Fine-Tuned, and Auto model modes
-- PDF, DOCX, and TXT upload support
-- image upload placeholder
-- voice-ready hooks
-- accessibility options
-- source cards and response metadata
-- lightweight evaluation scaffolding
-
-## How to Run
+## How to Run Locally
 
 ### Prerequisites
+
 - Python 3.10+
-- an OpenAI API key
+- OpenAI API key
 
 ### Install
 
@@ -101,59 +105,52 @@ Create a `.env` file or export the variables in your shell:
 ```bash
 OPENAI_API_KEY=your_api_key_here
 OPENAI_MODEL=gpt-4o-mini
+OPENAI_STT_MODEL=gpt-4o-mini-transcribe
+OPENAI_TTS_MODEL=gpt-4o-mini-tts
+OPENAI_TTS_VOICE=alloy
 FINETUNED_MODEL_ID=RakeshMadasani/banking-finance-mistral-qlora
 FINETUNED_ENDPOINT_URL=
 HF_TOKEN=your_hugging_face_token
 ```
 
-### Run the app
+### Run
 
 ```bash
 streamlit run app.py
 ```
 
-### What to expect locally
+## Screenshots
 
-On startup, the app loads the built-in banking knowledge files, builds the FAISS index, and serves the upgraded copilot UI. You can ask questions against the packaged knowledge base, upload supporting documents for session retrieval, and switch between model modes from the sidebar.
+### Live app overview
+This screenshot shows the deployed Space header, product framing, and dashboard metrics in one view.
 
-### Suggested questions
-- What is the FDIC deposit insurance limit in the United States?
-- What are the three stages of money laundering?
-- Explain Regulation E liability limits for unauthorized transfers.
-- What documents are required for KYC of an individual in India?
+![RAG Space overview](screenshots/rag-space-overview.png)
 
-### Knowledge sources
-The app expects the base banking knowledge files in the project directory and supports optional uploaded PDF, DOCX, and TXT documents at runtime.
+### Low-latency answer example
+Question shown:
+`Explain Regulation E liability limits for unauthorized transfers?`
+
+![RAG assistant low-latency answer](screenshots/rag-low-latency-answer.png)
 
 ## Evaluation
 
-The repository includes a lightweight evaluation scaffold in [`evaluation`](./evaluation) with:
+The repository includes lightweight evaluation support in [`evaluation`](./evaluation) with:
 
-- starter test questions for OpenAI, Fine-Tuned, and Auto modes
+- starter questions for OpenAI, Fine-Tuned, and Auto modes
 - notes for comparing groundedness, completeness, latency, and fallback behavior
-- a simple path for turning the copilot into a stronger benchmarked portfolio artifact
+- room to expand into a stronger benchmark over time
 
-Avoid performance claims until the same questions have been run across each mode and recorded.
+## Current Limitations
 
-## Limitations
+- Fine-Tuned mode depends on a configured hosted model path to feel fully production-ready.
+- Voice Input is labeled as a preview because browser recording reliability can vary by environment.
+- Image Upload is a preview workflow and does not claim full multimodal reasoning.
+- The app is optimized for trust and explainability, not high-throughput production traffic.
 
-- the app depends on an external LLM backend for final answer generation
-- fine-tuned mode works best when backed by a configured endpoint or supported hosted deployment
-- source visibility is stronger than before, but citation styling can still improve further
-- uploaded document performance depends on extraction quality and readable document text
-- image and voice features are intentionally lightweight hooks in this version
+## Roadmap
 
-
-## Note on latency screenshots
-The current screenshots in this repository reflect real app sessions and are included as product evidence. The Regulation E example shows a sub-second response path from the deployed assistant, while the Space overview captures the main dashboard metrics in context.
-
-## README Draft Outline
-
-- overview
-- features
-- architecture
-- how to run
-- model modes
-- screenshots
-- evaluation
-- roadmap
+- stronger hosted fine-tuned model deployment
+- better chunk ranking and citation styling
+- richer evaluation tables across all model modes
+- optional OCR or image reasoning once a real multimodal backend is wired
+- further polish for mobile layout and accessibility
