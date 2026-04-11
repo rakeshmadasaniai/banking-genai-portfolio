@@ -1,4 +1,4 @@
-# ?? Banking & Finance Copilot
+# 🌎 Banking & Finance Copilot
 
 Banking & Finance Copilot is a grounded AI assistant for banking and financial knowledge. It combines retrieval over curated banking material with multiple model modes, document upload support, accessibility controls, and transparent source cards so the product feels trustworthy in live demos and portfolio reviews.
 
