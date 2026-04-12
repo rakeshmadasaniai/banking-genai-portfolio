@@ -30,6 +30,9 @@ def to_int(value: str) -> int:
 def summarize(rows: list[dict]) -> dict:
     available_rows = [row for row in rows if row.get("available") == "yes"]
     latencies = [to_int(row["latency_ms"]) for row in available_rows]
+    groundedness_scores = [float(row["groundedness_score"]) for row in available_rows if row.get("groundedness_score")]
+    completeness_scores = [float(row["completeness_score"]) for row in available_rows if row.get("completeness_score")]
+    quality_scores = [float(row["quality_score"]) for row in available_rows if row.get("quality_score")]
     by_mode = defaultdict(list)
     by_language = defaultdict(list)
     for row in rows:
@@ -41,6 +44,11 @@ def summarize(rows: list[dict]) -> dict:
         "available_rows": len(available_rows),
         "average_latency_ms": round(mean(latencies), 1) if latencies else None,
         "median_latency_ms": round(median(latencies), 1) if latencies else None,
+        "average_groundedness_score": round(mean(groundedness_scores), 3) if groundedness_scores else None,
+        "average_completeness_score": round(mean(completeness_scores), 3) if completeness_scores else None,
+        "average_quality_score": round(mean(quality_scores), 3) if quality_scores else None,
+        "quality_band_counts": dict(Counter(row["quality_band"] for row in available_rows if row.get("quality_band"))),
+        "hallucination_risk_counts": dict(Counter(row["hallucination_risk"] for row in available_rows if row.get("hallucination_risk"))),
         "by_mode": {
             mode: {
                 "count": len(mode_rows),
@@ -52,6 +60,10 @@ def summarize(rows: list[dict]) -> dict:
                 if any(row.get("available") == "yes" for row in mode_rows)
                 else None,
                 "confidence_counts": dict(Counter(row["confidence"] for row in mode_rows if row.get("available") == "yes")),
+                "quality_band_counts": dict(Counter(row["quality_band"] for row in mode_rows if row.get("available") == "yes" and row.get("quality_band"))),
+                "average_quality_score": round(mean(float(row["quality_score"]) for row in mode_rows if row.get("available") == "yes" and row.get("quality_score")), 3)
+                if any(row.get("available") == "yes" and row.get("quality_score") for row in mode_rows)
+                else None,
             }
             for mode, mode_rows in by_mode.items()
         },

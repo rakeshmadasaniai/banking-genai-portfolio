@@ -21,6 +21,17 @@ This folder contains the evaluation layer for the Banking & Finance Copilot. I w
 - `results/`
   committed result snapshots from completed runs
 
+The newer evaluation CSV schema now exports quality-oriented fields as well:
+
+- `groundedness_score`
+- `completeness_score`
+- `quality_score`
+- `quality_band`
+- `hallucination_risk`
+- `human_rating_1_to_3`
+
+That last field is intentionally left blank by the automatic runner so a human reviewer can add a simple 1-3 judgment later without changing the file format.
+
 ## Why This Matters
 
 For a product like this, the interesting question is not only whether it can answer a banking prompt once. The real question is whether it can do that repeatedly, across modes, across languages, and with results that can be inspected later.
