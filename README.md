@@ -30,6 +30,19 @@ I did not want this to be a one-screen chatbot demo. I wanted it to behave like 
 | Backend | Conversational memory API | Shows system thinking and architecture depth |
 | Evaluation | 120-query domain set + 120-query multilingual set | Shows repeatable measurement, not anecdotal demos |
 
+## Where The Product Code Lives
+
+If someone lands on this repo from GitHub first, the main product code is not hidden in a separate private service. It lives directly inside [`01-rag-system`](01-rag-system):
+
+- [`01-rag-system/core`](01-rag-system/core)
+  runtime orchestration, retrieval flow, prompts, and shared utilities
+- [`01-rag-system/features`](01-rag-system/features)
+  product UI, uploads, voice output, answer cards, and interaction behavior
+- [`01-rag-system/models`](01-rag-system/models)
+  OpenAI mode, Fine-Tuned mode, and Auto routing logic
+
+That structure matters because I wanted the repo to read like a real product codebase, not a single README pointing to an external demo.
+
 ## How The Portfolio Evolves
 
 This repo is one system built in layers.
@@ -110,33 +123,33 @@ What it does well:
 
 ### Product Walkthrough
 
-#### Home screen
+#### A clean first impression for the product
 
-This is the first view of the product: the live Banking & Finance Copilot shell, stable sidebar, and model modes.
+This is the opening experience of the Banking & Finance Copilot: stable sidebar, mode selector, welcome guidance, and multilingual starter questions that make the product feel usable immediately.
 
-![Banking Copilot home screen](01-rag-system/screenshots/banking-copilot-home-screen.png)
+![Banking Copilot home experience](01-rag-system/screenshots/banking-copilot-home-experience.png)
 
-#### English grounded answer
+#### A grounded English answer that feels concise and useful
 
-This example shows a structured English answer with visible sources, latency, and confidence.
+This example shows the assistant answering a KYC question in English with a direct explanation, compact bullets, visible latency, and retrieved source support.
 
-![Grounded English answer example](01-rag-system/screenshots/grounded-english-answer-example.png)
+![English KYC answer walkthrough](01-rag-system/screenshots/english-kyc-answer-walkthrough.png)
 
-#### Telugu grounded answer
+#### The same product experience working in Telugu
 
-This example shows the same product answering a banking question in Telugu while keeping the same grounded answer card format.
+This screenshot shows the answer structure holding up in Telugu, which is important because the product is meant to feel consistent across languages, not just translated.
 
-![Grounded Telugu answer example](01-rag-system/screenshots/grounded-telugu-answer-example.png)
+![Telugu KYC answer walkthrough](01-rag-system/screenshots/telugu-kyc-answer-walkthrough.png)
 
-#### Auto routing comparison
+#### Multilingual grounding working in Chinese as well
 
-This view shows Auto mode selecting the faster answer path while still exposing the routing comparison to the user.
+This example shows the same KYC workflow in Chinese, which helps demonstrate that multilingual support is part of the product design, not just a side feature.
 
-![Auto routing comparison view](01-rag-system/screenshots/auto-routing-comparison-view.png)
+![Chinese KYC answer walkthrough](01-rag-system/screenshots/chinese-kyc-answer-walkthrough.png)
 
 ## Evaluation
 
-The repo now includes two larger evaluation packs inside [`01-rag-system/evaluation`](01-rag-system/evaluation):
+The repo includes two larger evaluation packs inside [`01-rag-system/evaluation`](01-rag-system/evaluation):
 
 - `evaluation_queries.md`
   120 domain-specific banking, AML, KYC, Basel III, FDIC, RBI, CECL, and payments questions
@@ -148,6 +161,7 @@ The folder also includes:
 - `run_eval_sets.py` to run both evaluation packs automatically
 - `summarize_eval_sets.py` to summarize any generated CSV
 - committed result snapshots in [`01-rag-system/evaluation/results`](01-rag-system/evaluation/results)
+- raw CSV outputs plus JSON summaries, so the runs are inspectable rather than just summarized in prose
 
 ### Latest committed evaluation snapshots
 
@@ -168,6 +182,27 @@ The folder also includes:
 | Available evaluated rows | 80 |
 | Average latency | 2031.8 ms |
 | Median latency | 2031.5 ms |
+
+### What those numbers mean
+
+The committed snapshot is intentionally honest about the environment it was run in:
+
+- the full packs contain 120 prompts each
+- the committed run has 80 available rows because the OpenAI path was not active in that local export
+- the Fine-Tuned and Auto paths still completed and produced auditable CSV/JSON artifacts
+
+I prefer showing that reality instead of pretending every backend was active in every run. A reviewer can open the raw result files, see which rows were available, and rerun the exact same packs in a fully configured environment.
+
+### Why I kept the raw result files
+
+The most valuable part of the evaluation setup is not just the summary table. It is that the repo contains:
+
+- the question packs
+- the runner scripts
+- the summarizer
+- the committed outputs
+
+So if someone asks, "How did you test it?" I can point to the exact prompts, exact outputs, and exact summaries rather than hand-picked screenshots.
 
 Those results matter to me because they make the product discussable in a serious way. If someone asks how I tested it, I can point to committed query packs, reproducible runners, timestamped results, and summaries instead of hand-wavy claims.
 
@@ -195,7 +230,11 @@ If someone wants to inspect the implementation rather than just the screenshots,
 
 - `01-rag-system/app.py`
 - `01-rag-system/core/product_runtime.py`
+- `01-rag-system/core/retriever.py`
+- `01-rag-system/features/product_ui.py`
 - `01-rag-system/models/auto_router.py`
+- `01-rag-system/models/openai_mode.py`
+- `01-rag-system/models/finetuned_mode.py`
 - `01-rag-system/evaluation/run_eval_sets.py`
 - `01-rag-system/evaluation/summarize_eval_sets.py`
 - `02-qa-dataset/generate_dataset.py`

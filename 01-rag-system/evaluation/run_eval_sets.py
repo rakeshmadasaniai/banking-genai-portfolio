@@ -54,6 +54,12 @@ CSV_FIELDS = [
     "sources",
     "confidence",
     "grounded_flag",
+    "groundedness_score",
+    "completeness_score",
+    "quality_score",
+    "quality_band",
+    "hallucination_risk",
+    "human_rating_1_to_3",
     "available",
     "route_reason",
 ]
@@ -202,6 +208,34 @@ def grounded_flag(answer: str, source_count: int) -> str:
     return "yes" if answer and answer != FALLBACK_ANSWER and source_count >= 1 else "no"
 
 
+def completeness_metric(question: str, answer: str) -> float:
+    if not answer or answer == FALLBACK_ANSWER:
+        return 0.0
+    question_terms = keyword_tokens(question)
+    if not question_terms:
+        return 0.0
+    answer_terms = keyword_tokens(answer)
+    lexical_cover = len(question_terms & answer_terms) / max(len(question_terms), 1)
+    length_bonus = min(len(answer.split()) / 60, 1.0) * 0.25
+    return round(min(1.0, lexical_cover + length_bonus), 3)
+
+
+def quality_band(score: float) -> str:
+    if score >= 0.72:
+        return "strong"
+    if score >= 0.45:
+        return "usable"
+    return "weak"
+
+
+def hallucination_risk(answer: str, source_count: int, groundedness: float) -> str:
+    if not answer or answer == FALLBACK_ANSWER or source_count == 0:
+        return "high"
+    if groundedness >= 0.5 and source_count >= 1:
+        return "low"
+    return "medium"
+
+
 def extractive_answer(question: str, documents: list[Document]) -> str:
     if not documents:
         return ""
@@ -260,7 +294,7 @@ def score_total(question: str, answer: str, documents: list[Document], latency_m
     if not answer or answer == FALLBACK_ANSWER:
         return 0.0
     grounded = retrieval_overlap(answer, documents)
-    completeness = min(1.0, len(keyword_tokens(question) & keyword_tokens(answer)) / max(len(keyword_tokens(question)), 1) + min(len(answer.split()) / 60, 1.0) * 0.25)
+    completeness = completeness_metric(question, answer)
     if latency_ms <= 1200:
         latency = 1.0
     elif latency_ms >= 8000:
@@ -499,6 +533,16 @@ def run_set(rows: list[dict], set_name: str) -> list[dict]:
                 "sources": " | ".join(retrieval["sources"]),
                 "confidence": result["confidence"],
                 "grounded_flag": grounded_flag(result["answer"], len(retrieval["sources"])),
+                "groundedness_score": retrieval_overlap(result["answer"], retrieval["documents"]),
+                "completeness_score": completeness_metric(row["query"], result["answer"]),
+                "quality_score": score_total(row["query"], result["answer"], retrieval["documents"], result["latency_ms"]),
+                "quality_band": quality_band(score_total(row["query"], result["answer"], retrieval["documents"], result["latency_ms"])),
+                "hallucination_risk": hallucination_risk(
+                    result["answer"],
+                    len(retrieval["sources"]),
+                    retrieval_overlap(result["answer"], retrieval["documents"]),
+                ),
+                "human_rating_1_to_3": "",
                 "available": "yes" if result["available"] else "no",
                 "route_reason": result["route_reason"],
             }

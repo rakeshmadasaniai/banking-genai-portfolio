@@ -9,12 +9,12 @@ import streamlit as st
 from features.voice_output import render_voice_output
 
 STARTER_PROMPTS = [
-    "What are the main KYC requirements for banks?",
-    "Compare AML obligations in India and the U.S.",
-    "Summarize RBI due diligence guidelines",
-    "Explain CECL in simple terms",
-    "Capital adequacy explained simply",
-    "What deposits does FDIC insurance cover?",
+    "What is KYC and why is it important in banking?",
+    "KYC అంటే ఏమిటి, బ్యాంకింగ్‌లో అది ఎందుకు ముఖ్యమైనది?",
+    "KYC क्या है और बैंकिंग में यह क्यों महत्वपूर्ण है?",
+    "¿Qué es KYC y por qué es importante en la banca?",
+    "什么是 KYC，它为什么在银行业中很重要？",
+    "ما هو KYC ولماذا هو مهم في العمل المصرفي؟",
 ]
 
 

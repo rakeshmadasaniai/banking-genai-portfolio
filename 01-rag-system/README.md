@@ -17,6 +17,19 @@ This is the product layer of the broader portfolio. The goal was not just to mak
 - multilingual interaction
 - reproducible evaluation, not just screenshots
 
+## Where The Code Is
+
+The live Hugging Face Space is only the deployment target. The actual product implementation is committed here in this project:
+
+- [`core`](./core)
+  retrieval orchestration, runtime flow, prompts, and shared utilities
+- [`features`](./features)
+  UI rendering, uploads, read-aloud, answer formatting, and user interaction
+- [`models`](./models)
+  OpenAI mode, Fine-Tuned mode, and Auto routing logic
+
+That is important because I wanted the repo to stand on its own as a real product codebase, not just point outward to a demo URL.
+
 ## What The User Can Do
 
 - ask banking, AML, KYC, FDIC, Basel III, RBI, and compliance questions
@@ -84,33 +97,33 @@ flowchart LR
 
 ## Product Walkthrough
 
-### Home screen
+### A clean first impression for the product
 
-This is the first impression of the product: the Banking & Finance Copilot shell, the sidebar, and the live model controls.
+This is the opening experience of the Banking & Finance Copilot: the stable sidebar, the mode selector, the welcome guidance, and multilingual starter questions that make the product feel usable from the first click.
 
-![Banking Copilot home screen](screenshots/banking-copilot-home-screen.png)
+![Banking Copilot home experience](screenshots/banking-copilot-home-experience.png)
 
-### English grounded answer
+### A grounded English answer that feels concise and useful
 
-This example shows how the product answers an English banking question with a direct explanation, source cards, and visible latency.
+This example shows the assistant answering a KYC question in English with a direct explanation, short supporting bullets, visible latency, and a retrieved source card underneath the answer.
 
-![Grounded English answer example](screenshots/grounded-english-answer-example.png)
+![English KYC answer walkthrough](screenshots/english-kyc-answer-walkthrough.png)
 
-### Telugu grounded answer
+### The same product experience working in Telugu
 
-This example shows the same answer format working for a Telugu banking question while keeping the evidence visible.
+This screenshot matters because it shows the product doing more than translation. The answer stays structured, readable, and grounded while responding to the question naturally in Telugu.
 
-![Grounded Telugu answer example](screenshots/grounded-telugu-answer-example.png)
+![Telugu KYC answer walkthrough](screenshots/telugu-kyc-answer-walkthrough.png)
 
-### Auto routing comparison
+### Multilingual grounding working in Chinese as well
 
-This view shows Auto mode comparing available answer paths and choosing the faster route while keeping the reasoning visible.
+This example shows the same KYC flow in Chinese, which helps demonstrate that the product experience is consistent across languages rather than being strong only in English.
 
-![Auto routing comparison view](screenshots/auto-routing-comparison-view.png)
+![Chinese KYC answer walkthrough](screenshots/chinese-kyc-answer-walkthrough.png)
 
 ## Evaluation
 
-The [`evaluation`](./evaluation) folder now includes two larger committed evaluation packs:
+The [`evaluation`](./evaluation) folder includes two larger committed evaluation packs:
 
 - `evaluation_queries.md`
   120 domain-specific prompts across OpenAI, Fine-Tuned, and Auto
@@ -130,6 +143,16 @@ Latest committed result snapshots live in [`evaluation/results`](./evaluation/re
 |---|---:|---:|---:|---:|
 | Domain set | 120 | 80 | 2037.0 ms | 2036.0 ms |
 | Multilingual set | 120 | 80 | 2031.8 ms | 2031.5 ms |
+
+### Reading the snapshot correctly
+
+Those numbers are the committed run snapshot, not a made-up "best case" table:
+
+- each pack contains 120 prompts
+- 80 rows were available in the committed export
+- the missing rows reflect backend availability in that local run, not missing evaluation logic
+
+I prefer that level of honesty because anyone reviewing the repo can inspect the CSVs and JSON summaries directly and see what was measured versus what was unavailable in that environment.
 
 ## Run Locally
 
@@ -165,6 +188,6 @@ streamlit run app.py
 
 ## Notes
 
-- Fine-Tuned mode depends on a configured hosted endpoint to reflect full production behavior.
+- Fine-Tuned mode becomes fully live when a hosted endpoint is configured. The adapter, routing logic, and evaluation path are in the repo today; the hosted endpoint is the last operational piece for a fully public demo of that mode.
 - Voice input and some upload flows are still environment-sensitive because they depend on browser/runtime behavior.
 - The app is built for groundedness and explainability first, not raw throughput.

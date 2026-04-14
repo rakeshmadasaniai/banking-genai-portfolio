@@ -21,6 +21,17 @@ This folder contains the evaluation layer for the Banking & Finance Copilot. I w
 - `results/`
   committed result snapshots from completed runs
 
+The newer evaluation CSV schema now exports quality-oriented fields as well:
+
+- `groundedness_score`
+- `completeness_score`
+- `quality_score`
+- `quality_band`
+- `hallucination_risk`
+- `human_rating_1_to_3`
+
+That last field is intentionally left blank by the automatic runner so a human reviewer can add a simple 1-3 judgment later without changing the file format.
+
 ## Why This Matters
 
 For a product like this, the interesting question is not only whether it can answer a banking prompt once. The real question is whether it can do that repeatedly, across modes, across languages, and with results that can be inspected later.
@@ -114,6 +125,25 @@ The latest committed snapshots in `results/` are:
 | Available evaluated rows | 80 |
 | Average latency | 2031.8 ms |
 | Median latency | 2031.5 ms |
+
+## What A Reviewer Should Notice
+
+These committed snapshots are not meant to be vanity metrics. They are meant to show that:
+
+- the question packs exist in the repo
+- the runners exist in the repo
+- the result files are committed in the repo
+- the summaries are derived from those raw result files
+
+The runs are also intentionally honest about backend availability. In the committed snapshot, 80 rows were available because the OpenAI path was not active in that local export. Rather than hide that, the repo keeps the CSVs and JSON files so the run is auditable.
+
+That gives a reviewer something stronger than "trust me, I tested it." They can inspect:
+
+- which prompts were used
+- which modes were active
+- which rows were unavailable
+- what the measured latency looked like
+- what the summary scripts report from the raw CSV
 
 ## Practical Note
 
