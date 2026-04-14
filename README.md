@@ -123,29 +123,29 @@ What it does well:
 
 ### Product Walkthrough
 
-#### Home screen
+#### A clean first impression for the product
 
-This is the first view of the product: the live Banking & Finance Copilot shell, stable sidebar, and model modes.
+This is the opening experience of the Banking & Finance Copilot: stable sidebar, mode selector, welcome guidance, and multilingual starter questions that make the product feel usable immediately.
 
-![Banking Copilot home screen](01-rag-system/screenshots/banking-copilot-home-screen.png)
+![Banking Copilot home experience](01-rag-system/screenshots/banking-copilot-home-experience.png)
 
-#### English grounded answer
+#### A grounded English answer that feels concise and useful
 
-This example shows a structured English answer with visible sources, latency, and confidence.
+This example shows the assistant answering a KYC question in English with a direct explanation, compact bullets, visible latency, and retrieved source support.
 
-![Grounded English answer example](01-rag-system/screenshots/grounded-english-answer-example.png)
+![English KYC answer walkthrough](01-rag-system/screenshots/english-kyc-answer-walkthrough.png)
 
-#### Telugu grounded answer
+#### The same product experience working in Telugu
 
-This example shows the same product answering a banking question in Telugu while keeping the same grounded answer card format.
+This screenshot shows the answer structure holding up in Telugu, which is important because the product is meant to feel consistent across languages, not just translated.
 
-![Grounded Telugu answer example](01-rag-system/screenshots/grounded-telugu-answer-example.png)
+![Telugu KYC answer walkthrough](01-rag-system/screenshots/telugu-kyc-answer-walkthrough.png)
 
-#### Auto routing comparison
+#### Multilingual grounding working in Chinese as well
 
-This view shows Auto mode selecting the faster answer path while still exposing the routing comparison to the user.
+This example shows the same KYC workflow in Chinese, which helps demonstrate that multilingual support is part of the product design, not just a side feature.
 
-![Auto routing comparison view](01-rag-system/screenshots/auto-routing-comparison-view.png)
+![Chinese KYC answer walkthrough](01-rag-system/screenshots/chinese-kyc-answer-walkthrough.png)
 
 ## Evaluation
 

@@ -97,29 +97,29 @@ flowchart LR
 
 ## Product Walkthrough
 
-### Home screen
+### A clean first impression for the product
 
-This is the first impression of the product: the Banking & Finance Copilot shell, the sidebar, and the live model controls.
+This is the opening experience of the Banking & Finance Copilot: the stable sidebar, the mode selector, the welcome guidance, and multilingual starter questions that make the product feel usable from the first click.
 
-![Banking Copilot home screen](screenshots/banking-copilot-home-screen.png)
+![Banking Copilot home experience](screenshots/banking-copilot-home-experience.png)
 
-### English grounded answer
+### A grounded English answer that feels concise and useful
 
-This example shows how the product answers an English banking question with a direct explanation, source cards, and visible latency.
+This example shows the assistant answering a KYC question in English with a direct explanation, short supporting bullets, visible latency, and a retrieved source card underneath the answer.
 
-![Grounded English answer example](screenshots/grounded-english-answer-example.png)
+![English KYC answer walkthrough](screenshots/english-kyc-answer-walkthrough.png)
 
-### Telugu grounded answer
+### The same product experience working in Telugu
 
-This example shows the same answer format working for a Telugu banking question while keeping the evidence visible.
+This screenshot matters because it shows the product doing more than translation. The answer stays structured, readable, and grounded while responding to the question naturally in Telugu.
 
-![Grounded Telugu answer example](screenshots/grounded-telugu-answer-example.png)
+![Telugu KYC answer walkthrough](screenshots/telugu-kyc-answer-walkthrough.png)
 
-### Auto routing comparison
+### Multilingual grounding working in Chinese as well
 
-This view shows Auto mode comparing available answer paths and choosing the faster route while keeping the reasoning visible.
+This example shows the same KYC flow in Chinese, which helps demonstrate that the product experience is consistent across languages rather than being strong only in English.
 
-![Auto routing comparison view](screenshots/auto-routing-comparison-view.png)
+![Chinese KYC answer walkthrough](screenshots/chinese-kyc-answer-walkthrough.png)
 
 ## Evaluation
 
