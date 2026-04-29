@@ -1,3 +1,15 @@
+---
+title: Banking & Finance AI Copilot
+emoji: 🌎
+colorFrom: blue
+colorTo: cyan
+sdk: streamlit
+sdk_version: "1.44.1"
+python_version: "3.10"
+app_file: 01-rag-system/app.py
+pinned: false
+---
+
 # Banking & Finance GenAI Portfolio
 
 **Rakesh Madasani**  
