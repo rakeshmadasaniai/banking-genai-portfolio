@@ -29,10 +29,10 @@ from models.openai_mode import generate_openai_response
 
 
 MODEL_DESCRIPTIONS = {
-    "OpenAI": "Agentic OpenAI path: plans, reasons, and grounds answers with multi-step execution.",
-    "Fine-Tuned": "Agentic fine-tuned path: domain-style answers with autonomous planning and self-check.",
-    "Auto": "Agentic auto path: chooses the strongest model route after planning and evidence checks.",
-    "Autonomous Agent": "Full autonomous mode: planner + tool loop + self-check + grounded final answer.",
+    "OpenAI": "Most stable live mode for grounded financial answers.",
+    "Fine-Tuned": "Domain-adapted banking model path for specialized tone and phrasing.",
+    "Auto": "Selects the strongest grounded answer across available model paths.",
+    "Autonomous Agent": "Plans, executes tools, analyzes evidence, self-checks, and answers with an agent trace.",
 }
 
 
@@ -109,40 +109,30 @@ def _llm_text_call(prompt: str, retrieval: dict) -> str:
     return result.get("answer", "")
 
 
-def _llm_text_call_for_mode(prompt: str, retrieval: dict, model_mode: str, uploaded_images: list[dict[str, Any]]) -> str:
-    if model_mode == "Fine-Tuned":
-        return generate_finetuned_response(prompt, retrieval, uploaded_images=uploaded_images).get("answer", "")
-    if model_mode == "Auto":
-        return run_auto_mode(prompt, retrieval, uploaded_images=uploaded_images).get("answer", "")
-    return generate_openai_response(prompt, retrieval, uploaded_images=uploaded_images).get("answer", "")
-
-
 def _run_selected_model(question: str, retrieval: dict, model_mode: str) -> dict:
     uploaded_images = st.session_state.get("uploaded_images", [])
-    if "agent_memory" not in st.session_state:
-        st.session_state.agent_memory = []
-
-    # Agentic-by-default: all user-facing modes use the autonomous planner loop.
-    selected_mode = model_mode if model_mode in {"OpenAI", "Fine-Tuned", "Auto"} else "OpenAI"
-    result = run_autonomous_agent(
-        question=question,
-        retrieval=retrieval,
-        llm_call=lambda prompt: _llm_text_call_for_mode(prompt, retrieval, selected_mode, uploaded_images),
-        memory=st.session_state.agent_memory,
-    )
-    result["backend"] = f"{selected_mode} + Autonomous Agent"
-    result["model_name"] = f"{selected_mode.lower().replace('-', '_')}_agentic_path"
-    result["route_reason"] = f"agentic_default::{selected_mode.lower()}"
-
-    st.session_state.agent_memory.append(
-        {
-            "question": question,
-            "mode": selected_mode,
-            "steps": result.get("agent_steps", []),
-            "confidence": result.get("confidence", "Medium"),
-        }
-    )
-    return result
+    if model_mode == "OpenAI":
+        return generate_openai_response(question, retrieval, uploaded_images=uploaded_images)
+    if model_mode == "Fine-Tuned":
+        return generate_finetuned_response(question, retrieval, uploaded_images=uploaded_images)
+    if model_mode == "Autonomous Agent":
+        if "agent_memory" not in st.session_state:
+            st.session_state.agent_memory = []
+        result = run_autonomous_agent(
+            question=question,
+            retrieval=retrieval,
+            llm_call=lambda prompt: _llm_text_call(prompt, retrieval),
+            memory=st.session_state.agent_memory,
+        )
+        st.session_state.agent_memory.append(
+            {
+                "question": question,
+                "steps": result.get("agent_steps", []),
+                "confidence": result.get("confidence", "Medium"),
+            }
+        )
+        return result
+    return run_auto_mode(question, retrieval, uploaded_images=uploaded_images)
 
 
 def run_product_runtime() -> None:

@@ -47,9 +47,8 @@ def render_welcome_card() -> None:
         <div class="answer-shell welcome-card">
             <div class="welcome-title">Hi, I'm your &#127757; Banking &amp; Finance Copilot.</div>
             <div class="welcome-copy">
-                I run as an autonomous agentic copilot: I plan steps, verify evidence, and then answer.
-                Ask about AML, KYC, FDIC, Basel III, RBI, risk, and compliance in any supported language.
-                You can also upload documents and images for grounded context.
+                I provide clear, source-backed answers for AML and KYC, FDIC and Basel III, RBI guidance, and financial regulations.
+                You can also upload documents for contextual answers. I'll always show where each answer comes from.
             </div>
         </div>
         """,
@@ -96,9 +95,8 @@ def render_stack_section() -> None:
 - Speech-to-text / text-to-speech
 
 **Key Features**
-- Agentic planning + execution + self-check on every query
-- Grounded answers with source-aware reasoning
-- OpenAI / Fine-Tuned / Auto model paths
+- Grounded answers with source citations
+- OpenAI / Fine-Tuned / Auto / Autonomous Agent modes
 - Multi-chat history
 - Document and image input support
 - Voice interaction
