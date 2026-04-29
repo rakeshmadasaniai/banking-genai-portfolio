@@ -108,23 +108,52 @@ def apply_accessibility_styles(options: AccessibilityOptions) -> None:
         .source-meta {{ font-size: 0.7rem; color: {secondary}; margin-top: 0.18rem; }}
         .source-preview {{ margin-top: 0.4rem; font-size: 0.76rem; line-height: 1.55; color: {secondary}; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }}
 
-        .composer-shell {{ position: relative; max-width: 1120px; margin: 1rem auto 0.55rem; }}
-        .composer-tools {{ position: absolute; left: 0.9rem; right: 0.9rem; top: 0.78rem; display: flex; align-items: center; gap: 0.7rem; z-index: 20; pointer-events: none; }}
-        .composer-control {{ display: flex; align-items: center; }}
-        .composer-control, .composer-tools div[data-testid="stPopover"], .composer-tools div[data-testid="stSelectbox"] {{ pointer-events: auto; }}
-        .composer-shell div[data-testid="stPopover"] button {{ border-radius: 999px !important; min-height: 2.05rem !important; padding: 0 0.75rem !important; background: transparent !important; color: #4B5563 !important; border: 1px solid transparent !important; box-shadow: none !important; }}
-        .composer-shell div[data-testid="stPopover"] button:hover {{ background: #F3F4F6 !important; color: #111827 !important; }}
-        .mic-live div[data-testid="stPopover"] button, .mic-live div[data-testid="stPopover"] button:hover {{ color: #B91C1C !important; background: #FEE2E2 !important; border-color: #FECACA !important; }}
-        .composer-shell div[data-testid="stSelectbox"] > div[data-baseweb="select"] > div {{ min-height: 2.05rem !important; border-radius: 999px !important; background: transparent !important; color: #374151 !important; border: 1px solid transparent !important; padding-left: 0.2rem !important; box-shadow: none !important; }}
-        .composer-shell div[data-testid="stSelectbox"] svg {{ fill: #6B7280 !important; }}
-
-        div[data-testid="stChatInput"] {{ background: transparent !important; border: none !important; padding: 0 !important; box-shadow: none !important; }}
-        div[data-testid="stChatInput"] > div {{ background: #F3F4F6 !important; border: 1px solid #E5E7EB !important; border-radius: 26px !important; padding: 3.2rem 0.9rem 0.95rem 0.95rem !important; }}
-        div[data-testid="stChatInput"] > div:focus-within {{ border-color: {accent} !important; box-shadow: none !important; }}
-        div[data-testid="stChatInput"] textarea {{ font-size: 18px !important; line-height: 1.5 !important; color: #111827 !important; background: transparent !important; min-height: 3.2rem !important; padding: 0.1rem 0.1rem 0.35rem !important; }}
-        div[data-testid="stChatInput"] textarea::placeholder {{ color: #9CA3AF !important; }}
-        div[data-testid="stChatInput"] button {{ background: #111827 !important; color: #FFFFFF !important; border: none !important; border-radius: 999px !important; min-height: 2.5rem !important; min-width: 2.5rem !important; padding: 0 !important; }}
-        div[data-testid="stChatInput"] button:hover {{ background: #1F2937 !important; }}
+        .composer-fixed {{
+            position: sticky;
+            bottom: 0;
+            z-index: 40;
+            background: {background};
+            border-top: 1px solid {border};
+            padding: 0.55rem 0 0.35rem;
+            margin-top: 0.9rem;
+        }}
+        .composer-fixed div[data-testid="stForm"] {{
+            background: #FFFFFF;
+            border: 1px solid {border};
+            border-radius: 14px;
+            padding: 0.55rem 0.55rem 0.45rem;
+        }}
+        .composer-fixed div[data-testid="stPopover"] button,
+        .composer-fixed div[data-testid="stSelectbox"] > div[data-baseweb="select"] > div,
+        .composer-fixed div[data-testid="stTextInput"] input,
+        .composer-fixed button[kind="secondary"],
+        .composer-fixed button[kind="primary"] {{
+            min-height: 2.55rem !important;
+            border-radius: 12px !important;
+        }}
+        .composer-fixed div[data-testid="stTextInput"] input {{
+            border: 1px solid {input_border} !important;
+            background: #FFFFFF !important;
+            color: #111827 !important;
+            font-size: 1rem !important;
+        }}
+        .composer-fixed div[data-testid="stSelectbox"] > div[data-baseweb="select"] > div {{
+            border: 1px solid {input_border} !important;
+            background: #FFFFFF !important;
+        }}
+        .composer-fixed div[data-testid="stPopover"] button {{
+            border: 1px solid {input_border} !important;
+            background: #FFFFFF !important;
+        }}
+        .composer-fixed button[kind="primary"] {{
+            background: {accent} !important;
+            color: #FFFFFF !important;
+            border: 1px solid {accent} !important;
+            font-weight: 700 !important;
+        }}
+        .composer-fixed button[kind="primary"]:hover {{
+            filter: brightness(0.96);
+        }}
 
         .copilot-footer {{ padding: 1.2rem 0 0.35rem; }}
         .footer-inline {{ display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.6rem; margin: 0 auto; width: fit-content; padding: 0.55rem 1rem; border-radius: 999px; border: 1px solid {border}; background: {card_background}; }}

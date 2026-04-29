@@ -9,12 +9,12 @@ import streamlit as st
 from features.voice_output import render_voice_output
 
 STARTER_PROMPTS = [
-    "What is KYC and why is it important in banking?",
-    "KYC అంటే ఏమిటి, బ్యాంకింగ్‌లో అది ఎందుకు ముఖ్యమైనది?",
-    "KYC क्या है और बैंकिंग में यह क्यों महत्वपूर्ण है?",
-    "¿Qué es KYC y por qué es importante en la banca?",
-    "什么是 KYC，它为什么在银行业中很重要？",
-    "ما هو KYC ولماذا هو مهم في العمل المصرفي؟",
+    "English: What are the main KYC requirements for banks?",
+    "తెలుగు: బ్యాంకుల్లో KYC కోసం అవసరమైన ప్రధాన పత్రాలు ఏమిటి?",
+    "中文: 银行KYC合规最重要的要求是什么?",
+    "Español: ¿Cuáles son los requisitos principales de KYC para bancos?",
+    "Français : Quelles sont les principales exigences KYC pour les banques ?",
+    "Русский: Каковы основные требования KYC для банков?",
 ]
 
 
@@ -28,7 +28,7 @@ def render_header() -> None:
         <div class="hero-wrap">
             <div class="brand-row brand-row-centered">
                 <span class="brand-chip grounded-chip">Grounded Banking AI</span>
-                <span class="brand-chip brand-chip-muted">OpenAI &middot; Fine-Tuned &middot; Auto</span>
+                <span class="brand-chip brand-chip-muted">OpenAI · Fine-Tuned · Auto · Autonomous Agent</span>
             </div>
             <h1 class="hero-title">&#127757; Banking &amp; Finance Copilot</h1>
             <div class="hero-tagline">Grounded AI for banking, compliance, and financial intelligence.</div>
@@ -57,15 +57,13 @@ def render_welcome_card() -> None:
 
 
 def render_starter_prompts() -> str | None:
-    st.markdown('<div class="starter-label">Try asking:</div>', unsafe_allow_html=True)
-    outer_left, center, outer_right = st.columns([0.6, 6.8, 0.6])
+    st.markdown('<div class="starter-label">Popular prompts</div>', unsafe_allow_html=True)
+    cols = st.columns(3)
     selected = None
-    with center:
-        columns = st.columns(3)
-        for index, prompt in enumerate(STARTER_PROMPTS):
-            with columns[index % 3]:
-                if st.button(prompt, key=f"starter-{index}", use_container_width=True):
-                    selected = prompt
+    for index, prompt in enumerate(STARTER_PROMPTS):
+        with cols[index % 3]:
+            if st.button(prompt, key=f"starter-{index}", use_container_width=True):
+                selected = prompt
     return selected
 
 
@@ -73,15 +71,11 @@ def render_about_section() -> None:
     with st.expander("About this Copilot", expanded=False):
         st.markdown(
             """
-&#127757; **Banking & Finance Copilot** is a grounded generative AI assistant for banking, compliance, and financial knowledge retrieval.
+🌍 **Banking & Finance Copilot** is a grounded generative AI assistant for banking, compliance, and financial knowledge retrieval.
 
 It uses retrieval-augmented generation (RAG) to answer questions using trusted documents such as regulatory guidelines, KYC rules, AML policies, and financial standards.
 
-The system supports multiple intelligence modes including OpenAI, fine-tuned models, and an Auto mode that selects the best response.
-
-It emphasizes trustworthy outputs by showing retrieved sources, response metadata, and grounding signals.
-
-The interface is designed as a copilot-style experience with voice interaction, document support, and multi-chat functionality.
+The system supports multiple intelligence modes including OpenAI, fine-tuned models, auto-routing, and autonomous agentic reasoning.
             """
         )
 
@@ -100,26 +94,20 @@ def render_stack_section() -> None:
 - QLoRA fine-tuning
 - Speech-to-text / text-to-speech
 
-**Keywords**
-RAG, LLM, Generative AI, Grounded AI, Vector Search, AI Copilot, Financial AI
-
 **Key Features**
 - Grounded answers with source citations
-- OpenAI / Fine-Tuned / Auto model modes
-- ChatGPT-style streaming responses
+- OpenAI / Fine-Tuned / Auto / Autonomous Agent modes
 - Multi-chat history
 - Document and image input support
 - Voice interaction
-- Premium copilot interface
-- Safety-focused financial Q&A
             """
         )
 
 
 def render_sidebar_summary(base_doc_count: int, upload_doc_count: int, upload_chunk_count: int) -> None:
-    st.caption(f"Base knowledge files: {base_doc_count}")
-    st.caption(f"Uploaded documents: {upload_doc_count}")
-    st.caption(f"Uploaded chunks: {upload_chunk_count}")
+    st.caption(f"Base files: **{base_doc_count}**")
+    st.caption(f"Uploaded docs: **{upload_doc_count}**")
+    st.caption(f"Uploaded chunks: **{upload_chunk_count}**")
 
 
 def render_session_insights(messages: list[dict]) -> None:
@@ -181,11 +169,6 @@ def render_assistant_message(
     show_auto_comparison: bool,
 ) -> None:
     answer = _simplify_answer(message["answer"]) if simplified_answers else message["answer"]
-    grounded_label = "Grounded" if not message.get("retrieval_note") else "Weak grounding"
-
-    if message.get("retrieval_note"):
-        st.markdown(f'<div class="warning-pill">{html.escape(message["retrieval_note"])}</div>', unsafe_allow_html=True)
-
     st.markdown(f"<div class='answer-shell'>{_as_html_text(answer)}</div>", unsafe_allow_html=True)
     st.markdown(
         f"""
@@ -195,20 +178,10 @@ def render_assistant_message(
         """,
         unsafe_allow_html=True,
     )
-    if message.get("selection_reason"):
-        st.caption(f"Auto routing: {message['selection_reason']}")
-    if message.get("candidate_scores") and any(score is not None for score in message["candidate_scores"].values()):
-        openai_score = message["candidate_scores"].get("openai")
-        fine_tuned_score = message["candidate_scores"].get("fine_tuned")
-        score_parts = []
-        if openai_score is not None:
-            score_parts.append(f"OpenAI {openai_score:.3f}")
-        if fine_tuned_score is not None:
-            score_parts.append(f"Fine-Tuned {fine_tuned_score:.3f}")
-        if score_parts:
-            st.caption("Candidate scores: " + " | ".join(score_parts))
+    if message.get("retrieval_note"):
+        st.markdown(f'<div class="warning-pill">{html.escape(message["retrieval_note"])}</div>', unsafe_allow_html=True)
 
-    action_columns = st.columns([1.15, 0.9, 8])
+    action_columns = st.columns([1.2, 1.0, 6.0])
     with action_columns[0]:
         render_voice_output(message["answer"], message_key)
     with action_columns[1]:
@@ -223,10 +196,22 @@ def render_assistant_message(
             for label, candidate in message["comparison"].items():
                 st.markdown(f"**{label.title()} candidate**")
                 st.write(candidate["answer"])
-                st.caption(
-                    f"Winner score={candidate['score']['total']} | Groundedness={candidate['score']['groundedness']} | "
-                    f"Completeness={candidate['score']['completeness']} | Latency score={candidate['score']['latency']}"
+
+    agent_steps = message.get("agent_steps") or []
+    agent_observations = message.get("agent_observations") or []
+    if agent_steps:
+        with st.expander("Autonomous Agent Execution Trace", expanded=False):
+            for step in agent_steps:
+                st.markdown(
+                    f"**Step {step.get('step')} — {str(step.get('action', '')).title()}**\n\n"
+                    f"Reason: {step.get('thought', '')}\n\n"
+                    f"Input: `{step.get('input', '')}`"
                 )
+    if agent_observations:
+        with st.expander("Tool Observations", expanded=False):
+            for obs in agent_observations:
+                st.markdown(f"**Tool:** `{obs.get('tool')}`")
+                st.write(obs.get("result"))
 
 
 def render_footer() -> None:
@@ -247,4 +232,3 @@ def render_footer() -> None:
         """,
         unsafe_allow_html=True,
     )
-
