@@ -23,6 +23,7 @@ from features.product_ui import (
 )
 from features.voice_controls import render_voice_input_preview
 from models.auto_router import run_auto_mode
+from models.autonomous_agent import run_autonomous_agent
 from models.finetuned_mode import generate_finetuned_response
 from models.openai_mode import generate_openai_response
 
@@ -31,6 +32,7 @@ MODEL_DESCRIPTIONS = {
     "OpenAI": "Most stable live mode for grounded financial answers.",
     "Fine-Tuned": "Domain-adapted banking model path for specialized tone and phrasing.",
     "Auto": "Selects the strongest grounded answer across available model paths.",
+    "Autonomous Agent": "Plans, executes tools, analyzes evidence, self-checks, and answers with an agent trace.",
 }
 
 
@@ -102,12 +104,34 @@ def _stream_answer_preview(answer: str) -> None:
     placeholder.empty()
 
 
+def _llm_text_call(prompt: str, retrieval: dict) -> str:
+    result = generate_openai_response(prompt, retrieval, uploaded_images=[])
+    return result.get("answer", "")
+
+
 def _run_selected_model(question: str, retrieval: dict, model_mode: str) -> dict:
     uploaded_images = st.session_state.get("uploaded_images", [])
     if model_mode == "OpenAI":
         return generate_openai_response(question, retrieval, uploaded_images=uploaded_images)
     if model_mode == "Fine-Tuned":
         return generate_finetuned_response(question, retrieval, uploaded_images=uploaded_images)
+    if model_mode == "Autonomous Agent":
+        if "agent_memory" not in st.session_state:
+            st.session_state.agent_memory = []
+        result = run_autonomous_agent(
+            question=question,
+            retrieval=retrieval,
+            llm_call=lambda prompt: _llm_text_call(prompt, retrieval),
+            memory=st.session_state.agent_memory,
+        )
+        st.session_state.agent_memory.append(
+            {
+                "question": question,
+                "steps": result.get("agent_steps", []),
+                "confidence": result.get("confidence", "Medium"),
+            }
+        )
+        return result
     return run_auto_mode(question, retrieval, uploaded_images=uploaded_images)
 
 
@@ -172,8 +196,8 @@ def run_product_runtime() -> None:
         with st.expander("Workspace", expanded=False):
             model_mode = st.radio(
                 "Model mode",
-                ["OpenAI", "Fine-Tuned", "Auto"],
-                index=["OpenAI", "Fine-Tuned", "Auto"].index(st.session_state.model_mode),
+                ["OpenAI", "Fine-Tuned", "Auto", "Autonomous Agent"],
+                index=["OpenAI", "Fine-Tuned", "Auto", "Autonomous Agent"].index(st.session_state.model_mode),
                 horizontal=True,
                 label_visibility="collapsed",
                 key="model_mode_selector",
@@ -222,39 +246,44 @@ def run_product_runtime() -> None:
                     show_auto_comparison=show_auto_comparison,
                 )
 
-    st.markdown("<div class='composer-shell'>", unsafe_allow_html=True)
-    question = st.chat_input("Ask about AML, KYC, FDIC, Basel III, or upload a document...")
-    st.markdown("<div class='composer-tools'>", unsafe_allow_html=True)
-    composer_cols = st.columns([0.8, 1.7, 4.0, 0.8])
-    with composer_cols[0]:
-        st.markdown("<div class='composer-control'>", unsafe_allow_html=True)
-        with st.popover("+", use_container_width=True):
-            render_document_uploads()
-            render_image_uploads()
-        st.markdown("</div>", unsafe_allow_html=True)
-    with composer_cols[1]:
-        composer_mode = st.selectbox(
-            "Composer model",
-            ["OpenAI", "Fine-Tuned", "Auto"],
-            index=["OpenAI", "Fine-Tuned", "Auto"].index(st.session_state.model_mode),
-            label_visibility="collapsed",
-            key="composer_model_mode",
-        )
-        st.session_state.model_mode = composer_mode
-    with composer_cols[3]:
-        mic_class = "composer-control mic-control mic-live" if voice_enabled else "composer-control mic-control"
-        st.markdown(f"<div class='{mic_class}'>", unsafe_allow_html=True)
-        with st.popover("Mic", use_container_width=True):
-            voice_transcript, voice_enabled = render_voice_input_preview()
-        st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("<div class='composer-fixed'>", unsafe_allow_html=True)
+    with st.form("composer_form", clear_on_submit=True):
+        composer_cols = st.columns([0.85, 1.15, 3.9, 0.9, 0.5])
+        with composer_cols[0]:
+            with st.popover("+", use_container_width=True):
+                render_document_uploads()
+                render_image_uploads()
+        with composer_cols[1]:
+            composer_mode = st.selectbox(
+                "Composer model",
+                ["OpenAI", "Fine-Tuned", "Auto", "Autonomous Agent"],
+                index=["OpenAI", "Fine-Tuned", "Auto", "Autonomous Agent"].index(st.session_state.model_mode),
+                label_visibility="collapsed",
+                key="composer_model_mode",
+            )
+            st.session_state.model_mode = composer_mode
+        with composer_cols[2]:
+            question = st.text_input(
+                "Ask banking question",
+                placeholder="Ask anything about banking, finance, regulations, or compliance...",
+                label_visibility="collapsed",
+                key="composer_text_input_inline",
+            )
+        with composer_cols[3]:
+            with st.popover("🎤", use_container_width=True):
+                voice_transcript, voice_enabled = render_voice_input_preview()
+        with composer_cols[4]:
+            submitted = st.form_submit_button("↑", use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
-    st.markdown("</div>", unsafe_allow_html=True)
+
+    if not submitted and not voice_transcript and not starter_prompt:
+        render_footer()
+        return
 
     if not question and voice_transcript:
         question = voice_transcript
     if not question and starter_prompt:
         question = starter_prompt
-
     if not question:
         render_footer()
         return
@@ -280,6 +309,8 @@ def run_product_runtime() -> None:
         "route_reason": result.get("route_reason"),
         "selection_reason": result.get("selection_reason"),
         "candidate_scores": result.get("candidate_scores"),
+        "agent_steps": result.get("agent_steps"),
+        "agent_observations": result.get("agent_observations"),
         "retrieval_note": (
             "The retriever found weak supporting context for this question. The answer may be incomplete. Try uploading a more relevant document or asking a narrower follow-up."
             if retrieval["weak_retrieval"]
