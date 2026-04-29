@@ -1,0 +1,11 @@
+Use these prompts to capture a clean Project 3 inference screenshot:
+
+1. What is the FDIC deposit insurance limit in the United States?
+2. What are the three stages of money laundering?
+3. What is the difference between AML and KYC?
+
+Recommended screenshot format:
+- show 2-3 Q/A pairs in one notebook or inference output view
+- keep the prompt text visible
+- keep the generated answer visible
+- use the fine-tuned model, not the base model

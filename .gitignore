@@ -1,0 +1,9 @@
+.venv/
+**/.venv/
+**/__pycache__/
+*.pyc
+01-rag-system/screenshots/*.png
+01-rag-system/screenshots/*.jpg
+01-rag-system/screenshots/*.jpeg
+02-qa-dataset/screenshots/*.png
+03-qlora-finetuning/screenshots/*.png

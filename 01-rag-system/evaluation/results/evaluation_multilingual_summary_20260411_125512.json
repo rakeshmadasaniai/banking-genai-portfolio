@@ -1,0 +1,35 @@
+{
+  "set_name": "evaluation_multilingual",
+  "completed_queries": 120,
+  "available_rows": 80,
+  "average_latency_ms": 2031.8,
+  "median_latency_ms": 2031.5,
+  "by_mode": {
+    "Auto": {
+      "count": 40,
+      "available_count": 40,
+      "average_latency_ms": 2031.5,
+      "median_latency_ms": 2031.5,
+      "confidence_counts": {
+        "Moderate": 40
+      }
+    },
+    "Fine-Tuned": {
+      "count": 40,
+      "available_count": 40,
+      "average_latency_ms": 2032.0,
+      "median_latency_ms": 2031.5,
+      "confidence_counts": {
+        "High": 21,
+        "Moderate": 19
+      }
+    },
+    "OpenAI": {
+      "count": 40,
+      "available_count": 0,
+      "average_latency_ms": null,
+      "median_latency_ms": null,
+      "confidence_counts": {}
+    }
+  }
+}

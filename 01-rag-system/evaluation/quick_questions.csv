@@ -1,0 +1,11 @@
+id,question,category,expected_source_type
+1,What is the FDIC deposit insurance limit in the United States?,fdic,base
+2,What are the three stages of money laundering?,aml,base
+3,What documents are required for KYC of an individual in India?,kyc,base
+4,What is a Suspicious Activity Report and when must it be filed?,sar,base
+5,Compare CTR reporting thresholds in the U.S. and India.,ctr_comparison,base
+6,What is Regulation E liability for unauthorized electronic fund transfers?,reg_e,base
+7,What is the purpose of the Basel Framework?,basel,base
+8,What is the role of FIU-IND in India's AML framework?,aml_india,base
+9,What is the difference between repo rate and reverse repo rate in India?,rbi,base
+10,What is the difference between AML and KYC?,aml_kyc,base
