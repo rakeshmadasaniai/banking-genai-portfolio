@@ -4,7 +4,7 @@ emoji: 🌎
 colorFrom: blue
 colorTo: indigo
 sdk: streamlit
-sdk_version: "1.44.1"
+sdk_version: "1.56.0"
 python_version: "3.10"
 app_file: 01-rag-system/app.py
 pinned: false
