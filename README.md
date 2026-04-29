@@ -2,7 +2,7 @@
 title: Banking & Finance AI Copilot
 emoji: 🌎
 colorFrom: blue
-colorTo: cyan
+colorTo: indigo
 sdk: streamlit
 sdk_version: "1.44.1"
 python_version: "3.10"
