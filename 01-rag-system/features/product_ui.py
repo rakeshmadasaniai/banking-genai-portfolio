@@ -1,40 +1,260 @@
 from __future__ import annotations
 
+import base64
 import html
-import re
+import io
+from datetime import datetime
 from statistics import mean
 
 import streamlit as st
+import streamlit.components.v1 as components
 
 from features.voice_output import render_voice_output
+
 
 STARTER_PROMPTS = [
     "English: What are the main KYC requirements for banks?",
     "తెలుగు: బ్యాంకుల్లో KYC కోసం అవసరమైన ప్రధాన పత్రాలు ఏమిటి?",
-    "中文: 银行KYC合规最重要的要求是什么?",
+    "中文: 银行KYC合规最重要的要求是什么？",
     "Español: ¿Cuáles son los requisitos principales de KYC para bancos?",
-    "Français : Quelles sont les principales exigences KYC pour les banques ?",
+    "Français: Quelles sont les principales exigences KYC pour les banques ?",
     "Русский: Каковы основные требования KYC для банков?",
+]
+
+TECH_ITEMS = [
+    ("🤖", "LLM", "OpenAI / Fine-Tuned Model"),
+    (chr(0x1F9E0), "Embeddings", "text-embedding-3"),
+    (chr(0x1F5C2), "Vector DB", "FAISS / Hybrid"),
+    (chr(0x1F517), "Framework", "LangChain"),
+    (chr(0x1F5A5), "UI", "Streamlit"),
+    (chr(0x2699), "Infra", "Python / FastAPI"),
 ]
 
 
 def _as_html_text(text: str) -> str:
-    return html.escape(text).replace("\n", "<br>")
+    return html.escape(str(text)).replace("\n", "<br>")
+
+
+def _greeting() -> tuple[str, str]:
+    hour = datetime.now().hour
+    if 5 <= hour < 12:
+        return "Good morning", chr(0x1F324)
+    if 12 <= hour < 17:
+        return "Good afternoon", chr(0x2600)
+    if 17 <= hour < 21:
+        return "Good evening", chr(0x1F306)
+    return "Good night", chr(0x1F319)
+
+
+def inject_premium_css() -> None:
+    st.markdown(
+        """
+<style>
+:root{
+  color-scheme:light;
+  --bg:#F6F8FC;
+  --bg-soft:#EEF3FA;
+  --panel:#FFFFFF;
+  --panel-soft:rgba(255,255,255,0.86);
+  --text:#0B1220;
+  --muted:#64748B;
+  --navy:#123A6F;
+  --blue:#2563EB;
+  --border:rgba(15,23,42,.08);
+  --border-soft:rgba(37,99,235,.10);
+  --shadow:0 16px 34px rgba(15,23,42,.06);
+  --shadow-soft:0 10px 24px rgba(15,23,42,.045);
+  --radius-xl:22px;
+  --radius-lg:18px;
+  --radius-md:14px;
+}
+html, body, [data-testid="stAppViewContainer"]{
+  background:var(--bg) !important;
+  color:var(--text) !important;
+  color-scheme:light !important;
+  font-size:16px !important;
+}
+.stApp{
+  background:
+    radial-gradient(circle at 18% 0%, rgba(37,99,235,.08), transparent 28%),
+    linear-gradient(180deg, #F8FBFF 0%, #F4F7FC 100%) !important;
+}
+#MainMenu, footer{visibility:hidden;}
+[data-testid="stHeader"]{background:transparent !important;}
+.block-container{max-width:none !important; padding:.1rem .18rem 8.4rem !important;}
+[data-testid="stSidebar"]{background:var(--bg-soft) !important; border-right:1px solid var(--border) !important;}
+
+.sidebar-brand{display:flex; gap:12px; align-items:center; margin:4px 0 14px;}
+.brand-globe{font-size:40px; line-height:1; filter:drop-shadow(0 10px 18px rgba(37,99,235,.18)); animation:floatGlobe 3.6s ease-in-out infinite;}
+.sidebar-title{font-size:17px; font-weight:900; line-height:1.1; color:#08245A; letter-spacing:-.02em;}
+.sidebar-caption{font-size:11px; color:#5E78A8; margin-top:4px; font-weight:600;}
+.side-search{height:42px; border:1px solid var(--border); border-radius:14px; background:#FFFFFF; color:#94A3B8; display:flex; align-items:center; gap:10px; padding:0 12px; margin:8px 0 18px; font-size:13px; box-shadow:0 8px 20px rgba(15,23,42,.03);}
+
+[data-testid="stSidebar"] .stButton > button{
+  width:100% !important;
+  border-radius:12px !important;
+  border:1px solid #1D4ED8 !important;
+  background:linear-gradient(135deg,#2563EB,#0EA5E9) !important;
+  color:#FFFFFF !important;
+  font-weight:800 !important;
+}
+[data-testid="stSidebar"] .stExpander, [data-testid="stSidebar"] .stRadio > div{
+  background:#FFFFFF !important; border:1px solid var(--border) !important; border-radius:16px !important;
+}
+
+.product-shell,.chat-panel,.metrics-panel{background:var(--panel-soft); border:1px solid var(--border); border-radius:var(--radius-xl); box-shadow:var(--shadow);}
+.product-shell{padding:18px; margin:0 0 8px;}
+.greeting-row{display:flex; align-items:center; gap:8px; margin:0 0 10px 2px; color:#08245A; font-weight:850;}
+.greeting-pill{width:30px; height:30px; border-radius:10px; background:#FFF7ED; border:1px solid #FED7AA; display:flex; align-items:center; justify-content:center;}
+.greeting-sub{font-weight:600; color:#29456F; font-size:15px; margin-bottom:18px;}
+.hero-card{
+  position:relative; overflow:hidden; display:grid; grid-template-columns:112px 1fr 280px; gap:20px; align-items:center;
+  min-height:142px; border:1px solid var(--border-soft); border-radius:var(--radius-xl);
+  background:linear-gradient(135deg,rgba(255,255,255,.97),rgba(241,247,255,.90)); box-shadow:0 14px 34px rgba(37,99,235,.07); padding:18px 24px;
+}
+.hero-globe,.ai-globe{animation:floatGlobe 3.6s ease-in-out infinite;}
+.hero-globe{font-size:78px; line-height:1; filter:drop-shadow(0 16px 18px rgba(37,99,235,.22));}
+.hero-title{font-size:30px; font-weight:900; letter-spacing:-.04em; color:#08245A; margin:0 0 8px;}
+.hero-copy{font-size:15px; color:#274871; line-height:1.55;}
+.bank-art{font-size:82px; opacity:.96;}
+
+.proof-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:16px 0;}
+.proof-card,.info-card{background:#FFFFFF; border:1px solid var(--border); border-radius:var(--radius-xl); box-shadow:var(--shadow-soft); padding:18px;}
+.proof-icon{width:42px; height:42px; border-radius:14px; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center; font-size:21px; margin-bottom:10px;}
+.proof-title,.info-title{font-weight:900; color:#123A6F; font-size:15px;}
+.proof-text,.info-copy{font-size:12.5px; color:var(--muted); line-height:1.55; margin-top:6px;}
+.product-info-grid{display:grid; grid-template-columns:1.15fr 1fr; gap:14px; margin:14px 0 22px;}
+.tech-row{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px;}
+.tech-item{text-align:center; font-size:11px; color:#34516F;}
+.tech-ico{width:34px; height:34px; border-radius:12px; background:#EFF6FF; margin:0 auto 6px; display:flex; align-items:center; justify-content:center; color:#2563EB; font-size:17px;}
+
+.user-row{display:flex; justify-content:flex-end; margin:0 0 14px;}
+.user-bubble{max-width:72%; background:var(--navy); color:#FFFFFF; border-radius:16px 16px 4px 16px; padding:12px 18px; box-shadow:0 12px 24px rgba(18,58,111,.20); font-weight:700; line-height:1.5; font-size:14px;}
+.ai-wrap{display:grid; grid-template-columns:54px 1fr; gap:14px; align-items:start; margin:0 0 12px;}
+.ai-globe{font-size:44px; line-height:1; filter:drop-shadow(0 12px 14px rgba(37,99,235,.20));}
+.answer-shell,.thinking-shell{background:#FFFFFF; border:1px solid var(--border); border-radius:var(--radius-lg); padding:18px 20px; box-shadow:var(--shadow-soft); font-size:14.5px; line-height:1.72; color:var(--text);}
+.thinking-shell{display:flex; align-items:center; gap:10px; min-height:72px; position:relative; overflow:hidden;}
+.thinking-shell::after{content:""; position:absolute; inset:0; background:linear-gradient(110deg, transparent 25%, rgba(37,99,235,.14) 50%, transparent 75%); transform:translateX(-120%); animation:thinkingShimmer 1.35s linear infinite;}
+.thinking-dot{width:10px; height:10px; border-radius:50%; background:#2563EB; animation:thinkingPulse 1.2s ease-in-out infinite;}
+.thinking-text{color:#274871; font-weight:700;}
+.meta-pills{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;}
+.meta-pill{font-size:11px; font-weight:900; border-radius:999px; padding:5px 10px; border:1px solid var(--border); background:#F8FBFF; color:#123A6F;}
+.meta-pill.green{background:#ECFDF5; color:#047857; border-color:#BBF7D0;}
+
+.starter-label{margin:6px 0 8px; color:#123A6F; font-size:13px; font-weight:900;}
+.stButton > button[id*="starter-"]{
+  width:100% !important; border-radius:12px !important; border:1px solid #1D4ED8 !important;
+  background:linear-gradient(135deg,#2563EB,#0EA5E9) !important; color:#FFFFFF !important; font-weight:800 !important;
+}
+
+.composer-fixed{position:fixed; left:312px; right:8px; bottom:8px; z-index:60; background:#FFFFFF; border:1px solid rgba(37,99,235,.14); border-radius:16px; box-shadow:0 16px 34px rgba(15,23,42,.08); padding:8px 10px; margin:0;}
+.composer-fixed form{margin-bottom:0 !important;}
+.composer-row [data-testid="column"]{display:flex; align-items:center;}
+.composer-row [data-testid="column"] > div{width:100%;}
+.composer-row [data-testid="stPopover"] button,
+.composer-row div[data-baseweb="select"] > div,
+.composer-row [data-testid="stTextInput"] input,
+.composer-row [data-testid="stFormSubmitButton"] button{
+  min-height:44px !important; border-radius:14px !important;
+}
+.composer-row [data-testid="stTextInput"] > div > div{background:#FFFFFF !important; border:1px solid rgba(37,99,235,.14) !important;}
+.composer-row [data-testid="stFormSubmitButton"] button{background:#123A6F !important; color:#FFFFFF !important; border:none !important; font-weight:900 !important;}
+
+.copilot-footer{display:none;}
+
+@keyframes floatGlobe{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes thinkingPulse{0%,100%{opacity:.35; transform:scale(.9)}50%{opacity:1; transform:scale(1.05)}}
+@keyframes thinkingShimmer{0%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+
+@media (max-width:1100px){
+  .hero-card{grid-template-columns:80px 1fr}
+  .bank-art{display:none}
+  .proof-grid,.product-info-grid,.tech-row{grid-template-columns:1fr}
+  .composer-fixed{left:8px; right:8px; bottom:8px;}
+}
+</style>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def render_header() -> None:
+    greeting, icon = _greeting()
     st.markdown(
-        """
-        <div class="hero-wrap">
-            <div class="brand-row brand-row-centered">
-                <span class="brand-chip grounded-chip">Grounded Banking AI</span>
-                <span class="brand-chip brand-chip-muted">OpenAI · Fine-Tuned · Auto · Autonomous Agent</span>
+        f"""
+        <div class="product-shell">
+          <div class="greeting-row"><span class="greeting-pill" data-greeting-icon>{icon}</span><span data-greeting-text>{html.escape(greeting)}</span></div>
+          <div class="greeting-sub">I&#39;m your Banking &amp; Finance Copilot.</div>
+          <div class="hero-card">
+            <div class="hero-globe">&#127758;</div>
+            <div>
+              <div class="hero-title">Banking &amp; Finance AI Copilot</div>
+              <div class="hero-copy">Your intelligent assistant for banking, compliance, and financial intelligence.<br>
+              Ask anything related to AML, KYC, FDIC, Basel III, RBI, regulations, and more. Upload PDF, DOCX, TXT, and image files for grounded answers from your reference material.</div>
             </div>
-            <h1 class="hero-title">&#127757; Banking &amp; Finance Copilot</h1>
-            <div class="hero-tagline">Grounded AI for banking, compliance, and financial intelligence.</div>
-            <div class="hero-oneliner">AI assistant for banking and financial questions with trusted, source-backed answers</div>
-            <div class="hero-description">This app helps you understand banking, compliance, and financial rules using verified documents. It gives clear explanations, shows supporting sources, and helps you explore financial topics safely and quickly.</div>
-            <div class="hero-divider"></div>
+            <div class="bank-art">&#127974;&#128737;&#65039;</div>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    components.html(
+        """
+        <script>
+        (function () {
+          let doc = document;
+          try { if (window.parent && window.parent !== window && window.parent.document) { doc = window.parent.document; } } catch (_e) { doc = document; }
+          function updateGreeting() {
+            const hour = new Date().getHours();
+            let greeting = "Good night";
+            let icon = String.fromCodePoint(0x1F319);
+            if (hour >= 5 && hour < 12) { greeting = "Good morning"; icon = String.fromCodePoint(0x1F324); }
+            else if (hour >= 12 && hour < 17) { greeting = "Good afternoon"; icon = String.fromCodePoint(0x2600); }
+            else if (hour >= 17 && hour < 21) { greeting = "Good evening"; icon = String.fromCodePoint(0x1F306); }
+            const greetingNodes = doc.querySelectorAll("[data-greeting-text]");
+            const iconNodes = doc.querySelectorAll("[data-greeting-icon]");
+            greetingNodes.forEach((node) => { node.textContent = greeting; });
+            iconNodes.forEach((node) => { node.textContent = icon; });
+            return greetingNodes.length > 0 && iconNodes.length > 0;
+          }
+          let attempts = 0;
+          const timer = setInterval(() => { attempts += 1; if (updateGreeting() || attempts > 30) { clearInterval(timer); } }, 120);
+          updateGreeting();
+        })();
+        </script>
+        """,
+        height=0,
+    )
+
+
+def render_homepage_product_intro() -> None:
+    proof_cards = [
+        ("&#128737;&#65039;", "Source-grounded answers", "Every response is backed by trusted documents with citations."),
+        ("&#127760;", "Multilingual workflows", "Use multilingual text, PDF, DOCX, TXT, image, and voice workflows across the app."),
+        ("&#9989;", "Evaluation-ready AI system", "Confidence scores, latency, and retrieval insights for transparency."),
+    ]
+    proof_html = "".join(
+        f'<div class="proof-card"><div class="proof-icon">{icon}</div><div class="proof-title">{title}</div><div class="proof-text">{copy}</div></div>'
+        for icon, title, copy in proof_cards
+    )
+    tech_html = "".join(
+        f'<div class="tech-item"><div class="tech-ico">{icon}</div><strong>{html.escape(label)}</strong><br>{html.escape(value)}</div>'
+        for icon, label, value in TECH_ITEMS
+    )
+    st.markdown(
+        f"""
+        <div class="product-shell">
+          <div class="proof-grid">{proof_html}</div>
+          <div class="product-info-grid">
+            <div class="info-card">
+              <div class="info-title">About this Copilot</div>
+              <div class="info-copy">A product-grade AI assistant for banking and finance professionals. Ask questions, upload documents, and review grounded answers with confidence signals and transparent sources.</div>
+            </div>
+            <div class="info-card">
+              <div class="info-title">Tech Stack</div>
+              <div class="tech-row">{tech_html}</div>
+            </div>
+          </div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -42,123 +262,108 @@ def render_header() -> None:
 
 
 def render_welcome_card() -> None:
-    st.markdown(
-        """
-        <div class="answer-shell welcome-card">
-            <div class="welcome-title">Hi, I'm your &#127757; Banking &amp; Finance Copilot.</div>
-            <div class="welcome-copy">
-                I provide clear, source-backed answers for AML and KYC, FDIC and Basel III, RBI guidance, and financial regulations.
-                You can also upload documents for contextual answers. I'll always show where each answer comes from.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    render_homepage_product_intro()
 
 
 def render_starter_prompts() -> str | None:
-    st.markdown('<div class="starter-label">Popular prompts</div>', unsafe_allow_html=True)
-    cols = st.columns(3)
     selected = None
+    st.markdown('<div class="starter-label">Popular prompts</div>', unsafe_allow_html=True)
+    columns = st.columns(3)
     for index, prompt in enumerate(STARTER_PROMPTS):
-        with cols[index % 3]:
+        with columns[index % 3]:
             if st.button(prompt, key=f"starter-{index}", use_container_width=True):
                 selected = prompt
     return selected
 
 
 def render_about_section() -> None:
-    with st.expander("About this Copilot", expanded=False):
-        st.markdown(
-            """
-🌍 **Banking & Finance Copilot** is a grounded generative AI assistant for banking, compliance, and financial knowledge retrieval.
-
-It uses retrieval-augmented generation (RAG) to answer questions using trusted documents such as regulatory guidelines, KYC rules, AML policies, and financial standards.
-
-The system supports multiple intelligence modes including OpenAI, fine-tuned models, auto-routing, and autonomous agentic reasoning.
-            """
-        )
+    return None
 
 
 def render_stack_section() -> None:
-    with st.expander("Tech Stack & Features", expanded=False):
-        st.markdown(
-            """
-**Tech Stack**
-- Python
-- Streamlit
-- OpenAI API
-- Hugging Face
-- FAISS / vector search
-- LangChain / custom RAG
-- QLoRA fine-tuning
-- Speech-to-text / text-to-speech
+    return None
 
-**Key Features**
-- Grounded answers with source citations
-- OpenAI / Fine-Tuned / Auto / Autonomous Agent modes
-- Multi-chat history
-- Document and image input support
-- Voice interaction
-            """
-        )
+
+def render_sidebar_brand() -> None:
+    st.markdown(
+        """
+        <div class="sidebar-brand">
+          <div class="brand-globe">&#127758;</div>
+          <div>
+            <div class="sidebar-title">Banking &amp; Finance<br>AI Copilot</div>
+            <div class="sidebar-caption">Grounded. Trusted. Intelligent.</div>
+          </div>
+        </div>
+        <div class="side-search">&#8989; Search conversations...</div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def render_sidebar_summary(base_doc_count: int, upload_doc_count: int, upload_chunk_count: int) -> None:
-    st.caption(f"Base files: **{base_doc_count}**")
-    st.caption(f"Uploaded docs: **{upload_doc_count}**")
-    st.caption(f"Uploaded chunks: **{upload_chunk_count}**")
+    st.markdown(
+        f"""
+        <div style="font-size:12px;color:#48618A;padding:4px 0;display:grid;grid-template-columns:1fr auto;gap:8px;"><span>Base files</span><strong style="color:#123A6F;">{base_doc_count}</strong></div>
+        <div style="font-size:12px;color:#48618A;padding:4px 0;display:grid;grid-template-columns:1fr auto;gap:8px;"><span>Uploaded docs</span><strong style="color:#123A6F;">{upload_doc_count}</strong></div>
+        <div style="font-size:12px;color:#48618A;padding:4px 0;display:grid;grid-template-columns:1fr auto;gap:8px;"><span>Uploaded chunks</span><strong style="color:#123A6F;">{upload_chunk_count}</strong></div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def render_session_insights(messages: list[dict]) -> None:
-    assistant_messages = [message for message in messages if message["role"] == "assistant"]
-    avg_latency = round(mean(message["latency_ms"] for message in assistant_messages)) if assistant_messages else 0
-    avg_chunks = round(mean(message["retrieved_chunks"] for message in assistant_messages), 1) if assistant_messages else 0
+    assistant_messages = [message for message in messages if message.get("role") == "assistant"]
+    avg_latency = round(mean(message.get("latency_ms", 0) for message in assistant_messages)) if assistant_messages else 0
+    avg_chunks = round(mean(message.get("retrieved_chunks", 0) for message in assistant_messages), 1) if assistant_messages else 0
     st.markdown(
         f"""
-        <div class="session-panel">
-            <div class="session-item"><span>Answers</span><strong>{len(assistant_messages)}</strong></div>
-            <div class="session-item"><span>Avg latency</span><strong>{avg_latency} ms</strong></div>
-            <div class="session-item"><span>Avg chunks</span><strong>{avg_chunks}</strong></div>
-        </div>
+        <div style="font-size:12px;color:#48618A; padding:4px 0;display:grid;grid-template-columns:1fr auto;gap:8px;"><span>Answers</span><strong style="color:#123A6F;">{len(assistant_messages)}</strong></div>
+        <div style="font-size:12px;color:#48618A; padding:4px 0;display:grid;grid-template-columns:1fr auto;gap:8px;"><span>Avg latency</span><strong style="color:#123A6F;">{avg_latency} ms</strong></div>
+        <div style="font-size:12px;color:#48618A; padding:4px 0;display:grid;grid-template-columns:1fr auto;gap:8px;"><span>Avg chunks</span><strong style="color:#123A6F;">{avg_chunks}</strong></div>
         """,
         unsafe_allow_html=True,
     )
 
 
 def render_user_message(text: str) -> None:
-    st.markdown(
+    st.markdown(f'<div class="user-row"><div class="user-bubble">{_as_html_text(text)}</div></div>', unsafe_allow_html=True)
+
+
+def _copy_button(answer: str) -> None:
+    encoded = base64.b64encode(answer.encode("utf-8")).decode("utf-8")
+    components.html(
         f"""
-        <div class="user-row">
-            <div class="user-bubble">{_as_html_text(text)}</div>
-        </div>
+        <button onclick="(function(btn){{
+            const raw = atob('{encoded}');
+            const bytes = Uint8Array.from(raw, c => c.charCodeAt(0));
+            const text = new TextDecoder('utf-8').decode(bytes);
+            navigator.clipboard.writeText(text).then(()=>{{ btn.innerHTML='Copied'; setTimeout(()=>btn.innerHTML='Copy', 1200); }});
+        }})(this)"
+        style="width:100%;height:38px;border:1px solid rgba(15,23,42,.10);border-radius:12px;background:#fff;color:#123A6F;font-weight:700;cursor:pointer;">
+          Copy
+        </button>
         """,
-        unsafe_allow_html=True,
+        height=42,
     )
 
 
-def _simplify_answer(answer: str) -> str:
-    text = re.sub(r"^[\-\*\u2022]\s*", "", answer, flags=re.MULTILINE)
-    text = re.sub(r"\n{2,}", "\n", text).strip()
-    sentences = [segment.strip() for segment in re.split(r"(?<=[.!?])\s+", text) if segment.strip()]
-    grouped = []
-    for index in range(0, len(sentences), 2):
-        grouped.append(" ".join(sentences[index : index + 2]))
-    return "\n\n".join(grouped) if grouped else answer
-
-
-def render_source_cards(source_cards: list[dict]) -> None:
-    for card in source_cards:
-        st.markdown(
-            f"""
-            <div class="source-card">
-                <div class="source-title">{html.escape(card['label'])}</div>
-                <div class="source-meta">Chunk {card['rank']}</div>
-                <div class="source-preview">{html.escape(card['preview'])}</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+def _docx_bytes(answer: str, source_cards: list[dict]) -> bytes:
+    try:
+        from docx import Document
+    except Exception:
+        return b""
+    document = Document()
+    document.add_heading("Banking & Finance Copilot Answer", level=1)
+    document.add_paragraph(answer)
+    if source_cards:
+        document.add_heading("Sources", level=2)
+        for card in source_cards[:5]:
+            title = str(card.get("label", "Source"))
+            preview = str(card.get("preview", ""))[:300]
+            document.add_paragraph(f"{title}: {preview}")
+    buf = io.BytesIO()
+    document.save(buf)
+    return buf.getvalue()
 
 
 def render_assistant_message(
@@ -168,67 +373,109 @@ def render_assistant_message(
     show_source_cards: bool,
     show_auto_comparison: bool,
 ) -> None:
-    answer = _simplify_answer(message["answer"]) if simplified_answers else message["answer"]
-    st.markdown(f"<div class='answer-shell'>{_as_html_text(answer)}</div>", unsafe_allow_html=True)
+    answer = str(message.get("answer", "")).strip() if simplified_answers else str(message.get("answer", ""))
+    backend_label = str(message.get("backend", "OpenAI")).replace("GPT-4o", "OpenAI")
+
+    st.markdown('<div class="ai-wrap"><div class="ai-globe">&#127758;</div><div>', unsafe_allow_html=True)
     st.markdown(
         f"""
-        <div class="meta-line">
-            {html.escape(message['backend'])} | {message['latency_ms']} ms | {message['retrieved_chunks']} chunks | {html.escape(message['confidence'])} confidence
+        <div class="answer-shell">
+          <div class="meta-pills">
+            <span class="meta-pill">{html.escape(backend_label)}</span>
+            <span class="meta-pill">{html.escape(str(message.get("latency_ms", "--")))} ms</span>
+            <span class="meta-pill">{html.escape(str(message.get("retrieved_chunks", "--")))} chunks</span>
+            <span class="meta-pill green">{html.escape(str(message.get("confidence", "High")))} confidence</span>
+          </div>
+          {_as_html_text(answer)}
         </div>
         """,
         unsafe_allow_html=True,
     )
-    if message.get("retrieval_note"):
-        st.markdown(f'<div class="warning-pill">{html.escape(message["retrieval_note"])}</div>', unsafe_allow_html=True)
 
-    action_columns = st.columns([1.2, 1.0, 6.0])
-    with action_columns[0]:
-        render_voice_output(message["answer"], message_key)
-    with action_columns[1]:
-        st.button("Copy", key=f"copy-{message_key}", use_container_width=True)
+    cols = st.columns([1.15, 1.0, 1.0, 1.0, 0.72, 0.72, 4.0])
+    with cols[0]:
+        render_voice_output(answer, message_key, lang_hint=str(message.get("voice_lang_hint", "") or ""))
+    with cols[1]:
+        _copy_button(answer)
+    with cols[2]:
+        st.download_button("TXT", data=answer.encode("utf-8"), file_name=f"copilot-answer-{message_key}.txt", mime="text/plain", key=f"dl-txt-{message_key}", use_container_width=True)
+    with cols[3]:
+        docx_bytes = _docx_bytes(answer, message.get("source_cards", []))
+        if docx_bytes:
+            st.download_button(
+                "DOCX",
+                data=docx_bytes,
+                file_name=f"copilot-answer-{message_key}.docx",
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                key=f"dl-docx-{message_key}",
+                use_container_width=True,
+            )
+        else:
+            st.button("DOCX", key=f"dl-docx-unavail-{message_key}", disabled=True, use_container_width=True)
+    with cols[4]:
+        st.button(chr(0x1F44D), key=f"up-{message_key}", use_container_width=True)
+    with cols[5]:
+        st.button(chr(0x1F44E), key=f"down-{message_key}", use_container_width=True)
 
-    if show_source_cards:
-        with st.expander("Sources and grounding", expanded=False):
-            render_source_cards(message["source_cards"])
+    st.markdown('<div style="font-size:11px;color:#64748B;margin:8px 0 0 2px;">AI can make mistakes. Verify important information with official sources.</div>', unsafe_allow_html=True)
 
     if show_auto_comparison and message.get("comparison"):
         with st.expander("Auto mode comparison", expanded=False):
             for label, candidate in message["comparison"].items():
-                st.markdown(f"**{label.title()} candidate**")
-                st.write(candidate["answer"])
+                st.markdown(f"**{html.escape(str(label).title())} candidate**")
+                st.write(candidate.get("answer", ""))
 
-    agent_steps = message.get("agent_steps") or []
-    agent_observations = message.get("agent_observations") or []
-    if agent_steps:
-        with st.expander("Autonomous Agent Execution Trace", expanded=False):
-            for step in agent_steps:
-                st.markdown(
-                    f"**Step {step.get('step')} — {str(step.get('action', '')).title()}**\n\n"
-                    f"Reason: {step.get('thought', '')}\n\n"
-                    f"Input: `{step.get('input', '')}`"
-                )
-    if agent_observations:
-        with st.expander("Tool Observations", expanded=False):
-            for obs in agent_observations:
-                st.markdown(f"**Tool:** `{obs.get('tool')}`")
-                st.write(obs.get("result"))
+    st.markdown("</div></div>", unsafe_allow_html=True)
 
 
-def render_footer() -> None:
+def render_assistant_thinking() -> None:
     st.markdown(
         """
-        <div class="copilot-footer">
-            <div class="footer-inline">
-                <div class="rm-avatar">RM</div>
-                <span class="footer-name">Rakesh Madasani</span>
-                <span class="footer-divider">|</span>
-                <a href="https://www.linkedin.com/in/rakesh-madasani-b217b71b0/" target="_blank" aria-label="LinkedIn">LinkedIn</a>
-                <span class="footer-divider">|</span>
-                <a href="https://github.com/rakeshmadasaniai/banking-genai-portfolio" target="_blank" aria-label="GitHub">GitHub</a>
-                <span class="footer-divider">|</span>
-                <span class="footer-note">AI can make mistakes. Verify important information with official sources.</span>
-            </div>
+        <div class="ai-wrap">
+          <div class="ai-globe">&#127758;</div>
+          <div class="thinking-shell">
+            <span class="thinking-dot"></span>
+            <span class="thinking-text">Thinking...</span>
+          </div>
         </div>
         """,
         unsafe_allow_html=True,
+    )
+
+
+def render_footer() -> None:
+    return None
+
+
+def enforce_composer_pin() -> None:
+    components.html(
+        """
+<script>
+(function () {
+  let doc = document;
+  try {
+    if (window.parent && window.parent.document) doc = window.parent.document;
+  } catch (_) {}
+  function applyComposerPin() {
+    const input = Array.from(doc.querySelectorAll('input[placeholder]')).find((el) => (el.getAttribute('placeholder') || '').includes('Ask anything about banking'));
+    if (!input) return false;
+    const formHost = input.closest('[data-testid="stForm"]');
+    if (!formHost) return false;
+    const sidebar = doc.querySelector('[data-testid="stSidebar"]');
+    const wide = window.innerWidth > 1100;
+    const sidebarWidth = (wide && sidebar) ? Math.max(sidebar.getBoundingClientRect().width, 300) : 0;
+    formHost.style.position = 'fixed';
+    formHost.style.left = (wide ? (sidebarWidth + 9) : 8) + 'px';
+    formHost.style.right = '8px';
+    formHost.style.bottom = '8px';
+    formHost.style.zIndex = '60';
+    return true;
+  }
+  let tries = 0;
+  const timer = setInterval(() => { tries += 1; if (applyComposerPin() || tries > 35) clearInterval(timer); }, 80);
+  window.addEventListener('resize', applyComposerPin);
+})();
+</script>
+        """,
+        height=0,
     )
