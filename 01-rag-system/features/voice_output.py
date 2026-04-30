@@ -12,7 +12,7 @@ def _audio_cache_key(message_key: str, answer: str) -> str:
     return f"tts::{message_key}::{digest}"
 
 
-def _generate_audio(answer: str) -> bytes | None:
+def _generate_audio(answer: str, lang_hint: str = "") -> bytes | None:
     api_key = os.environ.get("OPENAI_API_KEY", "").strip()
     if not api_key:
         st.info("Read Answer Aloud needs OPENAI_API_KEY so the app can generate speech.")
@@ -34,7 +34,7 @@ def _generate_audio(answer: str) -> bytes | None:
     return None
 
 
-def render_voice_output(answer: str, message_key: str) -> None:
+def render_voice_output(answer: str, message_key: str, lang_hint: str = "") -> None:
     if not answer:
         return
 
@@ -45,7 +45,7 @@ def render_voice_output(answer: str, message_key: str) -> None:
     button_key = f"tts-button-{message_key}"
     if st.button("Read aloud", key=button_key, use_container_width=False):
         with st.spinner("Generating spoken answer..."):
-            audio_bytes = _generate_audio(answer)
+            audio_bytes = _generate_audio(answer, lang_hint=lang_hint)
         if audio_bytes:
             st.session_state.generated_audio[cache_key] = audio_bytes
 

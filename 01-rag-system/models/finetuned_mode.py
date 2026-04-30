@@ -52,7 +52,7 @@ def generate_finetuned_response(question: str, retrieval: dict, uploaded_images:
         try:
             answer = client.text_generation(
                 prompt,
-                max_new_tokens=220,
+                max_new_tokens=380,
                 temperature=0.1,
                 return_full_text=False,
             ).strip()

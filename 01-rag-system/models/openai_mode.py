@@ -14,7 +14,7 @@ from core.utils import FALLBACK_ANSWER, confidence_label, extractive_answer, ret
 
 @st.cache_resource(show_spinner=False)
 def get_openai_llm(model_name: str, api_key: str) -> ChatOpenAI:
-    return ChatOpenAI(model=model_name, api_key=api_key, temperature=0.1, max_tokens=260)
+    return ChatOpenAI(model=model_name, api_key=api_key, temperature=0.15, max_tokens=520)
 
 
 def _vision_answer(api_key: str, model_name: str, question: str, retrieval: dict, uploaded_images: list) -> str:
