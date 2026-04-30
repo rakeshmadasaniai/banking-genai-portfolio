@@ -150,21 +150,28 @@ div[data-testid="stForm"]:has(.composer-marker) form{
   background:transparent !important;
 }
 div[data-testid="stForm"]:has(.composer-marker){
-  position:fixed !important;
+  position:sticky !important;
   left:8px !important;
   right:8px !important;
   bottom:8px !important;
   top:auto !important;
-  z-index:999 !important;
+  z-index:40 !important;
   opacity:1 !important;
   pointer-events:auto !important;
+  background:#FFFFFF !important;
+  border:1px solid rgba(37,99,235,.14) !important;
+  border-radius:16px !important;
+  box-shadow:0 12px 30px rgba(15,23,42,.08) !important;
+  padding:8px 10px !important;
+  margin-top:10px !important;
 }
 @media (min-width:1101px){
   div[data-testid="stForm"]:has(.composer-marker){
-    left:309px !important;
+    left:0 !important;
   }
 }
 div[data-testid="stForm"]:has(.composer-marker)[data-pinned-composer="true"]{
+  position:sticky !important;
   opacity:1 !important;
   pointer-events:auto !important;
 }
@@ -490,62 +497,4 @@ def render_footer() -> None:
 
 
 def enforce_composer_pin() -> None:
-    components.html(
-        """
-<script>
-(function () {
-  let doc = document;
-  try {
-    if (window.parent && window.parent.document) doc = window.parent.document;
-  } catch (_) {}
-
-  function applyComposerPin() {
-    const formHosts = Array.from(doc.querySelectorAll('div[data-testid="stForm"]'))
-      .filter((form) => form.querySelector('.composer-marker'));
-    if (!formHosts.length) return false;
-
-    const formHost = formHosts[formHosts.length - 1];
-
-    const sidebar = doc.querySelector('[data-testid="stSidebar"]');
-    const wide = window.innerWidth > 1100;
-    const sidebarWidth = (wide && sidebar) ? Math.max(sidebar.getBoundingClientRect().width, 300) : 0;
-
-    formHost.style.setProperty('position', 'fixed', 'important');
-    formHost.style.setProperty('left', (wide ? (sidebarWidth + 9) : 8) + 'px', 'important');
-    formHost.style.setProperty('right', '8px', 'important');
-    formHost.style.setProperty('bottom', '8px', 'important');
-    formHost.style.setProperty('top', 'auto', 'important');
-    formHost.style.removeProperty('inset');
-    formHost.style.setProperty('width', 'auto', 'important');
-    formHost.style.setProperty('max-width', 'none', 'important');
-    formHost.style.setProperty('z-index', '999', 'important');
-    formHost.style.setProperty('background', '#FFFFFF', 'important');
-    formHost.style.setProperty('border', '1px solid rgba(37,99,235,.14)', 'important');
-    formHost.style.setProperty('border-radius', '16px', 'important');
-    formHost.style.setProperty('box-shadow', '0 16px 34px rgba(15,23,42,.08)', 'important');
-    formHost.style.setProperty('padding', '8px 10px', 'important');
-    formHost.style.setProperty('margin', '0', 'important');
-    formHost.setAttribute('data-pinned-composer', 'true');
-
-    // If multiple matching forms exist in DOM due to Streamlit reruns, keep only latest visible.
-    formHosts.slice(0, -1).forEach((node) => {
-      node.removeAttribute('data-pinned-composer');
-      node.style.setProperty('display', 'none', 'important');
-      node.style.setProperty('visibility', 'hidden', 'important');
-      node.style.setProperty('height', '0', 'important');
-      node.style.setProperty('overflow', 'hidden', 'important');
-    });
-    return true;
-  }
-
-  let tries = 0;
-  const timer = setInterval(() => {
-    tries += 1;
-    if (applyComposerPin() || tries > 35) clearInterval(timer);
-  }, 80);
-  window.addEventListener('resize', applyComposerPin);
-})();
-</script>
-        """,
-        height=0,
-    )
+    return None
