@@ -149,6 +149,14 @@ div[data-testid="stForm"]:has(.composer-marker) form{
   border:none !important;
   background:transparent !important;
 }
+div[data-testid="stForm"]:has(.composer-marker){
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+div[data-testid="stForm"]:has(.composer-marker)[data-pinned-composer="true"]{
+  opacity:1 !important;
+  pointer-events:auto !important;
+}
 .composer-row [data-testid="stElementContainer"]{margin-bottom:0 !important;}
 .composer-marker{display:none !important;}
 .composer-row [data-testid="column"]{display:flex; align-items:center;}
@@ -506,9 +514,11 @@ def enforce_composer_pin() -> None:
     formHost.style.setProperty('box-shadow', '0 16px 34px rgba(15,23,42,.08)', 'important');
     formHost.style.setProperty('padding', '8px 10px', 'important');
     formHost.style.setProperty('margin', '0', 'important');
+    formHost.setAttribute('data-pinned-composer', 'true');
 
     // If multiple matching forms exist in DOM due to Streamlit reruns, keep only latest visible.
     formHosts.slice(0, -1).forEach((node) => {
+      node.removeAttribute('data-pinned-composer');
       node.style.setProperty('display', 'none', 'important');
       node.style.setProperty('visibility', 'hidden', 'important');
       node.style.setProperty('height', '0', 'important');
