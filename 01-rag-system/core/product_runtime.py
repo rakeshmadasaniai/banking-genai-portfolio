@@ -10,7 +10,6 @@ from core.utils import detect_input_language
 from features.accessibility import apply_accessibility_styles, render_accessibility_controls
 from features.file_upload import render_document_uploads, render_image_uploads
 from features.product_ui import (
-    enforce_composer_pin,
     inject_premium_css,
     render_about_section,
     render_assistant_message,
@@ -240,8 +239,6 @@ def run_product_runtime() -> None:
         with c5:
             submitted = st.form_submit_button("↑", use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
-    enforce_composer_pin()
-
     if not submitted and not voice_transcript and not starter_prompt:
         render_footer()
         return

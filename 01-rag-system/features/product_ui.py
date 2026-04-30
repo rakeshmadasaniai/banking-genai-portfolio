@@ -160,12 +160,12 @@ div[data-testid="stForm"]:has(.composer-marker) form{
   background:transparent !important;
 }
 div[data-testid="stForm"]:has(.composer-marker){
-  position:static !important;
-  left:8px !important;
-  right:8px !important;
-  bottom:auto !important;
+  position:sticky !important;
+  left:auto !important;
+  right:auto !important;
+  bottom:8px !important;
   top:auto !important;
-  z-index:auto !important;
+  z-index:80 !important;
   opacity:1 !important;
   pointer-events:auto !important;
   background:#FFFFFF !important;
@@ -174,6 +174,7 @@ div[data-testid="stForm"]:has(.composer-marker){
   box-shadow:0 12px 30px rgba(15,23,42,.08) !important;
   padding:8px 10px !important;
   margin-top:10px !important;
+  margin-bottom:0 !important;
 }
 .composer-row [data-testid="stElementContainer"]{margin-bottom:0 !important;}
 .composer-marker{display:none !important;}
@@ -497,42 +498,4 @@ def render_footer() -> None:
 
 
 def enforce_composer_pin() -> None:
-    components.html(
-        """
-<script>
-(function () {
-  let doc = document;
-  try {
-    if (window.parent && window.parent.document) doc = window.parent.document;
-  } catch (_) {}
-
-  function pinComposer() {
-    const marker = doc.querySelector(".composer-marker");
-    if (!marker) return false;
-    const formHost = marker.closest('[data-testid="stForm"]');
-    if (!formHost) return false;
-
-    const sidebar = doc.querySelector('[data-testid="stSidebar"]');
-    const wide = window.innerWidth > 1024;
-    const sidebarWidth = (wide && sidebar) ? Math.max(sidebar.getBoundingClientRect().width, 300) : 0;
-
-    formHost.style.setProperty("position", "fixed", "important");
-    formHost.style.setProperty("left", (wide ? sidebarWidth + 10 : 8) + "px", "important");
-    formHost.style.setProperty("right", "10px", "important");
-    formHost.style.setProperty("bottom", "8px", "important");
-    formHost.style.setProperty("z-index", "120", "important");
-    formHost.style.setProperty("margin", "0", "important");
-    return true;
-  }
-
-  let tries = 0;
-  const timer = setInterval(() => {
-    tries += 1;
-    if (pinComposer() || tries > 40) clearInterval(timer);
-  }, 90);
-  window.addEventListener("resize", pinComposer);
-})();
-</script>
-        """,
-        height=0,
-    )
+    return None
