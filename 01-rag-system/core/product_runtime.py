@@ -30,7 +30,6 @@ from models.autonomous_agent import run_autonomous_agent
 from models.finetuned_mode import generate_finetuned_response
 from models.openai_mode import generate_openai_response
 
-
 MODEL_MODES = ["OpenAI", "Fine-Tuned", "Auto", "Autonomous Agent"]
 
 MODEL_DESCRIPTIONS = {
@@ -208,10 +207,10 @@ def run_product_runtime() -> None:
                 show_auto_comparison=show_auto_comparison,
             )
 
-    st.markdown("<div class='composer-fixed'>", unsafe_allow_html=True)
-    with st.form("composer_form", clear_on_submit=True):
+    with st.form("composer_form", clear_on_submit=True, border=False):
+        st.markdown("<div class='composer-marker'></div>", unsafe_allow_html=True)
         st.markdown("<div class='composer-row'>", unsafe_allow_html=True)
-        c1, c2, c3, c4, c5 = st.columns([0.9, 1.15, 4.2, 0.9, 0.55])
+        c1, c2, c3, c4, c5 = st.columns([0.95, 1.25, 4.0, 1.0, 0.7])
         with c1:
             with st.popover("+", use_container_width=True):
                 render_document_uploads()
@@ -238,7 +237,6 @@ def run_product_runtime() -> None:
         with c5:
             submitted = st.form_submit_button("↑", use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
-    st.markdown("</div>", unsafe_allow_html=True)
     enforce_composer_pin()
 
     if not submitted and not voice_transcript and not starter_prompt:

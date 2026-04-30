@@ -11,7 +11,6 @@ import streamlit.components.v1 as components
 
 from features.voice_output import render_voice_output
 
-
 STARTER_PROMPTS = [
     "English: What are the main KYC requirements for banks?",
     "తెలుగు: బ్యాంకుల్లో KYC కోసం అవసరమైన ప్రధాన పత్రాలు ఏమిటి?",
@@ -60,6 +59,7 @@ def inject_premium_css() -> None:
   --muted:#64748B;
   --navy:#123A6F;
   --blue:#2563EB;
+  --green:#059669;
   --border:rgba(15,23,42,.08);
   --border-soft:rgba(37,99,235,.10);
   --shadow:0 16px 34px rgba(15,23,42,.06);
@@ -72,23 +72,22 @@ html, body, [data-testid="stAppViewContainer"]{
   background:var(--bg) !important;
   color:var(--text) !important;
   color-scheme:light !important;
-  font-size:16px !important;
 }
 .stApp{
-  background:
-    radial-gradient(circle at 18% 0%, rgba(37,99,235,.08), transparent 28%),
-    linear-gradient(180deg, #F8FBFF 0%, #F4F7FC 100%) !important;
+  background:radial-gradient(circle at 18% 0%, rgba(37,99,235,.08), transparent 28%), linear-gradient(180deg, #F8FBFF 0%, #F4F7FC 100%) !important;
 }
-#MainMenu, footer{visibility:hidden;}
+.block-container{max-width:none !important; padding:.1rem .16rem 8.2rem !important;}
 [data-testid="stHeader"]{background:transparent !important;}
-.block-container{max-width:none !important; padding:.1rem .18rem 8.4rem !important;}
-[data-testid="stSidebar"]{background:var(--bg-soft) !important; border-right:1px solid var(--border) !important;}
+#MainMenu, footer{visibility:hidden;}
+[data-testid="stSidebar"]{background:var(--bg-soft) !important; border-right:1px solid var(--border) !important; min-width:300px !important;}
+[data-testid="stSidebar"] > div{padding-top:4px !important;}
 
 .sidebar-brand{display:flex; gap:12px; align-items:center; margin:4px 0 14px;}
-.brand-globe{font-size:40px; line-height:1; filter:drop-shadow(0 10px 18px rgba(37,99,235,.18)); animation:floatGlobe 3.6s ease-in-out infinite;}
-.sidebar-title{font-size:17px; font-weight:900; line-height:1.1; color:#08245A; letter-spacing:-.02em;}
+.brand-globe{font-size:40px; filter:drop-shadow(0 10px 18px rgba(37,99,235,.18)); animation:floatGlobe 3.6s ease-in-out infinite;}
+.sidebar-title{font-size:17px; font-weight:900; line-height:1.1; color:#08245A;}
 .sidebar-caption{font-size:11px; color:#5E78A8; margin-top:4px; font-weight:600;}
-.side-search{height:42px; border:1px solid var(--border); border-radius:14px; background:#FFFFFF; color:#94A3B8; display:flex; align-items:center; gap:10px; padding:0 12px; margin:8px 0 18px; font-size:13px; box-shadow:0 8px 20px rgba(15,23,42,.03);}
+.side-search{height:42px; border:1px solid var(--border); border-radius:14px; background:#FFFFFF; color:#94A3B8; display:flex; align-items:center; padding:0 12px; margin:8px 0 18px; font-size:13px;}
+.sidebar-section-label{margin:2px 0 10px; font-size:11px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; color:#7A8EAA;}
 
 [data-testid="stSidebar"] .stButton > button{
   width:100% !important;
@@ -98,8 +97,11 @@ html, body, [data-testid="stAppViewContainer"]{
   color:#FFFFFF !important;
   font-weight:800 !important;
 }
-[data-testid="stSidebar"] .stExpander, [data-testid="stSidebar"] .stRadio > div{
-  background:#FFFFFF !important; border:1px solid var(--border) !important; border-radius:16px !important;
+[data-testid="stSidebar"] .stExpander,
+[data-testid="stSidebar"] .stRadio > div{
+  background:#FFFFFF !important;
+  border:1px solid var(--border) !important;
+  border-radius:16px !important;
 }
 
 .product-shell,.chat-panel,.metrics-panel{background:var(--panel-soft); border:1px solid var(--border); border-radius:var(--radius-xl); box-shadow:var(--shadow);}
@@ -107,13 +109,9 @@ html, body, [data-testid="stAppViewContainer"]{
 .greeting-row{display:flex; align-items:center; gap:8px; margin:0 0 10px 2px; color:#08245A; font-weight:850;}
 .greeting-pill{width:30px; height:30px; border-radius:10px; background:#FFF7ED; border:1px solid #FED7AA; display:flex; align-items:center; justify-content:center;}
 .greeting-sub{font-weight:600; color:#29456F; font-size:15px; margin-bottom:18px;}
-.hero-card{
-  position:relative; overflow:hidden; display:grid; grid-template-columns:112px 1fr 280px; gap:20px; align-items:center;
-  min-height:142px; border:1px solid var(--border-soft); border-radius:var(--radius-xl);
-  background:linear-gradient(135deg,rgba(255,255,255,.97),rgba(241,247,255,.90)); box-shadow:0 14px 34px rgba(37,99,235,.07); padding:18px 24px;
-}
+.hero-card{display:grid; grid-template-columns:112px 1fr 280px; gap:20px; align-items:center; min-height:142px; border:1px solid var(--border-soft); border-radius:var(--radius-xl); background:linear-gradient(135deg,rgba(255,255,255,.97),rgba(241,247,255,.90)); padding:18px 24px;}
 .hero-globe,.ai-globe{animation:floatGlobe 3.6s ease-in-out infinite;}
-.hero-globe{font-size:78px; line-height:1; filter:drop-shadow(0 16px 18px rgba(37,99,235,.22));}
+.hero-globe{font-size:78px; filter:drop-shadow(0 16px 18px rgba(37,99,235,.22));}
 .hero-title{font-size:30px; font-weight:900; letter-spacing:-.04em; color:#08245A; margin:0 0 8px;}
 .hero-copy{font-size:15px; color:#274871; line-height:1.55;}
 .bank-art{font-size:82px; opacity:.96;}
@@ -147,20 +145,43 @@ html, body, [data-testid="stAppViewContainer"]{
   background:linear-gradient(135deg,#2563EB,#0EA5E9) !important; color:#FFFFFF !important; font-weight:800 !important;
 }
 
-.composer-fixed{position:fixed; left:312px; right:8px; bottom:8px; z-index:60; background:#FFFFFF; border:1px solid rgba(37,99,235,.14); border-radius:16px; box-shadow:0 16px 34px rgba(15,23,42,.08); padding:8px 10px; margin:0;}
-.composer-fixed form{margin-bottom:0 !important;}
+div[data-testid="stForm"]:has(.composer-marker) form{
+  border:none !important;
+  background:transparent !important;
+}
+.composer-row [data-testid="stElementContainer"]{margin-bottom:0 !important;}
+.composer-marker{display:none !important;}
 .composer-row [data-testid="column"]{display:flex; align-items:center;}
 .composer-row [data-testid="column"] > div{width:100%;}
-.composer-row [data-testid="stPopover"] button,
-.composer-row div[data-baseweb="select"] > div,
-.composer-row [data-testid="stTextInput"] input,
-.composer-row [data-testid="stFormSubmitButton"] button{
-  min-height:44px !important; border-radius:14px !important;
+div[data-testid="stForm"]:has(.composer-marker) div[data-testid="stPopover"] button{
+  min-height:44px !important;
+  border-radius:var(--radius-md) !important;
+  background:#FFFFFF !important;
+  border:1px solid rgba(15,23,42,.08) !important;
+  color:#123A6F !important;
 }
-.composer-row [data-testid="stTextInput"] > div > div{background:#FFFFFF !important; border:1px solid rgba(37,99,235,.14) !important;}
-.composer-row [data-testid="stFormSubmitButton"] button{background:#123A6F !important; color:#FFFFFF !important; border:none !important; font-weight:900 !important;}
-
-.copilot-footer{display:none;}
+div[data-testid="stForm"]:has(.composer-marker) div[data-testid="stSelectbox"] > div[data-baseweb="select"] > div{
+  min-height:44px !important;
+  border-radius:var(--radius-md) !important;
+  background:#FBFDFF !important;
+  border:1px solid rgba(15,23,42,.08) !important;
+}
+div[data-testid="stForm"]:has(.composer-marker) [data-testid="stTextInput"] > div > div{
+  background:#FFFFFF !important;
+  border:1px solid rgba(37,99,235,.14) !important;
+  border-radius:var(--radius-md) !important;
+}
+div[data-testid="stForm"]:has(.composer-marker) [data-testid="stTextInput"] input{
+  min-height:44px !important;
+  padding:10px 14px !important;
+}
+div[data-testid="stForm"]:has(.composer-marker) [data-testid="stFormSubmitButton"] button{
+  min-height:44px !important;
+  border-radius:var(--radius-md) !important;
+  background:#123A6F !important;
+  color:#FFFFFF !important;
+  border:none !important;
+}
 
 @keyframes floatGlobe{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes thinkingPulse{0%,100%{opacity:.35; transform:scale(.9)}50%{opacity:1; transform:scale(1.05)}}
@@ -170,7 +191,6 @@ html, body, [data-testid="stAppViewContainer"]{
   .hero-card{grid-template-columns:80px 1fr}
   .bank-art{display:none}
   .proof-grid,.product-info-grid,.tech-row{grid-template-columns:1fr}
-  .composer-fixed{left:8px; right:8px; bottom:8px;}
 }
 </style>
         """,
@@ -200,28 +220,31 @@ def render_header() -> None:
     )
     components.html(
         """
-        <script>
-        (function () {
-          let doc = document;
-          try { if (window.parent && window.parent !== window && window.parent.document) { doc = window.parent.document; } } catch (_e) { doc = document; }
-          function updateGreeting() {
-            const hour = new Date().getHours();
-            let greeting = "Good night";
-            let icon = String.fromCodePoint(0x1F319);
-            if (hour >= 5 && hour < 12) { greeting = "Good morning"; icon = String.fromCodePoint(0x1F324); }
-            else if (hour >= 12 && hour < 17) { greeting = "Good afternoon"; icon = String.fromCodePoint(0x2600); }
-            else if (hour >= 17 && hour < 21) { greeting = "Good evening"; icon = String.fromCodePoint(0x1F306); }
-            const greetingNodes = doc.querySelectorAll("[data-greeting-text]");
-            const iconNodes = doc.querySelectorAll("[data-greeting-icon]");
-            greetingNodes.forEach((node) => { node.textContent = greeting; });
-            iconNodes.forEach((node) => { node.textContent = icon; });
-            return greetingNodes.length > 0 && iconNodes.length > 0;
-          }
-          let attempts = 0;
-          const timer = setInterval(() => { attempts += 1; if (updateGreeting() || attempts > 30) { clearInterval(timer); } }, 120);
-          updateGreeting();
-        })();
-        </script>
+<script>
+(function () {
+  let doc = document;
+  try {
+    if (window.parent && window.parent !== window && window.parent.document) {
+      doc = window.parent.document;
+    }
+  } catch (_e) {
+    doc = document;
+  }
+  function updateGreeting() {
+    const hour = new Date().getHours();
+    let greeting = "Good night";
+    let icon = String.fromCodePoint(0x1F319);
+    if (hour >= 5 && hour < 12) { greeting = "Good morning"; icon = String.fromCodePoint(0x1F324); }
+    else if (hour >= 12 && hour < 17) { greeting = "Good afternoon"; icon = String.fromCodePoint(0x2600); }
+    else if (hour >= 17 && hour < 21) { greeting = "Good evening"; icon = String.fromCodePoint(0x1F306); }
+    doc.querySelectorAll("[data-greeting-text]").forEach((n) => n.textContent = greeting);
+    doc.querySelectorAll("[data-greeting-icon]").forEach((n) => n.textContent = icon);
+  }
+  let attempts = 0;
+  const timer = setInterval(() => { attempts += 1; updateGreeting(); if (attempts > 30) clearInterval(timer); }, 120);
+  updateGreeting();
+})();
+</script>
         """,
         height=0,
     )
@@ -337,7 +360,7 @@ def _copy_button(answer: str) -> None:
             const raw = atob('{encoded}');
             const bytes = Uint8Array.from(raw, c => c.charCodeAt(0));
             const text = new TextDecoder('utf-8').decode(bytes);
-            navigator.clipboard.writeText(text).then(()=>{{ btn.innerHTML='Copied'; setTimeout(()=>btn.innerHTML='Copy', 1200); }});
+            navigator.clipboard.writeText(text).then(() => {{ btn.innerHTML='Copied'; setTimeout(() => btn.innerHTML='Copy', 1200); }});
         }})(this)"
         style="width:100%;height:38px;border:1px solid rgba(15,23,42,.10);border-radius:12px;background:#fff;color:#123A6F;font-weight:700;cursor:pointer;">
           Copy
@@ -456,23 +479,49 @@ def enforce_composer_pin() -> None:
   try {
     if (window.parent && window.parent.document) doc = window.parent.document;
   } catch (_) {}
+
   function applyComposerPin() {
-    const input = Array.from(doc.querySelectorAll('input[placeholder]')).find((el) => (el.getAttribute('placeholder') || '').includes('Ask anything about banking'));
-    if (!input) return false;
-    const formHost = input.closest('[data-testid="stForm"]');
-    if (!formHost) return false;
+    const formHosts = Array.from(doc.querySelectorAll('div[data-testid="stForm"]'))
+      .filter((form) => form.querySelector('.composer-marker'));
+    if (!formHosts.length) return false;
+
+    const formHost = formHosts[formHosts.length - 1];
+
     const sidebar = doc.querySelector('[data-testid="stSidebar"]');
     const wide = window.innerWidth > 1100;
     const sidebarWidth = (wide && sidebar) ? Math.max(sidebar.getBoundingClientRect().width, 300) : 0;
-    formHost.style.position = 'fixed';
-    formHost.style.left = (wide ? (sidebarWidth + 9) : 8) + 'px';
-    formHost.style.right = '8px';
-    formHost.style.bottom = '8px';
-    formHost.style.zIndex = '60';
+
+    formHost.style.setProperty('position', 'fixed', 'important');
+    formHost.style.setProperty('left', (wide ? (sidebarWidth + 9) : 8) + 'px', 'important');
+    formHost.style.setProperty('right', '8px', 'important');
+    formHost.style.setProperty('bottom', '8px', 'important');
+    formHost.style.setProperty('top', 'auto', 'important');
+    formHost.style.setProperty('inset', 'auto 8px 8px ' + (wide ? (sidebarWidth + 9) : 8) + 'px', 'important');
+    formHost.style.setProperty('width', 'auto', 'important');
+    formHost.style.setProperty('max-width', 'none', 'important');
+    formHost.style.setProperty('z-index', '999', 'important');
+    formHost.style.setProperty('background', '#FFFFFF', 'important');
+    formHost.style.setProperty('border', '1px solid rgba(37,99,235,.14)', 'important');
+    formHost.style.setProperty('border-radius', '16px', 'important');
+    formHost.style.setProperty('box-shadow', '0 16px 34px rgba(15,23,42,.08)', 'important');
+    formHost.style.setProperty('padding', '8px 10px', 'important');
+    formHost.style.setProperty('margin', '0', 'important');
+
+    // If multiple matching forms exist in DOM due to Streamlit reruns, keep only latest visible.
+    formHosts.slice(0, -1).forEach((node) => {
+      node.style.setProperty('display', 'none', 'important');
+      node.style.setProperty('visibility', 'hidden', 'important');
+      node.style.setProperty('height', '0', 'important');
+      node.style.setProperty('overflow', 'hidden', 'important');
+    });
     return true;
   }
+
   let tries = 0;
-  const timer = setInterval(() => { tries += 1; if (applyComposerPin() || tries > 35) clearInterval(timer); }, 80);
+  const timer = setInterval(() => {
+    tries += 1;
+    if (applyComposerPin() || tries > 35) clearInterval(timer);
+  }, 80);
   window.addEventListener('resize', applyComposerPin);
 })();
 </script>
