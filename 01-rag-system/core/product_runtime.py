@@ -18,7 +18,6 @@ from features.product_ui import (
     render_header,
     render_session_insights,
     render_sidebar_brand,
-    render_sidebar_footer,
     render_sidebar_summary,
     render_stack_section,
     render_starter_prompts,
@@ -183,7 +182,6 @@ def run_product_runtime() -> None:
             render_sidebar_summary(base_doc_count, st.session_state.upload_doc_count, st.session_state.upload_chunk_count)
             st.markdown('<div class="sidebar-section-label">Session Metrics</div>', unsafe_allow_html=True)
             render_session_insights(st.session_state.messages)
-        render_sidebar_footer()
 
     apply_accessibility_styles(accessibility)
 
@@ -212,7 +210,7 @@ def run_product_runtime() -> None:
     with st.form("composer_form", clear_on_submit=True, border=False):
         st.markdown("<div class='composer-marker'></div>", unsafe_allow_html=True)
         st.markdown("<div class='composer-row'>", unsafe_allow_html=True)
-        c1, c2, c3, c4, c5 = st.columns([0.9, 1.0, 3.6, 0.9, 0.55])
+        c1, c2, c3, c4, c5 = st.columns([0.95, 1.25, 4.0, 1.0, 0.7])
         with c1:
             with st.popover("+", use_container_width=True):
                 render_document_uploads()
