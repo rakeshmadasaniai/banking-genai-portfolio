@@ -57,6 +57,7 @@ def _final_answer_prompt(
     agent_steps: list[dict[str, Any]],
     observations: list[dict[str, Any]],
     retrieval: dict[str, Any],
+    response_language: str = "same language as the user question",
 ) -> str:
     return f"""
 You are a Banking & Finance Autonomous Agentic AI Copilot.
@@ -81,6 +82,7 @@ Write the final answer.
 Rules:
 - Use retrieved evidence first.
 - Be clear and professional.
+- Use this language for the final answer: {response_language}
 - Do not claim legal, investment, or compliance authority.
 - If evidence is weak, say what is missing.
 - Include these sections:
@@ -194,6 +196,7 @@ def run_autonomous_agent(
     retrieval: dict[str, Any],
     llm_call: Callable[[str], str],
     memory: list[dict[str, Any]] | None = None,
+    response_language: str = "same language as the user question",
 ) -> dict[str, Any]:
     start = time.perf_counter()
     memory = memory or []
@@ -238,6 +241,7 @@ def run_autonomous_agent(
         agent_steps=agent_steps,
         observations=observations,
         retrieval=retrieval,
+        response_language=response_language,
     )
     answer = llm_call(final_prompt)
 
@@ -260,4 +264,5 @@ def run_autonomous_agent(
         "agent_observations": observations,
         "route_reason": "autonomous_agent_loop",
         "selection_reason": "Used multi-step planning, tool execution, evidence analysis, and self-check before final answer.",
+        "language": response_language,
     }

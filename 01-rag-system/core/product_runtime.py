@@ -6,6 +6,7 @@ from typing import Any
 import streamlit as st
 
 from core.retriever import get_base_index, load_base_documents, retrieve_shared_context
+from core.utils import detect_input_language
 from features.accessibility import apply_accessibility_styles, render_accessibility_controls
 from features.file_upload import render_document_uploads, render_image_uploads
 from features.product_ui import (
@@ -106,6 +107,7 @@ def _llm_text_call(prompt: str, retrieval: dict) -> str:
 
 def _run_selected_model(question: str, retrieval: dict, mode: str) -> dict:
     images = st.session_state.get("uploaded_images", [])
+    response_language = detect_input_language(question)
     if mode == "OpenAI":
         return generate_openai_response(question, retrieval, uploaded_images=images)
     if mode == "Fine-Tuned":
@@ -118,6 +120,7 @@ def _run_selected_model(question: str, retrieval: dict, mode: str) -> dict:
             retrieval=retrieval,
             llm_call=lambda p: _llm_text_call(p, retrieval),
             memory=st.session_state.agent_memory,
+            response_language=response_language,
         )
         st.session_state.agent_memory.append({"question": question, "steps": result.get("agent_steps", [])})
         return result
@@ -274,7 +277,7 @@ def run_product_runtime() -> None:
         "candidate_scores": result.get("candidate_scores"),
         "agent_steps": result.get("agent_steps"),
         "agent_observations": result.get("agent_observations"),
-        "voice_lang_hint": result.get("language", ""),
+        "voice_lang_hint": result.get("language", detect_input_language(question)),
     }
     st.session_state.messages.append(assistant_msg)
     _save_active_chat()

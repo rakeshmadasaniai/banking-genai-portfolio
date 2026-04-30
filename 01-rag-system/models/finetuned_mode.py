@@ -6,7 +6,7 @@ import time
 from huggingface_hub import InferenceClient
 
 from core.prompts import FINETUNED_SYSTEM_PROMPT, build_model_prompt
-from core.utils import FALLBACK_ANSWER, confidence_label, extractive_answer, retrieval_overlap, score_candidate
+from core.utils import FALLBACK_ANSWER, confidence_label, detect_input_language, extractive_answer, retrieval_overlap, score_candidate
 
 
 def _build_client() -> tuple[InferenceClient | None, str]:
@@ -20,6 +20,7 @@ def _build_client() -> tuple[InferenceClient | None, str]:
 
 
 def generate_finetuned_response(question: str, retrieval: dict, uploaded_images: list | None = None) -> dict:
+    response_language = detect_input_language(question)
     if uploaded_images:
         return {
             "answer": "Fine-Tuned mode does not currently support image reasoning. Use OpenAI or Auto for image questions.",
@@ -48,7 +49,7 @@ def generate_finetuned_response(question: str, retrieval: dict, uploaded_images:
     if retrieval["weak_retrieval"]:
         answer = FALLBACK_ANSWER
     else:
-        prompt = build_model_prompt(FINETUNED_SYSTEM_PROMPT, question, retrieval["context"])
+        prompt = build_model_prompt(FINETUNED_SYSTEM_PROMPT, question, retrieval["context"], response_language=response_language)
         try:
             answer = client.text_generation(
                 prompt,
@@ -68,5 +69,6 @@ def generate_finetuned_response(question: str, retrieval: dict, uploaded_images:
         "latency_ms": latency_ms,
         "confidence": confidence_label(answer, len(retrieval["sources"]), overlap),
         "score": score_candidate(question, answer, retrieval["documents"], latency_ms),
+        "language": response_language,
         "available": "could not generate" not in answer.lower() and "not configured" not in answer.lower(),
     }

@@ -13,6 +13,9 @@ Style requirements:
 - Keep the response readable, polished, and well spaced.
 - Avoid excessive bullet points unless they materially help.
 - Highlight differences clearly when the user asks for a comparison.
+- Do not output ALL-CAPS section labels.
+- Do not output divider lines like ===== or -----.
+- Write like a premium assistant response (concise when question is direct; fuller when question is open-ended).
 
 Structure:
 1. Direct answer
@@ -44,6 +47,9 @@ Style requirements:
 - Keep the response readable, polished, and well spaced.
 - Avoid excessive bullet points unless they materially help.
 - Highlight differences clearly when the user asks for a comparison.
+- Do not output ALL-CAPS section labels.
+- Do not output divider lines like ===== or -----.
+- Write like a premium assistant response (concise when question is direct; fuller when question is open-ended).
 
 Structure:
 1. Direct answer
@@ -65,13 +71,18 @@ Tone:
 """
 
 
-def build_model_prompt(system_prompt: str, question: str, context: str) -> str:
+def build_model_prompt(system_prompt: str, question: str, context: str, response_language: str | None = None) -> str:
+    language_rule = response_language or "same language as the user question"
     return f"""{system_prompt}
 
 Retrieved context:
 {context}
 
 User question: {question}
+
+Output language rule:
+- Respond in {language_rule}.
+- Keep the answer in one language only (no mixed-language output unless user asks).
 
 Answer:
 """

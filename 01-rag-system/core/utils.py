@@ -190,3 +190,26 @@ def file_signature(uploaded_files: list[Any] | None) -> str:
 
 def now_ms() -> float:
     return time.perf_counter() * 1000
+
+
+def detect_input_language(text: str) -> str:
+    value = (text or "").strip()
+    if not value:
+        return "English"
+
+    if re.search(r"[\u0C00-\u0C7F]", value):
+        return "Telugu"
+    if re.search(r"[\u4E00-\u9FFF]", value):
+        return "Chinese"
+    if re.search(r"[\u0400-\u04FF]", value):
+        return "Russian"
+    if re.search(r"[\u0600-\u06FF]", value):
+        return "Arabic/Urdu"
+
+    lowered = value.lower()
+    if any(token in lowered for token in ("¿", "¡", " para ", " bancos", " requisitos", "español")):
+        return "Spanish"
+    if any(token in lowered for token in ("français", " banques", " exigences", " quelles ")):
+        return "French"
+
+    return "English"

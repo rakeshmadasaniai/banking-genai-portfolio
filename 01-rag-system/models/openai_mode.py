@@ -9,7 +9,7 @@ from langchain_openai import ChatOpenAI
 from openai import OpenAI
 
 from core.prompts import OPENAI_SYSTEM_PROMPT, build_model_prompt
-from core.utils import FALLBACK_ANSWER, confidence_label, extractive_answer, retrieval_overlap, score_candidate, simple_factual_query
+from core.utils import FALLBACK_ANSWER, confidence_label, detect_input_language, retrieval_overlap, score_candidate
 
 
 @st.cache_resource(show_spinner=False)
@@ -19,7 +19,13 @@ def get_openai_llm(model_name: str, api_key: str) -> ChatOpenAI:
 
 def _vision_answer(api_key: str, model_name: str, question: str, retrieval: dict, uploaded_images: list) -> str:
     client = OpenAI(api_key=api_key)
-    prompt = build_model_prompt(OPENAI_SYSTEM_PROMPT, question, retrieval["context"] or "No supporting text context was retrieved.")
+    response_language = detect_input_language(question)
+    prompt = build_model_prompt(
+        OPENAI_SYSTEM_PROMPT,
+        question,
+        retrieval["context"] or "No supporting text context was retrieved.",
+        response_language=response_language,
+    )
     content = [{"type": "text", "text": prompt}]
     for uploaded_image in uploaded_images[:3]:
         image_bytes = uploaded_image.getvalue()
@@ -45,6 +51,7 @@ def generate_openai_response(question: str, retrieval: dict, uploaded_images: li
     api_key = os.environ.get("OPENAI_API_KEY", "").strip()
     model_name = os.environ.get("OPENAI_MODEL", "gpt-4o-mini").strip()
     uploaded_images = uploaded_images or []
+    response_language = detect_input_language(question)
 
     if not api_key:
         return {
@@ -64,11 +71,10 @@ def generate_openai_response(question: str, retrieval: dict, uploaded_images: li
         answer = _vision_answer(api_key, model_name, question, retrieval, uploaded_images) or FALLBACK_ANSWER
     elif retrieval["weak_retrieval"]:
         answer = FALLBACK_ANSWER
-    elif simple_factual_query(question) and documents:
-        answer = extractive_answer(question, documents) or FALLBACK_ANSWER
     else:
+        # Always prefer generated responses for premium conversational style.
         llm = get_openai_llm(model_name, api_key)
-        prompt = build_model_prompt(OPENAI_SYSTEM_PROMPT, question, retrieval["context"])
+        prompt = build_model_prompt(OPENAI_SYSTEM_PROMPT, question, retrieval["context"], response_language=response_language)
         answer = llm.invoke(prompt).content.strip() or FALLBACK_ANSWER
 
     latency_ms = round((time.perf_counter() - start) * 1000)
@@ -83,5 +89,6 @@ def generate_openai_response(question: str, retrieval: dict, uploaded_images: li
         "latency_ms": latency_ms,
         "confidence": confidence,
         "score": score_candidate(question, answer, documents, latency_ms),
+        "language": response_language,
         "available": True,
     }
