@@ -150,8 +150,19 @@ div[data-testid="stForm"]:has(.composer-marker) form{
   background:transparent !important;
 }
 div[data-testid="stForm"]:has(.composer-marker){
-  opacity:0 !important;
-  pointer-events:none !important;
+  position:fixed !important;
+  left:8px !important;
+  right:8px !important;
+  bottom:8px !important;
+  top:auto !important;
+  z-index:999 !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+}
+@media (min-width:1101px){
+  div[data-testid="stForm"]:has(.composer-marker){
+    left:309px !important;
+  }
 }
 div[data-testid="stForm"]:has(.composer-marker)[data-pinned-composer="true"]{
   opacity:1 !important;
@@ -504,7 +515,7 @@ def enforce_composer_pin() -> None:
     formHost.style.setProperty('right', '8px', 'important');
     formHost.style.setProperty('bottom', '8px', 'important');
     formHost.style.setProperty('top', 'auto', 'important');
-    formHost.style.setProperty('inset', 'auto 8px 8px ' + (wide ? (sidebarWidth + 9) : 8) + 'px', 'important');
+    formHost.style.removeProperty('inset');
     formHost.style.setProperty('width', 'auto', 'important');
     formHost.style.setProperty('max-width', 'none', 'important');
     formHost.style.setProperty('z-index', '999', 'important');
