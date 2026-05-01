@@ -10,6 +10,7 @@ from core.utils import detect_input_language
 from features.accessibility import apply_accessibility_styles, render_accessibility_controls
 from features.file_upload import render_document_uploads, render_image_uploads
 from features.product_ui import (
+    enforce_composer_pin,
     inject_premium_css,
     render_about_section,
     render_assistant_message,
@@ -121,6 +122,7 @@ def _run_selected_model(question: str, retrieval: dict, mode: str) -> dict:
             llm_call=lambda p: _llm_text_call(p, retrieval),
             memory=st.session_state.agent_memory,
             response_language=response_language,
+            retriever_call=lambda q: retrieve_shared_context(q, get_base_index(), st.session_state.upload_index),
         )
         st.session_state.agent_memory.append({"question": question, "steps": result.get("agent_steps", [])})
         return result
@@ -216,6 +218,8 @@ def run_product_runtime() -> None:
         render_assistant_thinking()
         retrieval = retrieve_shared_context(pending_question, base_index, st.session_state.upload_index)
         result = _run_selected_model(pending_question, retrieval, st.session_state.model_mode)
+        if result.get("retrieval_override"):
+            retrieval = result["retrieval_override"]
 
         assistant_msg = {
             "role": "assistant",
@@ -242,7 +246,7 @@ def run_product_runtime() -> None:
     with st.form("composer_form", clear_on_submit=True, border=False):
         st.markdown("<div class='composer-marker'></div>", unsafe_allow_html=True)
         st.markdown("<div class='composer-row'>", unsafe_allow_html=True)
-        c1, c2, c3, c4, c5 = st.columns([0.95, 1.25, 4.0, 1.0, 0.7])
+        c1, c2, c3, c4, c5 = st.columns([0.8, 1.1, 3.6, 0.9, 0.5])
         with c1:
             with st.popover("+", use_container_width=True):
                 render_document_uploads()
@@ -269,6 +273,7 @@ def run_product_runtime() -> None:
         with c5:
             submitted = st.form_submit_button("↑", use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
+    enforce_composer_pin()
     if not submitted and not voice_transcript and not starter_prompt:
         render_footer()
         return

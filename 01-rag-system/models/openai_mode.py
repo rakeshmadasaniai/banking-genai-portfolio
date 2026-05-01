@@ -14,7 +14,7 @@ from core.utils import FALLBACK_ANSWER, confidence_label, detect_input_language,
 
 @st.cache_resource(show_spinner=False)
 def get_openai_llm(model_name: str, api_key: str) -> ChatOpenAI:
-    return ChatOpenAI(model=model_name, api_key=api_key, temperature=0.15, max_tokens=520)
+    return ChatOpenAI(model=model_name, api_key=api_key, temperature=0.1, max_tokens=380)
 
 
 def _vision_answer(api_key: str, model_name: str, question: str, retrieval: dict, uploaded_images: list) -> str:
@@ -41,7 +41,7 @@ def _vision_answer(api_key: str, model_name: str, question: str, retrieval: dict
     response = client.chat.completions.create(
         model=model_name,
         messages=[{"role": "user", "content": content}],
-        max_tokens=320,
+        max_tokens=260,
         temperature=0.1,
     )
     return (response.choices[0].message.content or "").strip()

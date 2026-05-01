@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from io import BytesIO
+import os
 from pathlib import Path
 
 import streamlit as st
@@ -109,7 +110,7 @@ def _search_index(index: VectorIndex | None, query: str, limit: int) -> list[Doc
 
 
 def retrieve_shared_context(question: str, base_index: VectorIndex | None, uploaded_index: VectorIndex | None = None) -> dict:
-    per_index_limit = 3 if len(question.split()) > 10 else 2
+    per_index_limit = int(os.environ.get("RAG_PER_INDEX_LIMIT", "2"))
     candidates = []
     seen = set()
     for index in filter(None, [uploaded_index, base_index]):

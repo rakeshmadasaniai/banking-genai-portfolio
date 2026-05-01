@@ -160,12 +160,8 @@ div[data-testid="stForm"]:has(.composer-marker) form{
   background:transparent !important;
 }
 div[data-testid="stForm"]:has(.composer-marker){
-  position:sticky !important;
-  left:auto !important;
-  right:auto !important;
-  bottom:8px !important;
-  top:auto !important;
-  z-index:80 !important;
+  position:relative !important;
+  z-index:20 !important;
   opacity:1 !important;
   pointer-events:auto !important;
   background:#FFFFFF !important;
@@ -442,9 +438,9 @@ def render_assistant_message(
         unsafe_allow_html=True,
     )
 
-    cols = st.columns([1.15, 1.0, 1.0, 1.0, 0.72, 0.72, 4.0])
+    cols = st.columns(6)
     with cols[0]:
-        render_voice_output(answer, message_key)
+        render_voice_output(answer, message_key, lang_hint=str(message.get("voice_lang_hint", "") or ""))
     with cols[1]:
         _copy_button(answer)
     with cols[2]:
@@ -475,6 +471,23 @@ def render_assistant_message(
                 st.markdown(f"**{html.escape(str(label).title())} candidate**")
                 st.write(candidate.get("answer", ""))
 
+    agent_steps = message.get("agent_steps") or []
+    if agent_steps:
+        with st.expander("Autonomous Agent Execution Trace", expanded=False):
+            for step in agent_steps:
+                st.markdown(
+                    f"**Step {step.get('step', '?')} - {html.escape(str(step.get('action', '')).title())}**"
+                )
+                st.write(f"Reason: {step.get('thought', '')}")
+                st.code(str(step.get("input", "")) or "-", language="text")
+
+    agent_observations = message.get("agent_observations") or []
+    if agent_observations:
+        with st.expander("Tool Observations", expanded=False):
+            for obs in agent_observations:
+                st.markdown(f"**Tool:** `{obs.get('tool', '')}`")
+                st.write(obs.get("result", ""))
+
     st.markdown("</div></div>", unsafe_allow_html=True)
 
 
@@ -498,4 +511,47 @@ def render_footer() -> None:
 
 
 def enforce_composer_pin() -> None:
-    return None
+    components.html(
+        """
+<script>
+(function () {
+  let doc = document;
+  try {
+    if (window.parent && window.parent !== window && window.parent.document) {
+      doc = window.parent.document;
+    }
+  } catch (_e) {
+    doc = document;
+  }
+
+  function pinComposer() {
+    const marker = doc.querySelector(".composer-marker");
+    if (!marker) return false;
+    const formHost = marker.closest('[data-testid="stForm"]');
+    if (!formHost) return false;
+    const sidebar = doc.querySelector('[data-testid="stSidebar"]');
+    const isDesktop = window.innerWidth > 1100;
+    const sidebarWidth = (isDesktop && sidebar) ? Math.max(300, sidebar.getBoundingClientRect().width) : 0;
+    formHost.style.position = "fixed";
+    formHost.style.left = (isDesktop ? sidebarWidth + 8 : 8) + "px";
+    formHost.style.right = "8px";
+    formHost.style.bottom = "8px";
+    formHost.style.zIndex = "90";
+    formHost.style.background = "#FFFFFF";
+    formHost.style.border = "1px solid rgba(37,99,235,.14)";
+    formHost.style.borderRadius = "16px";
+    formHost.style.boxShadow = "0 12px 30px rgba(15,23,42,.08)";
+    return true;
+  }
+
+  let tries = 0;
+  const timer = setInterval(() => {
+    tries += 1;
+    if (pinComposer() || tries > 40) clearInterval(timer);
+  }, 100);
+  window.addEventListener("resize", pinComposer);
+})();
+</script>
+        """,
+        height=0,
+    )

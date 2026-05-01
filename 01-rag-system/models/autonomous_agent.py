@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+import ast
 import json
+import os
+import re
 import time
+from datetime import datetime, timezone
 from typing import Any, Callable
 
-MAX_AGENT_STEPS = 4
+MAX_AGENT_STEPS = max(2, int(os.environ.get("AUTONOMOUS_MAX_STEPS", "4")))
 
 
 def _safe_json_loads(text: str) -> dict[str, Any]:
@@ -14,50 +18,58 @@ def _safe_json_loads(text: str) -> dict[str, Any]:
         return json.loads(text[start:end])
     except Exception:
         return {
-            "thought": "Fallback: answer using retrieved evidence.",
+            "thought": "Fallback to final grounded answer.",
             "action": "finish",
             "input": "",
         }
 
 
-def _agent_planner_prompt(question: str, memory: list[dict[str, Any]], observations: list[dict[str, Any]]) -> str:
+def _planner_prompt(
+    question: str,
+    memory: list[dict[str, Any]],
+    observations: list[dict[str, Any]],
+    weak_retrieval: bool,
+) -> str:
     return f"""
 You are a bounded autonomous Banking & Finance AI Agent.
 
 Goal:
-Answer the user using multi-step reasoning, tool execution, and retrieved evidence.
+Solve the user request with tool-use + retrieved evidence.
 
-User question:
+Question:
 {question}
 
+Weak retrieval now: {weak_retrieval}
 Recent memory:
 {memory[-3:] if memory else []}
-
 Observations:
-{observations}
+{observations[-4:] if observations else []}
 
-Choose ONE next action:
-- retrieve: search banking/compliance knowledge
-- analyze: reason over retrieved evidence
-- compare: compare sources or model behavior
-- self_check: verify grounding and completeness
-- finish: stop and produce final answer
+Available actions (choose ONE):
+- retrieve: retrieve evidence for the current query
+- retrieve_retry: rewrite/refine query then retrieve again
+- analyze: reason over current evidence
+- compare: compare evidence/options
+- calculate: do deterministic numeric calculation
+- date_check: check date/freshness logic
+- self_check: verify groundedness/completeness
+- finish: produce final answer
 
-Return ONLY valid JSON:
+Return ONLY strict JSON:
 {{
   "thought": "why this step is needed",
-  "action": "retrieve | analyze | compare | self_check | finish",
-  "input": "short tool input"
+  "action": "retrieve|retrieve_retry|analyze|compare|calculate|date_check|self_check|finish",
+  "input": "short action input"
 }}
 """
 
 
-def _final_answer_prompt(
+def _final_prompt(
     question: str,
-    agent_steps: list[dict[str, Any]],
+    steps: list[dict[str, Any]],
     observations: list[dict[str, Any]],
     retrieval: dict[str, Any],
-    response_language: str = "same language as the user question",
+    response_language: str,
 ) -> str:
     return f"""
 You are a Banking & Finance Autonomous Agentic AI Copilot.
@@ -65,8 +77,8 @@ You are a Banking & Finance Autonomous Agentic AI Copilot.
 User question:
 {question}
 
-Agent steps:
-{agent_steps}
+Execution steps:
+{steps}
 
 Tool observations:
 {observations}
@@ -77,43 +89,80 @@ Retrieved context:
 Sources:
 {retrieval.get("sources", [])}
 
-Write the final answer.
+Write final answer in: {response_language}
 
 Rules:
-- Use retrieved evidence first.
-- Be clear and professional.
-- Use this language for the final answer: {response_language}
-- Do not claim legal, investment, or compliance authority.
-- If evidence is weak, say what is missing.
-- Include these sections:
-  1. Answer
-  2. Agentic Execution Trace
-  3. Evidence Used
-  4. Confidence
+- Keep grounded to retrieved evidence first.
+- If evidence is weak, state the gap clearly.
+- If user asked direct fact, answer directly first.
+- Then provide concise key points.
+- Do not claim legal or compliance authority.
 """
 
 
 def _self_check_prompt(question: str, draft: str, retrieval: dict[str, Any]) -> str:
     return f"""
-Check whether this answer is grounded and useful.
+Check the answer quality.
 
 Question:
 {question}
 
-Draft answer:
+Draft:
 {draft}
 
-Retrieved sources:
+Sources:
 {retrieval.get("sources", [])}
 
-Retrieved context:
+Context:
 {retrieval.get("context", "")}
 
 Return:
 - Grounded: Yes/Partial/No
-- Missing evidence:
-- Suggested correction:
+- Missing:
+- Correction:
 """
+
+
+def _safe_math(expr: str) -> str:
+    allowed = set("0123456789+-*/(). %")
+    cleaned = "".join(ch for ch in expr if ch in allowed)
+    if not cleaned.strip():
+        return "No valid numeric expression found."
+    try:
+        tree = ast.parse(cleaned, mode="eval")
+        for node in ast.walk(tree):
+            if not isinstance(
+                node,
+                (
+                    ast.Expression,
+                    ast.BinOp,
+                    ast.UnaryOp,
+                    ast.Constant,
+                    ast.Add,
+                    ast.Sub,
+                    ast.Mult,
+                    ast.Div,
+                    ast.Mod,
+                    ast.Pow,
+                    ast.USub,
+                    ast.UAdd,
+                    ast.FloorDiv,
+                ),
+            ):
+                return "Expression contains unsupported operations."
+        value = eval(compile(tree, "<math>", "eval"), {"__builtins__": {}})
+        return f"{value}"
+    except Exception:
+        return "Could not evaluate expression safely."
+
+
+def _date_check(input_text: str) -> str:
+    now = datetime.now(timezone.utc)
+    found = re.findall(r"\d{4}-\d{2}-\d{2}", input_text or "")
+    if not found:
+        return f"No ISO date found. Current UTC date: {now.date().isoformat()}."
+    latest = max(found)
+    return f"Detected date(s): {found}. Latest date: {latest}. Current UTC date: {now.date().isoformat()}."
 
 
 def _execute_tool(
@@ -122,73 +171,66 @@ def _execute_tool(
     question: str,
     retrieval: dict[str, Any],
     llm_call: Callable[[str], str],
-) -> dict[str, Any]:
+    retriever_call: Callable[[str], dict[str, Any]] | None,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    # returns (observation, possibly_updated_retrieval)
     if action == "retrieve":
-        return {
-            "tool": "retrieve",
-            "input": tool_input or question,
-            "result": {
-                "retrieved_chunks": retrieval.get("retrieved_chunks", 0),
-                "sources": retrieval.get("sources", []),
-                "weak_retrieval": retrieval.get("weak_retrieval", False),
-                "context_preview": retrieval.get("context", "")[:900],
+        if retriever_call:
+            updated = retriever_call(tool_input or question)
+        else:
+            updated = retrieval
+        return (
+            {
+                "tool": "retrieve",
+                "input": tool_input or question,
+                "result": {
+                    "retrieved_chunks": updated.get("retrieved_chunks", 0),
+                    "sources": updated.get("sources", []),
+                    "weak_retrieval": updated.get("weak_retrieval", False),
+                    "context_preview": updated.get("context", "")[:700],
+                },
             },
-        }
+            updated,
+        )
+
+    if action == "retrieve_retry":
+        rewrite_prompt = f"Rewrite this query for better retrieval in banking/compliance docs:\n{tool_input or question}\nReturn one line."
+        revised = (llm_call(rewrite_prompt) or "").strip().splitlines()[0][:240]
+        updated = retriever_call(revised) if retriever_call else retrieval
+        return (
+            {
+                "tool": "retrieve_retry",
+                "input": revised,
+                "result": {
+                    "retrieved_chunks": updated.get("retrieved_chunks", 0),
+                    "sources": updated.get("sources", []),
+                    "weak_retrieval": updated.get("weak_retrieval", False),
+                    "context_preview": updated.get("context", "")[:700],
+                },
+            },
+            updated,
+        )
 
     if action == "analyze":
-        prompt = f"""
-Analyze the evidence for this banking/compliance question.
-
-Question:
-{question}
-
-Evidence:
-{retrieval.get("context", "")}
-
-Give concise findings only.
-"""
-        return {
-            "tool": "analyze",
-            "input": tool_input,
-            "result": llm_call(prompt),
-        }
+        prompt = f"Analyze the banking evidence briefly.\nQuestion: {question}\nEvidence:\n{retrieval.get('context','')}\nReturn concise findings."
+        return ({"tool": "analyze", "input": tool_input, "result": llm_call(prompt)}, retrieval)
 
     if action == "compare":
-        prompt = f"""
-Compare the available evidence and identify the strongest answer path.
+        prompt = f"Compare possible answer paths from sources.\nQuestion: {question}\nSources: {retrieval.get('sources',[])}\nReturn concise comparison."
+        return ({"tool": "compare", "input": tool_input, "result": llm_call(prompt)}, retrieval)
 
-Question:
-{question}
+    if action == "calculate":
+        return ({"tool": "calculate", "input": tool_input, "result": _safe_math(tool_input or question)}, retrieval)
 
-Sources:
-{retrieval.get("sources", [])}
-
-Context:
-{retrieval.get("context", "")}
-
-Return concise comparison.
-"""
-        return {
-            "tool": "compare",
-            "input": tool_input,
-            "result": llm_call(prompt),
-        }
+    if action == "date_check":
+        return ({"tool": "date_check", "input": tool_input, "result": _date_check(tool_input or question)}, retrieval)
 
     if action == "self_check":
-        draft_prompt = _final_answer_prompt(question, [], [], retrieval)
-        draft = llm_call(draft_prompt)
+        draft = llm_call(_final_prompt(question, [], [], retrieval, "same language as user"))
         check = llm_call(_self_check_prompt(question, draft, retrieval))
-        return {
-            "tool": "self_check",
-            "input": tool_input,
-            "result": check,
-        }
+        return ({"tool": "self_check", "input": tool_input, "result": check}, retrieval)
 
-    return {
-        "tool": "finish",
-        "input": tool_input,
-        "result": "Agent decided enough information is available.",
-    }
+    return ({"tool": "finish", "input": tool_input, "result": "Agent stopped with current evidence."}, retrieval)
 
 
 def run_autonomous_agent(
@@ -197,72 +239,75 @@ def run_autonomous_agent(
     llm_call: Callable[[str], str],
     memory: list[dict[str, Any]] | None = None,
     response_language: str = "same language as the user question",
+    retriever_call: Callable[[str], dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     start = time.perf_counter()
     memory = memory or []
 
-    agent_steps: list[dict[str, Any]] = []
+    steps: list[dict[str, Any]] = []
     observations: list[dict[str, Any]] = []
+    current_retrieval = dict(retrieval)
 
     for step_index in range(MAX_AGENT_STEPS):
-        planner_prompt = _agent_planner_prompt(question, memory, observations)
-        planner_output = llm_call(planner_prompt)
-        decision = _safe_json_loads(planner_output)
+        plan = _safe_json_loads(
+            llm_call(
+                _planner_prompt(
+                    question=question,
+                    memory=memory,
+                    observations=observations,
+                    weak_retrieval=bool(current_retrieval.get("weak_retrieval")),
+                )
+            )
+        )
+        action = str(plan.get("action", "finish")).strip().lower()
+        thought = str(plan.get("thought", "")).strip()
+        tool_input = str(plan.get("input", "")).strip()
 
-        action = str(decision.get("action", "finish")).strip().lower()
-        thought = str(decision.get("thought", "")).strip()
-        tool_input = str(decision.get("input", "")).strip()
-
-        step = {
-            "step": step_index + 1,
-            "thought": thought,
-            "action": action,
-            "input": tool_input,
-        }
-        agent_steps.append(step)
+        step = {"step": step_index + 1, "thought": thought, "action": action, "input": tool_input}
+        steps.append(step)
 
         if action == "finish":
             break
 
-        observation = _execute_tool(
+        obs, updated_retrieval = _execute_tool(
             action=action,
             tool_input=tool_input,
             question=question,
-            retrieval=retrieval,
+            retrieval=current_retrieval,
             llm_call=llm_call,
+            retriever_call=retriever_call,
         )
-        observations.append(observation)
+        observations.append(obs)
+        current_retrieval = updated_retrieval
 
-        if action == "self_check":
-            break
-
-    final_prompt = _final_answer_prompt(
-        question=question,
-        agent_steps=agent_steps,
-        observations=observations,
-        retrieval=retrieval,
-        response_language=response_language,
+    final_answer = llm_call(
+        _final_prompt(
+            question=question,
+            steps=steps,
+            observations=observations,
+            retrieval=current_retrieval,
+            response_language=response_language,
+        )
     )
-    answer = llm_call(final_prompt)
 
     latency_ms = round((time.perf_counter() - start) * 1000)
-
     confidence = "High"
-    if retrieval.get("weak_retrieval"):
+    if current_retrieval.get("weak_retrieval"):
         confidence = "Medium"
-    if not retrieval.get("sources"):
+    if not current_retrieval.get("sources"):
         confidence = "Low"
 
     return {
-        "answer": answer,
+        "answer": final_answer,
         "backend": "Autonomous Agentic AI",
-        "model_name": "autonomous-agentic-rag",
+        "model_name": "autonomous-agentic-rag-v2",
         "latency_ms": latency_ms,
         "confidence": confidence,
         "available": True,
-        "agent_steps": agent_steps,
+        "agent_steps": steps,
         "agent_observations": observations,
-        "route_reason": "autonomous_agent_loop",
-        "selection_reason": "Used multi-step planning, tool execution, evidence analysis, and self-check before final answer.",
+        "route_reason": "autonomous_agentic_loop",
+        "selection_reason": "Planner -> tools -> observation -> final grounded answer.",
         "language": response_language,
+        "retrieval_override": current_retrieval,
     }
