@@ -7,8 +7,8 @@ from typing import Any
 
 import streamlit as st
 
-from core.retriever import get_base_index, load_base_documents, retrieve_shared_context
-from core.utils import detect_input_language
+from core.retriever import get_base_index, retrieve_shared_context
+from core.utils import detect_input_language, list_base_knowledge_files
 from features.accessibility import apply_accessibility_styles, render_accessibility_controls
 from features.file_upload import render_document_uploads, render_image_uploads
 from features.product_ui import (
@@ -185,8 +185,9 @@ def run_product_runtime() -> None:
 
     inject_premium_css()
 
-    base_index = get_base_index()
-    base_doc_count = len(load_base_documents())
+    # Lazy-load retrieval resources so homepage paints immediately.
+    base_index = None
+    base_doc_count = len(list_base_knowledge_files())
 
     show_source_cards = True
     show_auto_comparison = False
@@ -265,6 +266,8 @@ def run_product_runtime() -> None:
     # Process deferred generation so the user message appears in history above composer.
     pending_question = st.session_state.get("pending_question")
     if pending_question:
+        if base_index is None:
+            base_index = get_base_index()
         render_assistant_thinking()
         retrieval = retrieve_shared_context(pending_question, base_index, st.session_state.upload_index)
         result = _run_selected_model(pending_question, retrieval, st.session_state.model_mode)
