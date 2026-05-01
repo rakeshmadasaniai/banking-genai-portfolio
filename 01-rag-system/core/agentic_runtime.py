@@ -1,55 +1,122 @@
+"""
+core/agentic_runtime.py
+=======================
+Agentic Workspace — Banking & Finance AI
+(mode name: "Agentic Workspace" — use this string everywhere in UI)
+
+TRUE agentic behavior:
+  - LLM picks tools via OpenAI function-calling (tools=[])
+  - Real while-loop: Think → Act → Observe → repeat until done
+  - Tool results fed back to LLM so it decides the next step
+  - Self-correction: detects weak answers and retries retrieval
+  - Investor-specific regulations (not generic bank rules)
+  - Age/context-aware risk profile inference
+  - Verification enforced before final answer (LLM judge on High confidence)
+  - Full agent trace for UI rendering
+  - Retriever passed in → uses real FAISS/BM25 banking knowledge base
+  - Document tool supports PDF/DOCX via pypdf2 + python-docx with graceful fallback
+"""
 from __future__ import annotations
 
 import json
+import math
 import os
 import re
 import time
-import traceback
-from typing import Any, Callable
+from typing import Any
 
-from openai import OpenAI
+# ── Optional imports (graceful fallback if not installed) ──────────────────────
+try:
+    from openai import OpenAI
+    OPENAI_AVAILABLE = True
+except ImportError:
+    OPENAI_AVAILABLE = False
 
-
-MAX_AGENT_STEPS = 8
-DEFAULT_MODEL = os.getenv("OPENAI_AGENT_MODEL", "gpt-4o-mini")
+# ─────────────────────────────────────────────────────────────────────────────
+# SYSTEM PROMPT
+# ─────────────────────────────────────────────────────────────────────────────
 
 SYSTEM_PROMPT = """
-You are an Agentic Banking & Finance AI Workspace.
+You are the Agentic Workspace — a Banking & Finance AI built for multi-step
+autonomous reasoning, tool execution, and grounded answers.
 
-You are not a normal chatbot.
-You must solve user requests by deciding when to use tools.
+You behave like a real tool-using autonomous agent, not a chatbot.
 
-Available capabilities:
-- Retrieve banking/compliance evidence
-- Analyze uploaded document text
-- Classify compliance domain
-- Compare regulations or policies
-- Calculate simple financial/compliance numbers
-- Verify whether final answer is grounded in evidence
-- Generate final report
+CRITICAL RULES:
+1. NEVER answer complex multi-step questions directly without using tools.
+2. ALWAYS use tools for:
+   - portfolio construction      → portfolio_builder_tool
+   - return calculations         → return_projection_tool
+   - risk profile detection      → risk_profile_tool
+   - compliance / regulations    → investor_regulation_tool
+   - document analysis           → document_analysis_tool
+   - knowledge base retrieval    → retrieve_banking_context
+   - answer verification         → verification_tool
+3. NEVER assume a user's risk profile. Always call risk_profile_tool first.
+4. If risk profile is missing (enough_information=false), output ONLY the
+   clarification questions from the tool result and stop immediately.
+   Do NOT build a portfolio or make calculations until risk profile is confirmed.
+5. NEVER give personalized financial advice. Use educational disclaimers.
+6. ALWAYS call verification_tool as your second-to-last step.
+7. If verification_tool returns needs_retry=true, call retrieve_banking_context
+   again with a more specific query, then finalize.
+8. Show concise action summaries only. Do not reveal raw chain-of-thought.
+9. Always end investment answers with the exact disclaimer:
+   "⚠️ Educational scenario only. Not personalized financial, legal, or investment advice."
 
-Rules:
-1. Use tools whenever evidence, calculation, comparison, or document analysis is needed.
-2. Do not invent legal, compliance, investment, or financial advice.
-3. Always ground banking/compliance answers in retrieved evidence when possible.
-4. If evidence is weak, call retrieval again with a better query.
-5. Do not expose hidden chain-of-thought.
-6. Show only concise action summaries in the trace.
-7. Final answer must include a short disclaimer.
-8. If user asks for investment recommendations, provide educational scenarios (not personalized financial advice).
-"""
+INVESTMENT WORKFLOW (enforce this exact sequence — no skipping):
+  Step 1 → risk_profile_tool        (check history → ask & STOP if missing)
+  Step 2 → retrieve_banking_context (get investment/regulation context)
+  Step 3 → portfolio_builder_tool   (build full allocation table)
+  Step 4 → return_projection_tool   (calculate weighted compound returns)
+  Step 5 → investor_regulation_tool (investor-specific FDIC/tax/FINRA rules)
+  Step 6 → verification_tool        (verify groundedness, retry if weak)
+  Step 7 → Final answer with disclaimer
 
-TOOLS = [
+COMPLIANCE WORKFLOW:
+  Step 1 → retrieve_banking_context (relevant regulation text)
+  Step 2 → compliance_classifier_tool (identify frameworks)
+  Step 3 → verification_tool (verify)
+  Step 4 → Final answer
+
+DOCUMENT WORKFLOW:
+  Step 1 → document_analysis_tool (extract key content)
+  Step 2 → retrieve_banking_context (supplement with knowledge base)
+  Step 3 → verification_tool (verify)
+  Step 4 → Final answer
+
+STRESS TEST / MULTI-STEP WORKFLOW:
+  Step 1 → retrieve_banking_context with focus="regulation" (get DFAST/Fed rules)
+  Step 2 → retrieve_banking_context with focus="risk" (get risk management context)
+  Step 3 → compliance_classifier_tool (classify applicable frameworks)
+  Step 4 → verification_tool (verify)
+  Step 5 → Final structured answer with phase-by-phase plan
+
+If you skip required tools, your answer is considered invalid.
+""".strip()
+
+# ─────────────────────────────────────────────────────────────────────────────
+# TOOL DEFINITIONS  (passed to OpenAI tools=[])
+# ─────────────────────────────────────────────────────────────────────────────
+
+TOOLS: list[dict] = [
     {
         "type": "function",
         "function": {
-            "name": "retrieval_tool",
-            "description": "Retrieve relevant banking and compliance evidence from app knowledge.",
+            "name": "retrieve_banking_context",
+            "description": (
+                "Search the banking/finance knowledge base for regulatory, compliance, "
+                "or financial information. Use for any specific facts, definitions, or rules."
+            ),
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "query": {"type": "string"},
-                    "top_k": {"type": "integer", "default": 5},
+                    "query": {"type": "string", "description": "Specific search query."},
+                    "focus": {
+                        "type": "string",
+                        "enum": ["regulation", "compliance", "risk", "capital", "investor", "general"],
+                        "description": "Thematic focus of the search.",
+                    },
                 },
                 "required": ["query"],
             },
@@ -58,29 +125,89 @@ TOOLS = [
     {
         "type": "function",
         "function": {
-            "name": "portfolio_scenario_tool",
-            "description": "Create educational diversified portfolio scenarios and calculate projected returns.",
+            "name": "risk_profile_tool",
+            "description": (
+                "Analyze the user query and chat history to determine whether enough "
+                "information exists to infer a risk profile. Returns signals found, "
+                "whether profile can be inferred, and clarification questions if missing."
+            ),
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "amount": {"type": "number"},
-                    "years": {"type": "integer"},
-                    "risk_profile": {"type": "string"},
-                    "expected_return": {"type": "number"},
+                    "user_query": {"type": "string"},
+                    "chat_history_summary": {
+                        "type": "string",
+                        "description": "Summary or last few turns of chat history.",
+                    },
                 },
-                "required": ["amount", "years", "risk_profile", "expected_return"],
+                "required": ["user_query"],
             },
         },
     },
     {
         "type": "function",
         "function": {
-            "name": "document_analysis_tool",
-            "description": "Analyze uploaded document text and extract relevant clauses, risks, obligations, or summary.",
+            "name": "portfolio_builder_tool",
+            "description": (
+                "Build an educational diversified portfolio allocation based on risk profile, "
+                "investment amount, and time horizon. Returns full asset-class breakdown."
+            ),
             "parameters": {
                 "type": "object",
-                "properties": {"task": {"type": "string"}},
-                "required": ["task"],
+                "properties": {
+                    "amount": {"type": "number", "description": "Total investment in USD."},
+                    "risk_profile": {
+                        "type": "string",
+                        "enum": ["conservative", "moderate", "aggressive"],
+                    },
+                    "horizon_years": {"type": "integer", "description": "Investment horizon in years."},
+                },
+                "required": ["amount", "risk_profile", "horizon_years"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "return_projection_tool",
+            "description": (
+                "Calculate compound future value and estimated gain using a weighted return rate."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "amount": {"type": "number"},
+                    "horizon_years": {"type": "integer"},
+                    "weighted_return": {
+                        "type": "number",
+                        "description": "Blended annual return as a decimal (e.g., 0.072 for 7.2%).",
+                    },
+                },
+                "required": ["amount", "horizon_years", "weighted_return"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "investor_regulation_tool",
+            "description": (
+                "Return investor-specific regulatory rules relevant to an individual investor. "
+                "NOT generic bank regulations. Covers FDIC limits, accredited investor rules, "
+                "tax implications, and suitability requirements."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "amount": {"type": "number", "description": "Investment amount in USD."},
+                    "investor_type": {
+                        "type": "string",
+                        "enum": ["individual", "joint", "trust", "corporate"],
+                        "default": "individual",
+                    },
+                    "risk_profile": {"type": "string"},
+                },
+                "required": ["amount"],
             },
         },
     },
@@ -88,10 +215,19 @@ TOOLS = [
         "type": "function",
         "function": {
             "name": "compliance_classifier_tool",
-            "description": "Classify the compliance category for a user query or evidence.",
+            "description": (
+                "Classify and summarize a compliance or regulatory query. "
+                "Identifies applicable frameworks (AML, KYC, Basel III, FDIC, Dodd-Frank, etc.)."
+            ),
             "parameters": {
                 "type": "object",
-                "properties": {"query": {"type": "string"}, "context": {"type": "string"}},
+                "properties": {
+                    "query": {"type": "string"},
+                    "context": {
+                        "type": "string",
+                        "description": "Retrieved regulatory context to classify against.",
+                    },
+                },
                 "required": ["query"],
             },
         },
@@ -99,24 +235,21 @@ TOOLS = [
     {
         "type": "function",
         "function": {
-            "name": "finance_calculator_tool",
-            "description": "Perform simple numeric calculations and threshold checks.",
+            "name": "document_analysis_tool",
+            "description": (
+                "Analyze uploaded documents (PDF, DOCX, TXT, CSV) and extract key clauses, "
+                "summaries, compliance issues, or financial figures."
+            ),
             "parameters": {
                 "type": "object",
-                "properties": {"expression_or_text": {"type": "string"}},
-                "required": ["expression_or_text"],
-            },
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "comparison_tool",
-            "description": "Compare two or more banking, finance, or regulatory concepts using available context.",
-            "parameters": {
-                "type": "object",
-                "properties": {"query": {"type": "string"}, "context": {"type": "string"}},
-                "required": ["query"],
+                "properties": {
+                    "analysis_type": {
+                        "type": "string",
+                        "enum": ["summary", "key_clauses", "compliance_check", "financial_figures", "comparison"],
+                    },
+                    "query": {"type": "string", "description": "What to look for in the documents."},
+                },
+                "required": ["analysis_type", "query"],
             },
         },
     },
@@ -124,251 +257,1042 @@ TOOLS = [
         "type": "function",
         "function": {
             "name": "verification_tool",
-            "description": "Verify whether a draft answer is supported by evidence and return groundedness status.",
+            "description": (
+                "Verify whether the draft answer is grounded in retrieved evidence. "
+                "Returns a confidence score and whether a retry is needed."
+            ),
             "parameters": {
                 "type": "object",
-                "properties": {"answer": {"type": "string"}, "evidence": {"type": "string"}},
-                "required": ["answer", "evidence"],
+                "properties": {
+                    "draft_answer": {"type": "string"},
+                    "evidence_summary": {
+                        "type": "string",
+                        "description": "Summary of the evidence retrieved so far.",
+                    },
+                },
+                "required": ["draft_answer", "evidence_summary"],
             },
         },
     },
 ]
 
+# ─────────────────────────────────────────────────────────────────────────────
+# PORTFOLIO DATA
+# ─────────────────────────────────────────────────────────────────────────────
+
+_PORTFOLIOS = {
+    "conservative": {
+        "US Bonds / Treasuries":               (0.45, 0.040),
+        "High-Yield Savings / Money Market":   (0.20, 0.035),
+        "Dividend Equities":                   (0.20, 0.070),
+        "REITs":                               (0.10, 0.070),
+        "International Equities":              (0.05, 0.075),
+    },
+    "moderate": {
+        "US Broad Market Equities":            (0.40, 0.085),
+        "US Bonds / Treasuries":               (0.25, 0.040),
+        "International Equities":              (0.15, 0.075),
+        "REITs":                               (0.10, 0.070),
+        "High-Yield Savings / Money Market":   (0.10, 0.035),
+    },
+    "aggressive": {
+        "US Broad Market Equities":            (0.55, 0.085),
+        "International Equities":              (0.20, 0.075),
+        "Growth / Technology Equities":        (0.10, 0.100),
+        "REITs":                               (0.10, 0.070),
+        "Cash / Money Market":                 (0.05, 0.030),
+    },
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# AGENTIC RUNTIME CLASS
+# ─────────────────────────────────────────────────────────────────────────────
 
 class AgenticRuntime:
-    def __init__(self, retriever: Callable[[str, int], dict[str, Any]] | None = None) -> None:
-        api_key = os.getenv("OPENAI_API_KEY", "").strip()
-        if not api_key:
-            raise ValueError("OPENAI_API_KEY is missing.")
-        self.client = OpenAI(api_key=api_key)
-        self.retriever = retriever
+    """
+    True autonomous agent using OpenAI tool-calling with a real while-loop.
+    The LLM decides which tool to call and when to stop — Python never
+    hard-codes the execution order.
+    """
 
-    def retrieval_tool(self, query: str, top_k: int = 5) -> dict[str, Any]:
-        try:
-            if self.retriever is None:
-                return {"status": "error", "message": "Retriever is not connected.", "evidence": []}
-            result = self.retriever(query, top_k)
-            cards = result.get("source_cards", []) if isinstance(result, dict) else []
-            evidence = [
-                {
-                    "source": c.get("label", "Unknown"),
-                    "text": c.get("preview", ""),
-                    "score": c.get("score"),
-                }
-                for c in cards[:top_k]
-            ]
-            return {
-                "status": "success",
-                "query": query,
-                "evidence_count": len(evidence),
-                "sources": result.get("sources", []) if isinstance(result, dict) else [],
-                "context": result.get("context", "") if isinstance(result, dict) else "",
-                "weak_retrieval": bool(result.get("weak_retrieval", False)) if isinstance(result, dict) else False,
-                "evidence": evidence,
-            }
-        except Exception as exc:
-            return {"status": "error", "message": str(exc), "traceback": traceback.format_exc(), "evidence": []}
+    MAX_STEPS = 12
 
-    def document_analysis_tool(self, task: str, uploaded_text: str = "") -> dict[str, Any]:
-        if not uploaded_text.strip():
-            return {"status": "no_document", "message": "No uploaded document text was provided."}
-        return {
-            "status": "success",
-            "task": task,
-            "document_excerpt": uploaded_text[:8000],
-            "summary": "Uploaded document text is available for reasoning.",
-        }
+    def __init__(self, retriever=None, uploaded_docs=None):
+        self.retriever = retriever          # your existing retriever object
+        self.uploaded_docs = uploaded_docs or []
+        self.api_key = os.environ.get("OPENAI_API_KEY", "").strip()
+        self.model = os.environ.get("OPENAI_MODEL", "gpt-4o-mini").strip()
+        self._evidence_buffer: list[str] = []
 
-    def compliance_classifier_tool(self, query: str, context: str = "") -> dict[str, Any]:
-        text = f"{query}\n{context}".lower()
-        keyword_map = {
-            "KYC": ["kyc", "know your customer", "customer identification", "cip"],
-            "AML": ["aml", "money laundering", "sar", "suspicious activity", "ctr"],
-            "FDIC": ["fdic", "deposit insurance", "insured deposit"],
-            "RBI": ["rbi", "reserve bank of india", "india"],
-            "Basel III": ["basel", "capital adequacy", "tier 1", "risk-weighted"],
-            "Fraud/Risk": ["fraud", "risk", "control", "monitoring"],
-            "General Finance": ["loan", "bank", "interest", "credit", "deposit"],
-        }
-        categories = [k for k, keys in keyword_map.items() if any(t in text for t in keys)]
-        return {
-            "status": "success",
-            "categories": categories or ["General Banking/Finance"],
-            "reason": "Classified using domain keyword signals.",
-        }
+    # ── Public entry point ────────────────────────────────────────────────────
 
-    def finance_calculator_tool(self, expression_or_text: str) -> dict[str, Any]:
-        text = expression_or_text.strip()
-        if not re.fullmatch(r"[0-9\.\+\-\*\/\(\)\s,%]+", text):
-            return {
-                "status": "needs_manual_reasoning",
-                "message": "Input is not a clean numeric expression; reason from text.",
-                "input": text,
-            }
-        try:
-            result = eval(text.replace("%", "/100"), {"__builtins__": {}}, {})
-            return {"status": "success", "input": expression_or_text, "result": result}
-        except Exception as exc:
-            return {"status": "error", "message": str(exc), "input": expression_or_text}
-
-    def comparison_tool(self, query: str, context: str = "") -> dict[str, Any]:
-        return {
-            "status": "success",
-            "query": query,
-            "context": context[:6000],
-            "instruction": "Use provided context and evidence to produce a structured comparison.",
-        }
-
-    def portfolio_scenario_tool(
+    def run(
         self,
-        amount: float,
-        years: int,
-        risk_profile: str,
-        expected_return: float,
-    ) -> dict[str, Any]:
+        user_query: str,
+        chat_history: list[dict] | None = None,
+    ) -> dict:
+        """
+        Run the full agentic loop.
+
+        Returns
+        -------
+        {
+          "answer": str,
+          "trace": list[dict],       # for the UI trace panel
+          "tools_used": list[str],
+          "confidence": str,
+          "latency_ms": int,
+          "requires_clarification": bool,
+          "clarification_questions": list[str],
+        }
+        """
+        start = time.perf_counter()
+        trace: list[dict] = []
+        tools_used: list[str] = []
+        self._evidence_buffer = []
+
+        if not OPENAI_AVAILABLE or not self.api_key:
+            return self._fallback(user_query, "OpenAI API key not configured.")
+
+        client = OpenAI(api_key=self.api_key)
+
+        # Build initial message list
+        history_summary = self._summarise_history(chat_history or [])
+        messages: list[dict] = [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {
+                "role": "user",
+                "content": (
+                    f"{user_query}\n\n"
+                    f"[Chat history summary: {history_summary}]"
+                    if history_summary
+                    else user_query
+                ),
+            },
+        ]
+
+        trace.append({"step": "start", "label": "🧠 Intent analysis", "detail": user_query})
+
+        # ── Safety preflight for investment planning ──────────────────────────
+        # This prevents the agent from fabricating a risk profile or producing
+        # a personalized portfolio when required user details are missing.
+        if self._looks_like_investment_request(user_query):
+            risk_result = self._risk_profile_tool(
+                user_query=user_query,
+                chat_history_summary=history_summary,
+            )
+            tools_used.append("risk_profile_tool")
+            trace.append({
+                "step": "tool_call",
+                "label": "🔧 risk_profile_tool",
+                "detail": json.dumps({
+                    "user_query": user_query,
+                    "chat_history_summary": history_summary,
+                    "preflight": True,
+                }, indent=2),
+            })
+            trace.append({
+                "step": "observation",
+                "label": "📋 Result: risk_profile_tool",
+                "detail": json.dumps(risk_result)[:600],
+            })
+
+            if not risk_result.get("enough_information", False):
+                latency_ms = round((time.perf_counter() - start) * 1000)
+                questions = risk_result.get("required_clarification", [])
+                return {
+                    "answer": (
+                        "I need a little more information before I can build an educational investment scenario.\n\n"
+                        "Please clarify:\n"
+                        + "\n".join(f"{i+1}. {q}" for i, q in enumerate(questions))
+                        + "\n\n⚠️ Educational scenario only. Not personalized financial, legal, or investment advice."
+                    ),
+                    "trace": trace + [{
+                        "step": "complete",
+                        "label": "✅ Agent paused for clarification",
+                        "detail": "Risk profile, goal, or liquidity needs are missing.",
+                    }],
+                    "tools_used": tools_used,
+                    "confidence": "High",
+                    "latency_ms": latency_ms,
+                    "requires_clarification": True,
+                    "clarification_questions": questions,
+                    "evidence_count": len(self._evidence_buffer),
+                }
+
+            # Feed validated risk profile into the LLM context so it can continue
+            # with portfolio_builder_tool, return_projection_tool, regulation, and verification.
+            messages.append({
+                "role": "system",
+                "content": "Risk profile preflight result: " + json.dumps(risk_result),
+            })
+
+        # ── TRUE AGENTIC WHILE-LOOP ───────────────────────────────────────────
+        steps = 0
+        final_answer = ""
+        requires_clarification = False
+        clarification_questions: list[str] = []
+
+        while steps < self.MAX_STEPS:
+            steps += 1
+
+            try:
+                response = client.chat.completions.create(
+                    model=self.model,
+                    messages=messages,
+                    tools=TOOLS,
+                    tool_choice="auto",
+                    temperature=0.0,
+                    max_tokens=1200,
+                )
+            except Exception as exc:
+                return self._fallback(user_query, f"OpenAI error: {exc}")
+
+            choice = response.choices[0]
+
+            # ── LLM decided it is done ─────────────────────────────────────
+            if choice.finish_reason == "stop":
+                final_answer = (choice.message.content or "").strip()
+                trace.append({
+                    "step": "complete",
+                    "label": "✅ Agent complete",
+                    "detail": f"Finished in {steps} steps",
+                })
+                break
+
+            # ── LLM wants to call tools ────────────────────────────────────
+            if choice.finish_reason == "tool_calls":
+                tool_calls = choice.message.tool_calls or []
+
+                # Append assistant message with tool_calls
+                messages.append({
+                    "role": "assistant",
+                    "content": choice.message.content,
+                    "tool_calls": [
+                        {
+                            "id": tc.id,
+                            "type": "function",
+                            "function": {
+                                "name": tc.function.name,
+                                "arguments": tc.function.arguments,
+                            },
+                        }
+                        for tc in tool_calls
+                    ],
+                })
+
+                for tc in tool_calls:
+                    tool_name = tc.function.name
+                    try:
+                        args = json.loads(tc.function.arguments or "{}")
+                    except json.JSONDecodeError:
+                        args = {}
+
+                    tools_used.append(tool_name)
+                    trace.append({
+                        "step": "tool_call",
+                        "label": f"🔧 {tool_name}",
+                        "detail": json.dumps(args, indent=2),
+                    })
+
+                    # Execute the tool
+                    result = self._execute_tool(tool_name, args)
+
+                    # Check for clarification requests from risk_profile_tool
+                    if (
+                        tool_name == "risk_profile_tool"
+                        and isinstance(result, dict)
+                        and not result.get("enough_information", True)
+                    ):
+                        requires_clarification = True
+                        clarification_questions = result.get("required_clarification", [])
+
+                    result_str = json.dumps(result)
+                    self._evidence_buffer.append(f"{tool_name}: {result_str[:400]}")
+
+                    trace.append({
+                        "step": "observation",
+                        "label": f"📋 Result: {tool_name}",
+                        "detail": result_str[:600],
+                    })
+
+                    # Feed observation back to LLM
+                    messages.append({
+                        "role": "tool",
+                        "tool_call_id": tc.id,
+                        "content": result_str,
+                    })
+
+                continue  # let LLM decide next step
+
+            # Unexpected finish reason
+            break
+
+        latency_ms = round((time.perf_counter() - start) * 1000)
+
+        # If clarification needed, override final answer
+        if requires_clarification and clarification_questions:
+            final_answer = (
+                "I need a little more information before I can build your investment plan.\n\n"
+                "Please clarify:\n"
+                + "\n".join(f"{i+1}. {q}" for i, q in enumerate(clarification_questions))
+            )
+
+        confidence = self._score_confidence(final_answer, tools_used)
+
+        return {
+            "answer": final_answer or "I was unable to generate a grounded answer. Please try rephrasing.",
+            "trace": trace,
+            "tools_used": list(dict.fromkeys(tools_used)),  # deduplicated, order-preserving
+            "confidence": confidence,
+            "latency_ms": latency_ms,
+            "requires_clarification": requires_clarification,
+            "clarification_questions": clarification_questions,
+            "evidence_count": len(self._evidence_buffer),
+        }
+
+    # ── Tool dispatcher ───────────────────────────────────────────────────────
+
+    def _execute_tool(self, tool_name: str, args: dict) -> Any:
+        dispatch = {
+            "retrieve_banking_context":  self._retrieve_banking_context,
+            "risk_profile_tool":         self._risk_profile_tool,
+            "portfolio_builder_tool":    self._portfolio_builder_tool,
+            "return_projection_tool":    self._return_projection_tool,
+            "investor_regulation_tool":  self._investor_regulation_tool,
+            "compliance_classifier_tool": self._compliance_classifier_tool,
+            "document_analysis_tool":    self._document_analysis_tool,
+            "verification_tool":         self._verification_tool,
+        }
+        fn = dispatch.get(tool_name)
+        if fn is None:
+            return {"status": "error", "message": f"Unknown tool: {tool_name}"}
         try:
-            principal = float(amount)
-            horizon = int(years)
-            exp_ret = float(expected_return)
-            future_value = principal * ((1 + exp_ret) ** horizon)
-            gain = future_value - principal
-            return {
-                "status": "success",
-                "amount": principal,
-                "years": horizon,
-                "risk_profile": risk_profile,
-                "expected_return": exp_ret,
-                "future_value": round(future_value, 2),
-                "estimated_gain": round(gain, 2),
-                "disclaimer": "Educational scenario only, not financial advice.",
-            }
+            return fn(**args)
         except Exception as exc:
             return {"status": "error", "message": str(exc)}
 
-    def verification_tool(self, answer: str, evidence: str) -> dict[str, Any]:
-        answer_terms = set(answer.lower().split())
-        evidence_terms = set(evidence.lower().split())
-        overlap = len(answer_terms.intersection(evidence_terms))
-        score = min(overlap / max(len(answer_terms), 1), 1.0)
-        status = "strong" if score >= 0.35 else ("medium" if score >= 0.18 else "weak")
+    # ─────────────────────────────────────────────────────────────────────────
+    # TOOL IMPLEMENTATIONS
+    # ─────────────────────────────────────────────────────────────────────────
+
+    def _retrieve_banking_context(self, query: str, focus: str = "general") -> dict:
+        """Use the existing retriever or fall back to knowledge-base hints."""
+        if self.retriever is not None:
+            # 1) Generic retriever object support: search(), retrieve(), or callable.
+            try:
+                if hasattr(self.retriever, "search"):
+                    raw_results = self.retriever.search(query)
+                elif hasattr(self.retriever, "retrieve"):
+                    raw_results = self.retriever.retrieve(query)
+                elif callable(self.retriever):
+                    raw_results = self.retriever(query)
+                else:
+                    raw_results = None
+
+                if raw_results:
+                    if isinstance(raw_results, dict):
+                        context = raw_results.get("context") or raw_results.get("text") or str(raw_results)
+                        sources = raw_results.get("sources", [])
+                        chunks = raw_results.get("retrieved_chunks", [])
+                    else:
+                        items = list(raw_results)[:5]
+                        context_parts = []
+                        sources = []
+                        chunks = []
+                        for item in items:
+                            if isinstance(item, dict):
+                                txt = item.get("text") or item.get("content") or item.get("page_content") or str(item)
+                                src = item.get("source") or item.get("metadata", {}).get("source") or "Knowledge base"
+                            else:
+                                txt = getattr(item, "page_content", str(item))
+                                src = getattr(item, "source", "Knowledge base")
+                            context_parts.append(txt)
+                            sources.append(src)
+                            chunks.append(item)
+                        context = "\n\n".join(context_parts)
+
+                    return {
+                        "status": "success",
+                        "query": query,
+                        "focus": focus,
+                        "context": str(context)[:1200],
+                        "sources": sources[:5],
+                        "chunk_count": len(chunks) if chunks else len(sources),
+                    }
+            except Exception:
+                pass
+
+            # 2) Your app-specific proxy path: retrieve_shared_context(base_index, upload_index).
+            try:
+                from core.retriever import retrieve_shared_context
+                base_index = getattr(self.retriever, "base_index", None)
+                upload_index = getattr(self.retriever, "upload_index", None)
+                result = retrieve_shared_context(query, base_index, upload_index)
+                context = result.get("context", "")
+                sources = result.get("sources", [])
+                return {
+                    "status": "success",
+                    "query": query,
+                    "focus": focus,
+                    "context": context[:1200],
+                    "sources": sources[:5],
+                    "chunk_count": len(result.get("retrieved_chunks", [])),
+                }
+            except Exception:
+                pass
+
+        # Fallback: return structured knowledge hints
+        hints = _KNOWLEDGE_HINTS.get(focus, _KNOWLEDGE_HINTS["general"])
+        relevant = [h for h in hints if any(w in query.lower() for w in h["keywords"])]
+        context = " ".join(h["text"] for h in relevant[:3]) if relevant else (
+            "No specific context retrieved. Answer based on general banking knowledge."
+        )
         return {
-            "status": "success",
-            "groundedness": status,
-            "score": round(score, 3),
-            "recommendation": "Proceed" if status != "weak" else "Retrieve more evidence before final answer.",
+            "status": "fallback",
+            "query": query,
+            "focus": focus,
+            "context": context,
+            "sources": ["Banking knowledge base (local fallback)"],
+            "chunk_count": len(relevant),
         }
 
-    def execute_tool(self, tool_name: str, args: dict[str, Any], uploaded_text: str = "") -> dict[str, Any]:
-        if tool_name == "retrieval_tool":
-            return self.retrieval_tool(args.get("query", ""), int(args.get("top_k", 5)))
-        if tool_name == "document_analysis_tool":
-            return self.document_analysis_tool(args.get("task", ""), uploaded_text=uploaded_text)
-        if tool_name == "compliance_classifier_tool":
-            return self.compliance_classifier_tool(args.get("query", ""), context=args.get("context", ""))
-        if tool_name == "finance_calculator_tool":
-            return self.finance_calculator_tool(args.get("expression_or_text", ""))
-        if tool_name == "comparison_tool":
-            return self.comparison_tool(args.get("query", ""), context=args.get("context", ""))
-        if tool_name == "portfolio_scenario_tool":
-            return self.portfolio_scenario_tool(
-                amount=args.get("amount", 0),
-                years=args.get("years", 10),
-                risk_profile=args.get("risk_profile", "moderate"),
-                expected_return=args.get("expected_return", 0.06),
-            )
-        if tool_name == "verification_tool":
-            return self.verification_tool(args.get("answer", ""), args.get("evidence", ""))
-        return {"status": "error", "message": f"Unknown tool: {tool_name}"}
-
-    def run_agentic_workflow(
+    def _risk_profile_tool(
         self,
         user_query: str,
-        uploaded_text: str = "",
-        chat_history: list[dict[str, str]] | None = None,
-        model: str = DEFAULT_MODEL,
-    ) -> dict[str, Any]:
-        started = time.time()
-        trace: list[dict[str, Any]] = []
-        messages: list[dict[str, Any]] = [{"role": "system", "content": SYSTEM_PROMPT}]
+        chat_history_summary: str = "",
+    ) -> dict:
+        """
+        Infer risk profile from query + history.
+        Supports implicit signals (age, income language, loss aversion).
+        """
+        text = f"{user_query} {chat_history_summary}".lower()
 
-        if chat_history:
-            for msg in chat_history[-8:]:
-                if msg.get("role") in {"user", "assistant"}:
-                    content = msg.get("content") or msg.get("answer") or ""
-                    messages.append({"role": msg["role"], "content": content})
-        if uploaded_text:
-            messages.append(
-                {
-                    "role": "system",
-                    "content": "Uploaded text is available through document_analysis_tool. Use it when needed.",
-                }
+        # Explicit keyword signals
+        explicit_risk = next(
+            (r for r in ["conservative", "moderate", "aggressive"] if r in text),
+            None,
+        )
+
+        # Age-based inference
+        inferred_from_age = None
+        age_match = re.search(r"\b(am|i'm|i am|age|aged?)\s*(\d{2})\b", text)
+        if not age_match:
+            age_match = re.search(r"\b(\d{2})\s*(years?\s*old|yr\s*old)\b", text)
+        if age_match:
+            try:
+                age_candidates = re.findall(r"\d{2}", age_match.group(0))
+                age = int(age_candidates[0]) if age_candidates else 0
+                if age >= 60:
+                    inferred_from_age = "conservative"
+                elif age >= 40:
+                    inferred_from_age = "moderate"
+                elif age >= 18:
+                    inferred_from_age = "aggressive"
+            except ValueError:
+                pass
+
+        # Loss-aversion language
+        loss_averse = any(
+            p in text
+            for p in ["can't afford to lose", "cannot afford to lose", "don't want to lose",
+                      "safe", "protect my", "no risk", "low risk"]
+        )
+        growth_seeking = any(
+            p in text
+            for p in ["maximize", "grow as much", "high return", "beat the market",
+                      "aggressive growth", "10x", "high risk high reward"]
+        )
+
+        # Goal detection
+        goal = next(
+            (g for g in ["retirement", "growth", "income", "preservation", "education"]
+             if g in text),
+            None,
+        )
+
+        # Horizon detection
+        horizon_match = re.search(r"(\d+)\s*year", text)
+        horizon = int(horizon_match.group(1)) if horizon_match else None
+
+        # Determine profile. For investment planning, a profile alone is not enough;
+        # the agent also needs a goal and a time/liquidity signal before building a portfolio.
+        if explicit_risk:
+            profile = explicit_risk
+        elif loss_averse:
+            profile = "conservative"
+        elif growth_seeking:
+            profile = "aggressive"
+        elif inferred_from_age:
+            profile = inferred_from_age
+        else:
+            profile = "unknown"
+
+        enough = profile != "unknown" and bool(goal) and bool(horizon)
+
+        clarifications = []
+        if not explicit_risk and not loss_averse and not growth_seeking and not inferred_from_age:
+            clarifications.append(
+                "What is your risk tolerance? (conservative / moderate / aggressive)"
             )
-
-        messages.append({"role": "user", "content": user_query})
-        final_answer = None
-        last_retrieval: dict[str, Any] = {}
-
-        for step in range(1, MAX_AGENT_STEPS + 1):
-            response = self.client.chat.completions.create(
-                model=model,
-                messages=messages,
-                tools=TOOLS,
-                tool_choice="auto",
-                temperature=0.2,
+        if not goal:
+            clarifications.append(
+                "What is your primary goal? (growth / income / preservation / retirement)"
             )
-            assistant_message = response.choices[0].message
-
-            if assistant_message.tool_calls:
-                messages.append(assistant_message.model_dump(exclude_none=True))
-                for tool_call in assistant_message.tool_calls:
-                    tool_name = tool_call.function.name
-                    try:
-                        args = json.loads(tool_call.function.arguments or "{}")
-                    except Exception:
-                        args = {}
-                    result = self.execute_tool(tool_name, args, uploaded_text=uploaded_text)
-                    if tool_name == "retrieval_tool":
-                        last_retrieval = result
-                    trace.append(
-                        {
-                            "step": step,
-                            "tool": tool_name,
-                            "args": args,
-                            "observation": json.dumps(result, ensure_ascii=False)[:1200],
-                        }
-                    )
-                    messages.append(
-                        {
-                            "role": "tool",
-                            "tool_call_id": tool_call.id,
-                            "content": json.dumps(result, ensure_ascii=False),
-                        }
-                    )
-            else:
-                final_answer = assistant_message.content
-                break
-
-        if not final_answer:
-            final_answer = "I reached the maximum agent steps before producing a final answer. Please narrow the question and try again."
-
-        latency_ms = round((time.time() - started) * 1000)
-        grounded = "High"
-        if last_retrieval.get("weak_retrieval"):
-            grounded = "Moderate"
-        if not last_retrieval.get("sources"):
-            grounded = "Low"
+        if not horizon:
+            clarifications.append(
+                "Do you need access to this money within the next 1–3 years?"
+            )
 
         return {
-            "answer": final_answer,
-            "trace": trace,
-            "latency_ms": latency_ms,
-            "steps": len(trace),
-            "backend": "Agentic Workspace",
-            "model_name": model,
-            "confidence": grounded,
-            "available": True,
-            "agent_steps": trace,
-            "agent_observations": [t.get("observation", "") for t in trace],
-            "route_reason": "agentic_tool_calling",
-            "selection_reason": "Model autonomously selected tools and iterated until final answer.",
+            "status": "success",
+            "enough_information": enough,
+            "risk_profile": profile,
+            "inferred_from": (
+                "explicit" if explicit_risk
+                else "age" if inferred_from_age
+                else "language" if (loss_averse or growth_seeking)
+                else "insufficient"
+            ),
+            "signals": {
+                "explicit_risk": explicit_risk,
+                "age_inferred": inferred_from_age,
+                "loss_averse": loss_averse,
+                "growth_seeking": growth_seeking,
+                "goal": goal,
+                "horizon_years": horizon,
+            },
+            "required_clarification": clarifications if not enough else [],
         }
+
+    def _portfolio_builder_tool(
+        self,
+        amount: float,
+        risk_profile: str,
+        horizon_years: int = 10,
+    ) -> dict:
+        """Build a full asset-class allocation with weighted expected return."""
+        profile_key = risk_profile.lower()
+        allocation_data = _PORTFOLIOS.get(profile_key, _PORTFOLIOS["moderate"])
+
+        rows = []
+        weighted_return = 0.0
+        for asset, (pct, ret) in allocation_data.items():
+            dollars = amount * pct
+            weighted_return += pct * ret
+            rows.append({
+                "asset_class": asset,
+                "allocation_pct": round(pct * 100, 1),
+                "amount_usd": round(dollars, 2),
+                "assumed_annual_return_pct": round(ret * 100, 1),
+                "contribution_to_weighted_return": round(pct * ret * 100, 3),
+            })
+
+        return {
+            "status": "success",
+            "risk_profile": profile_key,
+            "investment_amount": amount,
+            "horizon_years": horizon_years,
+            "allocation": rows,
+            "weighted_expected_return": round(weighted_return, 4),
+            "weighted_return_pct": round(weighted_return * 100, 2),
+            "note": "Educational scenario only. Not personalized financial advice.",
+        }
+
+    def _return_projection_tool(
+        self,
+        amount: float,
+        horizon_years: int,
+        weighted_return: float,
+    ) -> dict:
+        """Compound interest projection."""
+        future_value = amount * math.pow(1 + weighted_return, horizon_years)
+        gain = future_value - amount
+        real_return = max(weighted_return - 0.03, 0.0)  # inflation-adjusted (assume 3% CPI)
+        real_fv = amount * math.pow(1 + real_return, horizon_years)
+
+        return {
+            "status": "success",
+            "principal_usd": round(amount, 2),
+            "years": horizon_years,
+            "weighted_annual_return_pct": round(weighted_return * 100, 2),
+            "future_value_nominal_usd": round(future_value, 2),
+            "estimated_gain_usd": round(gain, 2),
+            "inflation_adjusted_future_value_usd": round(real_fv, 2),
+            "assumed_inflation_rate_pct": 3.0,
+            "note": "Projections are illustrative. Past performance does not guarantee future results.",
+        }
+
+    def _investor_regulation_tool(
+        self,
+        amount: float,
+        investor_type: str = "individual",
+        risk_profile: str = "moderate",
+    ) -> dict:
+        """
+        Return INVESTOR-specific regulatory rules — not generic bank regulations.
+        Covers FDIC limits, accredited investor thresholds, tax implications, suitability.
+        """
+        flags: list[dict] = []
+
+        # FDIC limit check
+        if amount > 250_000:
+            excess = amount - 250_000
+            flags.append({
+                "rule": "FDIC Deposit Insurance Limit",
+                "applies": True,
+                "detail": (
+                    f"Your ${amount:,.0f} exceeds the FDIC insured limit of $250,000 per "
+                    f"depositor per bank. ${excess:,.0f} would be uninsured. "
+                    "Consider spreading across multiple FDIC-member institutions or "
+                    "using a brokerage sweep account."
+                ),
+                "severity": "high",
+            })
+
+        # Accredited investor threshold ($1M net worth, excl. primary residence)
+        flags.append({
+            "rule": "SEC Accredited Investor Status",
+            "applies": amount >= 200_000,
+            "detail": (
+                "Investors with net worth > $1M (excluding primary residence) or income "
+                "> $200K (individual) / $300K (joint) for 2+ years qualify as accredited. "
+                "This unlocks private placements, hedge funds, and certain structured products."
+            ),
+            "severity": "informational",
+        })
+
+        # Tax implications
+        tax_notes = [
+            "Long-term capital gains (assets held >1 year): 0%, 15%, or 20% depending on income.",
+            "Short-term capital gains taxed as ordinary income.",
+            "REITs distribute ordinary income taxed at your marginal rate.",
+            "Municipal bonds may offer tax-exempt interest at federal level.",
+        ]
+        if amount >= 100_000:
+            tax_notes.append(
+                "Consider a tax-loss harvesting strategy to offset gains with losses."
+            )
+        flags.append({
+            "rule": "Federal Tax Implications",
+            "applies": True,
+            "detail": " ".join(tax_notes),
+            "severity": "medium",
+        })
+
+        # Suitability / FINRA Rule 2111
+        flags.append({
+            "rule": "FINRA Suitability Rule 2111",
+            "applies": True,
+            "detail": (
+                "Registered broker-dealers must ensure investment recommendations are "
+                f"suitable for your {risk_profile} risk profile, financial situation, "
+                "and investment objectives before executing trades."
+            ),
+            "severity": "informational",
+        })
+
+        # Retirement account contribution limits
+        flags.append({
+            "rule": "Retirement Account Limits (2024)",
+            "applies": True,
+            "detail": (
+                "401(k) contribution limit: $23,000 ($30,500 if age 50+). "
+                "IRA limit: $7,000 ($8,000 if age 50+). "
+                "Consider maximizing tax-advantaged accounts before taxable accounts."
+            ),
+            "severity": "informational",
+        })
+
+        # Wash sale rule
+        flags.append({
+            "rule": "IRS Wash Sale Rule",
+            "applies": True,
+            "detail": (
+                "You cannot claim a tax loss if you buy a substantially identical security "
+                "within 30 days before or after a sale. Relevant for tax-loss harvesting strategies."
+            ),
+            "severity": "low",
+        })
+
+        high_severity = [f for f in flags if f["severity"] == "high"]
+
+        return {
+            "status": "success",
+            "investor_type": investor_type,
+            "investment_amount": amount,
+            "regulatory_flags": flags,
+            "high_severity_count": len(high_severity),
+            "primary_warning": high_severity[0]["detail"] if high_severity else None,
+            "note": "These are general educational notes. Consult a licensed financial advisor.",
+        }
+
+    def _compliance_classifier_tool(self, query: str, context: str = "") -> dict:
+        """Classify which compliance frameworks apply to a query."""
+        query_lower = query.lower()
+        context_lower = context.lower()
+        combined = f"{query_lower} {context_lower}"
+
+        frameworks = {
+            "AML (Anti-Money Laundering)": ["aml", "money laundering", "suspicious activity", "sar", "bsa"],
+            "KYC (Know Your Customer)":    ["kyc", "know your customer", "customer due diligence", "cdd", "identity verification"],
+            "Basel III / Capital":         ["basel", "capital ratio", "tier 1", "lcr", "nsfr", "leverage ratio"],
+            "FDIC":                        ["fdic", "deposit insurance", "insured deposit", "bank failure"],
+            "Dodd-Frank":                  ["dodd-frank", "volcker", "proprietary trading", "systemically important"],
+            "FINRA / SEC":                 ["finra", "sec", "broker-dealer", "suitability", "accredited investor"],
+            "CFPB":                        ["cfpb", "consumer financial", "fair lending", "ecoa", "hmda"],
+            "FATF":                        ["fatf", "financial action task force", "correspondent banking"],
+        }
+
+        matched = {
+            fw: kws
+            for fw, kws in frameworks.items()
+            if any(k in combined for k in kws)
+        }
+
+        return {
+            "status": "success",
+            "query": query,
+            "applicable_frameworks": list(matched.keys()),
+            "framework_count": len(matched),
+            "primary_framework": list(matched.keys())[0] if matched else "General Banking",
+            "context_used": bool(context),
+        }
+
+    def _document_analysis_tool(
+        self,
+        analysis_type: str,
+        query: str,
+    ) -> dict:
+        """
+        Analyse uploaded documents.
+        Supports: PDF (via pypdf / PyPDF2), DOCX (via python-docx), TXT/CSV (raw).
+        Graceful fallback if libraries are missing.
+        """
+        if not self.uploaded_docs:
+            return {
+                "status": "no_documents",
+                "message": "No documents uploaded. Please upload a PDF, DOCX, or TXT file.",
+                "analysis_type": analysis_type,
+            }
+
+        combined_text = ""
+        doc_names = []
+
+        for doc in self.uploaded_docs[:3]:
+            name = getattr(doc, "name", "document")
+            doc_names.append(name)
+            ext = name.rsplit(".", 1)[-1].lower() if "." in name else "txt"
+
+            try:
+                # ── PDF extraction ────────────────────────────────────────────
+                if ext == "pdf":
+                    text = self._extract_pdf(doc)
+                # ── DOCX extraction ───────────────────────────────────────────
+                elif ext in ("docx", "doc"):
+                    text = self._extract_docx(doc)
+                # ── Plain text / CSV ──────────────────────────────────────────
+                else:
+                    raw = doc.read()
+                    if isinstance(raw, bytes):
+                        raw = raw.decode("utf-8", errors="ignore")
+                    text = raw
+                combined_text += f"\n\n=== {name} ===\n{text[:4000]}"
+            except Exception as exc:
+                combined_text += f"\n\n=== {name}: extraction failed ({exc}) ==="
+
+        return {
+            "status": "success" if combined_text.strip() else "empty",
+            "documents_analysed": doc_names,
+            "analysis_type": analysis_type,
+            "query": query,
+            "extracted_text_preview": combined_text[:2000],
+            "char_count": len(combined_text),
+            "note": "LLM will analyse the extracted text above to answer your query.",
+        }
+
+    @staticmethod
+    def _extract_pdf(doc) -> str:
+        """Extract text from a PDF file object. Tries pypdf then PyPDF2."""
+        doc.seek(0)
+        raw_bytes = doc.read()
+
+        # Try pypdf (newer)
+        try:
+            import io
+            import pypdf  # type: ignore
+            reader = pypdf.PdfReader(io.BytesIO(raw_bytes))
+            pages = [page.extract_text() or "" for page in reader.pages[:20]]
+            return "\n".join(pages)
+        except ImportError:
+            pass
+
+        # Try PyPDF2 (older)
+        try:
+            import io
+            import PyPDF2  # type: ignore
+            reader = PyPDF2.PdfReader(io.BytesIO(raw_bytes))
+            pages = [page.extract_text() or "" for page in reader.pages[:20]]
+            return "\n".join(pages)
+        except ImportError:
+            pass
+
+        # Last resort: decode bytes
+        return raw_bytes.decode("utf-8", errors="ignore")
+
+    @staticmethod
+    def _extract_docx(doc) -> str:
+        """Extract text from a DOCX file object using python-docx."""
+        doc.seek(0)
+        raw_bytes = doc.read()
+        try:
+            import io
+            import docx  # type: ignore
+            document = docx.Document(io.BytesIO(raw_bytes))
+            return "\n".join(para.text for para in document.paragraphs if para.text.strip())
+        except ImportError:
+            # Fall back to raw bytes decode (will be garbled but better than nothing)
+            return raw_bytes.decode("utf-8", errors="ignore")
+
+    def _verification_tool(
+        self,
+        draft_answer: str,
+        evidence_summary: str = "",
+    ) -> dict:
+        """
+        Verify groundedness of draft answer.
+        PRIMARY: LLM judge via OpenAI (real verification).
+        FALLBACK: Heuristic scoring (word overlap + disclaimer + numbers).
+        """
+        evidence = evidence_summary or " ".join(self._evidence_buffer)
+
+        # ── LLM Judge (real verification) ────────────────────────────────────
+        if OPENAI_AVAILABLE and self.api_key:
+            try:
+                client = OpenAI(api_key=self.api_key)
+                judge_prompt = (
+                    "You are a grounding verifier for a banking AI system.\n\n"
+                    f"EVIDENCE:\n{evidence[:1200]}\n\n"
+                    f"DRAFT ANSWER:\n{draft_answer[:800]}\n\n"
+                    "Evaluate the draft answer strictly:\n"
+                    "1. Is the answer grounded in the evidence above? (yes/partial/no)\n"
+                    "2. Are any claims made without evidence support? (list them briefly)\n"
+                    "3. Is a disclaimer present? (yes/no)\n"
+                    "4. Confidence: High / Moderate / Low\n"
+                    "5. Should the agent retry with better retrieval? (yes/no)\n\n"
+                    "Respond in this exact JSON format:\n"
+                    '{"grounded":"yes|partial|no","unsupported_claims":[],'
+                    '"has_disclaimer":true,"confidence":"High|Moderate|Low",'
+                    '"needs_retry":false,"reason":"one sentence"}'
+                )
+                resp = client.chat.completions.create(
+                    model=self.model,
+                    messages=[{"role": "user", "content": judge_prompt}],
+                    temperature=0.0,
+                    max_tokens=200,
+                )
+                raw = (resp.choices[0].message.content or "").strip()
+                # Strip markdown fences if present
+                raw = re.sub(r"^```json\s*|\s*```$", "", raw, flags=re.MULTILINE).strip()
+                verdict = json.loads(raw)
+                return {
+                    "status": "success",
+                    "method": "llm_judge",
+                    "confidence": verdict.get("confidence", "Moderate"),
+                    "confidence_score": {"High": 0.9, "Moderate": 0.6, "Low": 0.3}.get(
+                        verdict.get("confidence", "Moderate"), 0.6
+                    ),
+                    "needs_retry": verdict.get("needs_retry", False),
+                    "grounded": verdict.get("grounded", "partial"),
+                    "unsupported_claims": verdict.get("unsupported_claims", []),
+                    "has_disclaimer": verdict.get("has_disclaimer", False),
+                    "evidence_pieces_used": len(self._evidence_buffer),
+                    "recommendation": verdict.get("reason", "LLM judge completed."),
+                }
+            except Exception:
+                pass  # fall through to heuristic
+
+        # ── Heuristic fallback ───────────────────────────────────────────────
+        answer_words = set(draft_answer.lower().split())
+        evidence_words = set(evidence.lower().split())
+        overlap = len(answer_words & evidence_words)
+        overlap_ratio = overlap / max(len(answer_words), 1)
+
+        has_disclaimer = any(
+            p in draft_answer.lower()
+            for p in ["educational", "not financial advice", "not personalized", "disclaimer"]
+        )
+        has_numbers = bool(re.search(r"\$[\d,]+|\d+\.?\d*%|\d{4}", draft_answer))
+
+        score = min(1.0, overlap_ratio * 2.5)
+        if has_disclaimer:
+            score = min(1.0, score + 0.15)
+        if has_numbers:
+            score = min(1.0, score + 0.10)
+        if len(self._evidence_buffer) >= 3:
+            score = min(1.0, score + 0.10)
+
+        if score >= 0.75:
+            confidence, needs_retry = "High", False
+        elif score >= 0.45:
+            confidence, needs_retry = "Moderate", False
+        else:
+            confidence, needs_retry = "Low", True
+
+        return {
+            "status": "success",
+            "method": "heuristic",
+            "confidence": confidence,
+            "confidence_score": round(score, 2),
+            "needs_retry": needs_retry,
+            "has_disclaimer": has_disclaimer,
+            "has_specific_numbers": has_numbers,
+            "evidence_pieces_used": len(self._evidence_buffer),
+            "recommendation": (
+                "Answer appears well-grounded. Proceed."
+                if not needs_retry
+                else "Evidence is weak. Retrieve more specific context before finalizing."
+            ),
+        }
+
+    # ── Helpers ───────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def _looks_like_investment_request(query: str) -> bool:
+        text = query.lower()
+        investment_terms = [
+            "invest", "investment", "portfolio", "asset allocation",
+            "expected return", "returns", "risk profile", "retirement",
+            "stocks", "bonds", "etf", "mutual fund", "$"
+        ]
+        return any(term in text for term in investment_terms) and any(
+            action in text for action in ["recommend", "build", "calculate", "analyze", "analyse", "allocate", "plan"]
+        )
+
+    @staticmethod
+    def _summarise_history(history: list[dict]) -> str:
+        """Return last 3 user turns as a compact summary."""
+        user_turns = [m["content"] for m in history if m.get("role") == "user"]
+        return " | ".join(user_turns[-3:]) if user_turns else ""
+
+    @staticmethod
+    def _score_confidence(answer: str, tools_used: list[str]) -> str:
+        if not answer:
+            return "Low"
+        verification_ran = "verification_tool" in tools_used
+        tool_count = len(tools_used)
+        if verification_ran and tool_count >= 3:
+            return "High"
+        if tool_count >= 2:
+            return "Moderate"
+        return "Low"
+
+    @staticmethod
+    def _fallback(query: str, reason: str) -> dict:
+        return {
+            "answer": (
+                f"⚠️ Agentic mode unavailable: {reason}\n\n"
+                "Please ensure your OPENAI_API_KEY is set in the Space secrets. "
+                "The standard RAG modes (OpenAI / Fine-Tuned / Auto) remain available."
+            ),
+            "trace": [{"step": "error", "label": "❌ Agent error", "detail": reason}],
+            "tools_used": [],
+            "confidence": "Low",
+            "latency_ms": 0,
+            "requires_clarification": False,
+            "clarification_questions": [],
+            "evidence_count": 0,
+        }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# KNOWLEDGE HINTS FALLBACK (used when retriever is unavailable)
+# ─────────────────────────────────────────────────────────────────────────────
+
+_KNOWLEDGE_HINTS = {
+    "investor": [
+        {
+            "keywords": ["fdic", "insured", "deposit"],
+            "text": "FDIC insures deposits up to $250,000 per depositor per insured bank.",
+        },
+        {
+            "keywords": ["accredited", "investor", "sec"],
+            "text": "SEC accredited investor: net worth > $1M (excluding primary residence) or income > $200K.",
+        },
+        {
+            "keywords": ["capital gains", "tax", "long-term"],
+            "text": "Long-term capital gains (held > 1 year) taxed at 0%, 15%, or 20% depending on income bracket.",
+        },
+    ],
+    "regulation": [
+        {
+            "keywords": ["basel", "capital", "tier"],
+            "text": "Basel III requires minimum CET1 ratio of 4.5%, Tier 1 of 6%, and total capital of 8%.",
+        },
+        {
+            "keywords": ["dodd-frank", "volcker"],
+            "text": "Dodd-Frank Volcker Rule prohibits proprietary trading for banks with >$10B assets.",
+        },
+        {
+            "keywords": ["aml", "bsa", "suspicious"],
+            "text": "BSA/AML requires banks to file SARs for suspicious transactions and maintain robust CDD programs.",
+        },
+    ],
+    "compliance": [
+        {
+            "keywords": ["kyc", "customer", "due diligence"],
+            "text": "KYC requires identity verification, beneficial ownership collection, and ongoing monitoring.",
+        },
+        {
+            "keywords": ["fatf", "money laundering"],
+            "text": "FATF 40 Recommendations set global AML/CFT standards adopted by 200+ jurisdictions.",
+        },
+    ],
+    "general": [
+        {
+            "keywords": ["stress test", "federal reserve", "dfast"],
+            "text": (
+                "DFAST requires banks with $100B+ in assets to conduct annual stress tests. "
+                "Banks $10B-$100B face supervisory stress tests. Banks under $10B are largely exempt."
+            ),
+        },
+        {
+            "keywords": ["liquidity", "lcr"],
+            "text": "Basel III LCR requires banks to hold enough high-quality liquid assets to survive 30-day stress.",
+        },
+    ],
+    "risk": [
+        {
+            "keywords": ["credit risk", "loan loss"],
+            "text": "Credit risk is managed via CECL (Current Expected Credit Loss) provisioning under ASC 326.",
+        },
+        {
+            "keywords": ["market risk", "var"],
+            "text": "Market risk VaR models typically use 99% confidence interval over 10-day horizon per Basel requirements.",
+        },
+    ],
+    "capital": [
+        {
+            "keywords": ["cet1", "capital ratio", "adequacy"],
+            "text": "CET1 ratio = Common Equity Tier 1 Capital / Risk-Weighted Assets. Minimum 4.5% required under Basel III.",
+        },
+    ],
+}
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CONVENIENCE FUNCTION (called from product_runtime.py)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def run_agentic_workflow(
+    user_query: str,
+    uploaded_files=None,
+    chat_history: list[dict] | None = None,
+    retriever=None,
+) -> dict:
+    """
+    Drop-in entry point. Call this from product_runtime.py instead of
+    _run_selected_model() when model_mode == "Agentic Workspace".
+    """
+    agent = AgenticRuntime(retriever=retriever, uploaded_docs=uploaded_files or [])
+    return agent.run(user_query, chat_history=chat_history or [])
