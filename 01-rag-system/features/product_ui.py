@@ -57,6 +57,7 @@ html, body, [data-testid="stAppViewContainer"]{background:var(--bg)!important;co
 #MainMenu, footer{visibility:hidden}
 [data-testid="stSidebar"]{background:var(--bg-soft)!important;border-right:1px solid var(--border)!important;min-width:300px!important}
 .sidebar-brand{display:flex;gap:12px;align-items:center;margin:4px 0 14px}
+.brand-globe{animation:floatGlobe 3.2s ease-in-out infinite;display:inline-block;filter:drop-shadow(0 8px 14px rgba(37,99,235,.20))}
 .sidebar-title{font-size:17px;font-weight:900;line-height:1.1;color:#08245A}
 .sidebar-caption{font-size:11px;color:#5E78A8;margin-top:4px;font-weight:600}
 .side-search{height:42px;border:1px solid var(--border);border-radius:14px;background:#FFF;color:#94A3B8;display:flex;align-items:center;padding:0 12px;margin:8px 0 18px;font-size:13px}
@@ -67,6 +68,7 @@ html, body, [data-testid="stAppViewContainer"]{background:var(--bg)!important;co
 .greeting-pill{width:30px;height:30px;border-radius:10px;background:#FFF7ED;border:1px solid #FED7AA;display:flex;align-items:center;justify-content:center}
 .greeting-sub{font-weight:600;color:#29456F;font-size:15px;margin-bottom:18px}
 .hero-card{display:grid;grid-template-columns:112px 1fr 280px;gap:20px;align-items:center;min-height:142px;border:1px solid rgba(37,99,235,.10);border-radius:22px;background:linear-gradient(135deg,rgba(255,255,255,.97),rgba(241,247,255,.90));padding:18px 24px}
+.hero-globe{animation:floatGlobe 3.2s ease-in-out infinite;display:inline-block;filter:drop-shadow(0 12px 18px rgba(37,99,235,.22))}
 .hero-title{font-size:30px;font-weight:900;letter-spacing:-.04em;color:#08245A;margin:0 0 8px}
 .hero-copy{font-size:15px;color:#274871;line-height:1.55}
 .proof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
@@ -82,6 +84,7 @@ html, body, [data-testid="stAppViewContainer"]{background:var(--bg)!important;co
 .user-bubble{max-width:72%;background:var(--navy);color:#FFF;border-radius:16px 16px 4px 16px;padding:12px 18px;font-weight:700;line-height:1.5;font-size:14px}
 .ai-wrap{display:grid;grid-template-columns:54px 1fr;gap:14px;align-items:start;margin:0 0 12px}
 .ai-globe{font-size:44px;line-height:1}
+.ai-globe{animation:floatGlobe 3.2s ease-in-out infinite}
 .answer-shell,.thinking-shell{background:#FFF;border:1px solid var(--border);border-radius:18px;padding:18px 20px;box-shadow:0 10px 24px rgba(15,23,42,.045);font-size:14.5px;line-height:1.72}
 .thinking-shell{display:flex;align-items:center;gap:10px;min-height:72px}
 .thinking-dot{width:10px;height:10px;border-radius:50%;background:#2563EB}
@@ -103,6 +106,7 @@ html, body, [data-testid="stAppViewContainer"]{background:var(--bg)!important;co
 .composer-shell [data-testid="stTextInput"] input{min-height:44px!important;padding:10px 14px!important}
 .composer-shell [data-testid="stFormSubmitButton"] button{min-height:44px!important;border-radius:14px!important;background:#123A6F!important;color:#FFF!important;border:none!important}
 @media (max-width:1100px){.hero-card{grid-template-columns:80px 1fr}.proof-grid,.product-info-grid,.tech-row{grid-template-columns:1fr}}
+@keyframes floatGlobe{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 </style>
         """,
         unsafe_allow_html=True,
@@ -117,7 +121,7 @@ def render_header() -> None:
           <div class="greeting-row"><span class="greeting-pill" data-greeting-icon>{icon}</span><span data-greeting-text>{html.escape(greeting)}</span></div>
           <div class="greeting-sub">I&#39;m your Banking &amp; Finance Copilot.</div>
           <div class="hero-card">
-            <div style="font-size:78px;">&#127758;</div>
+            <div class="hero-globe" style="font-size:78px;">&#127758;</div>
             <div>
               <div class="hero-title">Banking &amp; Finance AI Copilot</div>
               <div class="hero-copy">Your intelligent assistant for banking, compliance, and financial intelligence.<br>
@@ -192,7 +196,7 @@ def render_sidebar_brand() -> None:
     st.markdown(
         """
         <div class="sidebar-brand">
-          <div style="font-size:40px;">&#127758;</div>
+          <div class="brand-globe" style="font-size:40px;">&#127758;</div>
           <div>
             <div class="sidebar-title">Banking &amp; Finance<br>AI Copilot</div>
             <div class="sidebar-caption">Grounded. Trusted. Intelligent.</div>
