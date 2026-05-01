@@ -97,7 +97,7 @@ def _ensure_state() -> None:
         "upload_doc_count": 0,
         "upload_chunk_count": 0,
         "uploaded_images": [],
-        "model_mode": "OpenAI",
+        "model_mode": "Agentic Workspace",
         "pending_question": "",
         "last_voice_lang": "",
     }
@@ -107,7 +107,7 @@ def _ensure_state() -> None:
     if st.session_state.model_mode == "Autonomous Agent":
         st.session_state.model_mode = "Agentic Workspace"
     if st.session_state.model_mode not in MODEL_MODES:
-        st.session_state.model_mode = "OpenAI"
+        st.session_state.model_mode = "Agentic Workspace"
     if "agent_memory" not in st.session_state:
         st.session_state.agent_memory = _load_agent_memory()
 
@@ -254,6 +254,7 @@ def run_product_runtime() -> None:
                 key="model_mode_selector",
             )
             st.session_state.model_mode = mode
+            st.session_state.composer_model_mode = mode
             st.caption(MODEL_DESCRIPTIONS[mode])
             accessibility = render_accessibility_controls()
             show_source_cards = st.toggle("Show source cards", value=False)
@@ -330,14 +331,14 @@ def run_product_runtime() -> None:
                 render_document_uploads()
                 render_image_uploads()
         with c2:
-            mode = st.selectbox(
+            composer_mode = st.selectbox(
                 "Composer model",
                 MODEL_MODES,
                 index=MODEL_MODES.index(st.session_state.model_mode),
                 label_visibility="collapsed",
                 key="composer_model_mode",
             )
-            st.session_state.model_mode = mode
+            st.session_state.model_mode = composer_mode
         with c3:
             question = st.text_input(
                 "Ask banking question",
@@ -365,6 +366,8 @@ def run_product_runtime() -> None:
         render_footer()
         return
 
+    # Guarantee submit uses composer-selected mode (avoids stale sidebar/composer mismatch).
+    st.session_state.model_mode = st.session_state.get("composer_model_mode", st.session_state.model_mode)
     st.session_state.messages.append({"role": "user", "content": question})
     _save_active_chat()
     st.session_state.pending_question = question

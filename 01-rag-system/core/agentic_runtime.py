@@ -36,6 +36,7 @@ Rules:
 5. Do not expose hidden chain-of-thought.
 6. Show only concise action summaries in the trace.
 7. Final answer must include a short disclaimer.
+8. If user asks for investment recommendations, provide educational scenarios (not personalized financial advice).
 """
 
 TOOLS = [
@@ -51,6 +52,23 @@ TOOLS = [
                     "top_k": {"type": "integer", "default": 5},
                 },
                 "required": ["query"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "portfolio_scenario_tool",
+            "description": "Create educational diversified portfolio scenarios and calculate projected returns.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "amount": {"type": "number"},
+                    "years": {"type": "integer"},
+                    "risk_profile": {"type": "string"},
+                    "expected_return": {"type": "number"},
+                },
+                "required": ["amount", "years", "risk_profile", "expected_return"],
             },
         },
     },
@@ -201,6 +219,32 @@ class AgenticRuntime:
             "instruction": "Use provided context and evidence to produce a structured comparison.",
         }
 
+    def portfolio_scenario_tool(
+        self,
+        amount: float,
+        years: int,
+        risk_profile: str,
+        expected_return: float,
+    ) -> dict[str, Any]:
+        try:
+            principal = float(amount)
+            horizon = int(years)
+            exp_ret = float(expected_return)
+            future_value = principal * ((1 + exp_ret) ** horizon)
+            gain = future_value - principal
+            return {
+                "status": "success",
+                "amount": principal,
+                "years": horizon,
+                "risk_profile": risk_profile,
+                "expected_return": exp_ret,
+                "future_value": round(future_value, 2),
+                "estimated_gain": round(gain, 2),
+                "disclaimer": "Educational scenario only, not financial advice.",
+            }
+        except Exception as exc:
+            return {"status": "error", "message": str(exc)}
+
     def verification_tool(self, answer: str, evidence: str) -> dict[str, Any]:
         answer_terms = set(answer.lower().split())
         evidence_terms = set(evidence.lower().split())
@@ -225,6 +269,13 @@ class AgenticRuntime:
             return self.finance_calculator_tool(args.get("expression_or_text", ""))
         if tool_name == "comparison_tool":
             return self.comparison_tool(args.get("query", ""), context=args.get("context", ""))
+        if tool_name == "portfolio_scenario_tool":
+            return self.portfolio_scenario_tool(
+                amount=args.get("amount", 0),
+                years=args.get("years", 10),
+                risk_profile=args.get("risk_profile", "moderate"),
+                expected_return=args.get("expected_return", 0.06),
+            )
         if tool_name == "verification_tool":
             return self.verification_tool(args.get("answer", ""), args.get("evidence", ""))
         return {"status": "error", "message": f"Unknown tool: {tool_name}"}
