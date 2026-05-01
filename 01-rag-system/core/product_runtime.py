@@ -93,6 +93,7 @@ def _ensure_state() -> None:
         "upload_chunk_count": 0,
         "uploaded_images": [],
         "model_mode": "OpenAI",
+        "pending_question": "",
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -209,6 +210,35 @@ def run_product_runtime() -> None:
                 show_auto_comparison=show_auto_comparison,
             )
 
+    # Process deferred generation so the user message appears in history above composer.
+    pending_question = st.session_state.get("pending_question")
+    if pending_question:
+        render_assistant_thinking()
+        retrieval = retrieve_shared_context(pending_question, base_index, st.session_state.upload_index)
+        result = _run_selected_model(pending_question, retrieval, st.session_state.model_mode)
+
+        assistant_msg = {
+            "role": "assistant",
+            "answer": result.get("answer", ""),
+            "backend": result.get("backend", st.session_state.model_mode),
+            "latency_ms": result.get("latency_ms", 0),
+            "retrieved_chunks": retrieval.get("retrieved_chunks", 0),
+            "sources": retrieval.get("sources", []),
+            "source_cards": retrieval.get("source_cards", []),
+            "confidence": result.get("confidence", "Moderate"),
+            "comparison": result.get("comparison"),
+            "route_reason": result.get("route_reason"),
+            "selection_reason": result.get("selection_reason"),
+            "candidate_scores": result.get("candidate_scores"),
+            "agent_steps": result.get("agent_steps"),
+            "agent_observations": result.get("agent_observations"),
+            "voice_lang_hint": result.get("language", detect_input_language(pending_question)),
+        }
+        st.session_state.messages.append(assistant_msg)
+        _save_active_chat()
+        st.session_state.pending_question = ""
+        st.rerun()
+
     with st.form("composer_form", clear_on_submit=True, border=False):
         st.markdown("<div class='composer-marker'></div>", unsafe_allow_html=True)
         st.markdown("<div class='composer-row'>", unsafe_allow_html=True)
@@ -253,30 +283,5 @@ def run_product_runtime() -> None:
 
     st.session_state.messages.append({"role": "user", "content": question})
     _save_active_chat()
-    render_user_message(question)
-    render_assistant_thinking()
-
-    retrieval = retrieve_shared_context(question, base_index, st.session_state.upload_index)
-    result = _run_selected_model(question, retrieval, st.session_state.model_mode)
-
-    assistant_msg = {
-        "role": "assistant",
-        "answer": result.get("answer", ""),
-        "backend": result.get("backend", st.session_state.model_mode),
-        "latency_ms": result.get("latency_ms", 0),
-        "retrieved_chunks": retrieval.get("retrieved_chunks", 0),
-        "sources": retrieval.get("sources", []),
-        "source_cards": retrieval.get("source_cards", []),
-        "confidence": result.get("confidence", "Moderate"),
-        "comparison": result.get("comparison"),
-        "route_reason": result.get("route_reason"),
-        "selection_reason": result.get("selection_reason"),
-        "candidate_scores": result.get("candidate_scores"),
-        "agent_steps": result.get("agent_steps"),
-        "agent_observations": result.get("agent_observations"),
-        "voice_lang_hint": result.get("language", detect_input_language(question)),
-    }
-    st.session_state.messages.append(assistant_msg)
-    _save_active_chat()
-
+    st.session_state.pending_question = question
     st.rerun()
