@@ -7,6 +7,7 @@ from typing import Any
 
 import streamlit as st
 
+from core.agentic_runtime import AgenticRuntime
 from core.retriever import get_base_index, retrieve_shared_context
 from core.utils import detect_input_language, list_base_knowledge_files
 from features.accessibility import apply_accessibility_styles, render_accessibility_controls
@@ -33,13 +34,13 @@ from models.autonomous_agent import run_autonomous_agent
 from models.finetuned_mode import generate_finetuned_response
 from models.openai_mode import generate_openai_response
 
-MODEL_MODES = ["OpenAI", "Fine-Tuned", "Auto", "Autonomous Agent"]
+MODEL_MODES = ["OpenAI", "Fine-Tuned", "Auto", "Agentic Workspace"]
 
 MODEL_DESCRIPTIONS = {
     "OpenAI": "Most stable live mode for grounded financial answers.",
     "Fine-Tuned": "Domain-adapted banking model path for specialized tone and phrasing.",
     "Auto": "Selects the strongest grounded answer across available model paths.",
-    "Autonomous Agent": "Plans, executes tools, analyzes evidence, self-checks, and answers with an agent trace.",
+    "Agentic Workspace": "Tool-calling agent that plans, retrieves, analyzes, verifies, and answers with execution trace.",
 }
 AGENT_MEMORY_PATH = Path(__file__).resolve().parent.parent / "data" / "agent_memory.json"
 
@@ -103,6 +104,10 @@ def _ensure_state() -> None:
     for k, v in defaults.items():
         if k not in st.session_state:
             st.session_state[k] = v
+    if st.session_state.model_mode == "Autonomous Agent":
+        st.session_state.model_mode = "Agentic Workspace"
+    if st.session_state.model_mode not in MODEL_MODES:
+        st.session_state.model_mode = "OpenAI"
     if "agent_memory" not in st.session_state:
         st.session_state.agent_memory = _load_agent_memory()
 
@@ -163,6 +168,25 @@ def _run_selected_model(question: str, retrieval: dict, mode: str) -> dict:
             response_language=response_language,
             response_profile=response_profile,
         )
+    if mode == "Agentic Workspace":
+        agent = AgenticRuntime(
+            retriever=lambda q, top_k=5: retrieve_shared_context(
+                q, get_base_index(), st.session_state.upload_index
+            )
+        )
+        uploaded_text = "\n\n".join(
+            card.get("preview", "")
+            for card in (retrieval.get("source_cards", []) or [])
+        )
+        result = agent.run_agentic_workflow(
+            user_query=question,
+            uploaded_text=uploaded_text,
+            chat_history=st.session_state.messages,
+        )
+        st.session_state.agent_memory.append({"question": question, "steps": result.get("agent_steps", [])})
+        _persist_agent_memory(st.session_state.agent_memory)
+        return result
+
     if mode == "Autonomous Agent":
         result = run_autonomous_agent(
             question=question,

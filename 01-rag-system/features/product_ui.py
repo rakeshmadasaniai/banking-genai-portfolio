@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import html
 import io
+import json
 from datetime import datetime
 from statistics import mean
 
@@ -93,7 +94,7 @@ html, body, [data-testid="stAppViewContainer"]{background:var(--bg)!important;co
 .meta-pill{font-size:11px;font-weight:900;border-radius:999px;padding:5px 10px;border:1px solid var(--border);background:#F8FBFF;color:#123A6F}
 .meta-pill.green{background:#ECFDF5;color:#047857;border-color:#BBF7D0}
 .starter-label{margin:6px 0 8px;color:#123A6F;font-size:13px;font-weight:900}
-.composer-shell-static{position:sticky!important;bottom:8px!important;z-index:70!important;background:#FFF!important;border:1px solid rgba(37,99,235,.14)!important;border-radius:16px!important;box-shadow:0 12px 30px rgba(15,23,42,.08)!important;padding:8px 10px!important;margin:8px 0 0!important}
+.composer-shell-static{position:fixed!important;left:calc(var(--composer-left, 316px) + 8px)!important;right:8px!important;bottom:8px!important;z-index:85!important;background:#FFF!important;border:1px solid rgba(37,99,235,.14)!important;border-radius:16px!important;box-shadow:0 12px 30px rgba(15,23,42,.08)!important;padding:8px 10px!important;margin:0!important}
 .composer-shell form{border:none!important;background:transparent!important}
 .composer-marker{display:none!important}
 .composer-pending{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
@@ -105,7 +106,7 @@ html, body, [data-testid="stAppViewContainer"]{background:var(--bg)!important;co
 .composer-shell [data-testid="stTextInput"] > div > div{background:#FFF!important;border:1px solid rgba(37,99,235,.14)!important;border-radius:14px!important}
 .composer-shell [data-testid="stTextInput"] input{min-height:44px!important;padding:10px 14px!important}
 .composer-shell [data-testid="stFormSubmitButton"] button{min-height:44px!important;border-radius:14px!important;background:#123A6F!important;color:#FFF!important;border:none!important}
-@media (max-width:1100px){.hero-card{grid-template-columns:80px 1fr}.proof-grid,.product-info-grid,.tech-row{grid-template-columns:1fr}}
+@media (max-width:1100px){.hero-card{grid-template-columns:80px 1fr}.proof-grid,.product-info-grid,.tech-row{grid-template-columns:1fr}.composer-shell-static{left:8px!important}}
 @keyframes floatGlobe{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 </style>
         """,
@@ -309,6 +310,28 @@ def render_assistant_message(message: dict, message_key: str, simplified_answers
     with cols[5]:
         st.button("\U0001F44E", key=f"down-{message_key}", use_container_width=True)
     st.markdown('<div style="font-size:11px;color:#64748B;margin:8px 0 0 2px;">AI can make mistakes. Verify important information with official sources.</div>', unsafe_allow_html=True)
+
+    if show_auto_comparison and message.get("comparison"):
+        with st.expander("Auto mode comparison", expanded=False):
+            for label, candidate in message["comparison"].items():
+                st.markdown(f"**{html.escape(str(label).title())} candidate**")
+                if candidate:
+                    st.write(candidate.get("answer", ""))
+
+    agent_steps = message.get("agent_steps") or []
+    if agent_steps:
+        with st.expander("Autonomous Agent Execution Trace", expanded=False):
+            for idx, step in enumerate(agent_steps, start=1):
+                st.markdown(f"**Step {idx} - {html.escape(str(step.get('tool', step.get('action', 'act'))))}**")
+                args = step.get("args", step.get("input", {}))
+                if args:
+                    if isinstance(args, dict):
+                        st.code(json.dumps(args, ensure_ascii=False, indent=2))
+                    else:
+                        st.code(str(args))
+                obs = step.get("observation") or step.get("result")
+                if obs:
+                    st.write(obs)
     st.markdown("</div></div>", unsafe_allow_html=True)
 
 
@@ -329,4 +352,34 @@ def render_footer() -> None:
 
 
 def enforce_composer_pin() -> None:
-    return None
+    components.html(
+        """
+<script>
+(function () {
+  let doc = document;
+  try {
+    if (window.parent && window.parent.document) doc = window.parent.document;
+  } catch (_) {}
+
+  function pinComposer() {
+    const shell = doc.querySelector(".composer-shell-static");
+    if (!shell) return false;
+    const sidebar = doc.querySelector('[data-testid="stSidebar"]');
+    const isMobile = window.innerWidth <= 1100;
+    const left = (!isMobile && sidebar) ? Math.max(300, Math.round(sidebar.getBoundingClientRect().width)) : 0;
+    doc.documentElement.style.setProperty("--composer-left", String(left) + "px");
+    return true;
+  }
+
+  let n = 0;
+  const t = setInterval(() => {
+    n += 1;
+    if (pinComposer() || n > 40) clearInterval(t);
+  }, 80);
+  window.addEventListener("resize", pinComposer);
+  setTimeout(pinComposer, 300);
+})();
+</script>
+        """,
+        height=0,
+    )
