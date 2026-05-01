@@ -293,6 +293,7 @@ def run_product_runtime() -> None:
         st.session_state.pending_question = ""
         st.rerun()
 
+    st.markdown("<div class='composer-shell-static'>", unsafe_allow_html=True)
     with st.form("composer_form", clear_on_submit=True, border=False):
         st.markdown("<div class='composer-marker'></div>", unsafe_allow_html=True)
         st.markdown("<div class='composer-row'>", unsafe_allow_html=True)
@@ -323,6 +324,7 @@ def run_product_runtime() -> None:
         with c5:
             submitted = st.form_submit_button("↑", use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
     enforce_composer_pin()
     if not submitted and not voice_transcript and not starter_prompt:
         render_footer()

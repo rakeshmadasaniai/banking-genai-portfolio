@@ -90,7 +90,7 @@ html, body, [data-testid="stAppViewContainer"]{background:var(--bg)!important;co
 .meta-pill{font-size:11px;font-weight:900;border-radius:999px;padding:5px 10px;border:1px solid var(--border);background:#F8FBFF;color:#123A6F}
 .meta-pill.green{background:#ECFDF5;color:#047857;border-color:#BBF7D0}
 .starter-label{margin:6px 0 8px;color:#123A6F;font-size:13px;font-weight:900}
-.composer-shell{position:fixed!important;left:8px;right:8px;top:auto!important;bottom:8px!important;z-index:90!important;background:#FFF!important;border:1px solid rgba(37,99,235,.14)!important;border-radius:16px!important;box-shadow:0 12px 30px rgba(15,23,42,.08)!important;padding:8px 10px!important;margin:0!important;transform:none!important}
+.composer-shell-static{position:sticky!important;bottom:8px!important;z-index:70!important;background:#FFF!important;border:1px solid rgba(37,99,235,.14)!important;border-radius:16px!important;box-shadow:0 12px 30px rgba(15,23,42,.08)!important;padding:8px 10px!important;margin:8px 0 0!important}
 .composer-shell form{border:none!important;background:transparent!important}
 .composer-marker{display:none!important}
 .composer-pending{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
@@ -325,58 +325,4 @@ def render_footer() -> None:
 
 
 def enforce_composer_pin() -> None:
-    components.html(
-        """
-<script>
-(function () {
-  let doc = document;
-  try { if (window.parent && window.parent.document) doc = window.parent.document; } catch (_) {}
-
-  function getComposerForms() {
-    return Array.from(doc.querySelectorAll('[data-testid="stForm"]')).filter((n) => {
-      if (!n.querySelector('.composer-marker')) return false;
-      const hasInput = !!Array.from(n.querySelectorAll('input[placeholder]')).find((el) =>
-        (el.getAttribute('placeholder') || '').includes('Ask anything about banking')
-      );
-      return hasInput;
-    });
-  }
-
-  function pinComposer() {
-    const forms = getComposerForms();
-    if (!forms.length) return false;
-    forms.forEach((node) => node.classList.add('composer-pending'));
-    forms.forEach((n, i) => { if (i < forms.length - 1) n.style.display = 'none'; });
-    const formHost = forms[forms.length - 1];
-    const sidebar = doc.querySelector('[data-testid="stSidebar"]');
-    const desktop = window.innerWidth > 1100;
-    const sidebarWidth = (desktop && sidebar) ? Math.max(300, sidebar.getBoundingClientRect().width) : 0;
-    formHost.style.setProperty('position', 'fixed', 'important');
-    formHost.style.setProperty('left', (desktop ? sidebarWidth + 8 : 8) + 'px', 'important');
-    formHost.style.setProperty('right', '8px', 'important');
-    formHost.style.setProperty('bottom', '8px', 'important');
-    formHost.style.setProperty('top', 'auto', 'important');
-    formHost.style.setProperty('margin', '0', 'important');
-    formHost.style.setProperty('z-index', '90', 'important');
-    formHost.style.setProperty('transform', 'none', 'important');
-    formHost.classList.add('composer-shell');
-    formHost.classList.remove('composer-pending');
-    formHost.classList.add('composer-ready');
-    return true;
-  }
-
-  function onMutate() {
-    pinComposer();
-  }
-
-  const observer = new MutationObserver(onMutate);
-  observer.observe(doc.body, { childList: true, subtree: true });
-
-  let tries = 0;
-  const timer = setInterval(() => { tries += 1; if (pinComposer() || tries > 60) clearInterval(timer); }, 80);
-  window.addEventListener('resize', pinComposer);
-})();
-</script>
-        """,
-        height=0,
-    )
+    return None
