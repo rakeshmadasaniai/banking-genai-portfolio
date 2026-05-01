@@ -19,8 +19,14 @@ def _build_client() -> tuple[InferenceClient | None, str]:
     return InferenceClient(model=target, token=token), model_id
 
 
-def generate_finetuned_response(question: str, retrieval: dict, uploaded_images: list | None = None) -> dict:
-    response_language = detect_input_language(question)
+def generate_finetuned_response(
+    question: str,
+    retrieval: dict,
+    uploaded_images: list | None = None,
+    response_language: str | None = None,
+    response_profile: str = "balanced",
+) -> dict:
+    response_language = response_language or detect_input_language(question)
     if uploaded_images:
         return {
             "answer": "Fine-Tuned mode does not currently support image reasoning. Use OpenAI or Auto for image questions.",
@@ -49,7 +55,13 @@ def generate_finetuned_response(question: str, retrieval: dict, uploaded_images:
     if retrieval["weak_retrieval"]:
         answer = FALLBACK_ANSWER
     else:
-        prompt = build_model_prompt(FINETUNED_SYSTEM_PROMPT, question, retrieval["context"], response_language=response_language)
+        prompt = build_model_prompt(
+            FINETUNED_SYSTEM_PROMPT,
+            question,
+            retrieval["context"],
+            response_language=response_language,
+            response_profile=response_profile,
+        )
         try:
             answer = client.text_generation(
                 prompt,

@@ -13,32 +13,22 @@ from features.voice_output import render_voice_output
 
 STARTER_PROMPTS = [
     "English: What are the main KYC requirements for banks?",
-    "తెలుగు: బ్యాంకుల్లో KYC కోసం అవసరమైన ప్రధాన పత్రాలు ఏమిటి?",
-    "中文: 银行KYC合规最重要的要求是什么？",
-    "Español: ¿Cuáles son los requisitos principales de KYC para bancos?",
-    "Français: Quelles sont les principales exigences KYC pour les banques ?",
-    "Русский: Каковы основные требования KYC для банков?",
+    "\u0c24\u0c46\u0c32\u0c41\u0c17\u0c41: \u0c2c\u0c4d\u0c2f\u0c3e\u0c02\u0c15\u0c41\u0c32\u0c4d\u0c32\u0c4b KYC \u0c15\u0c4b\u0c38\u0c02 \u0c05\u0c35\u0c38\u0c30\u0c2e\u0c48\u0c28 \u0c2a\u0c4d\u0c30\u0c27\u0c3e\u0c28 \u0c2a\u0c24\u0c4d\u0c30\u0c3e\u0c32\u0c41 \u0c0f\u0c2e\u0c3f\u0c1f\u0c3f?",
+    "\u4e2d\u6587: \u94f6\u884cKYC\u5408\u89c4\u6700\u91cd\u8981\u7684\u8981\u6c42\u662f\u4ec0\u4e48\uff1f",
+    "Espa\u00f1ol: \u00bfCu\u00e1les son los requisitos principales de KYC para bancos?",
+    "Fran\u00e7ais: Quelles sont les principales exigences KYC pour les banques ?",
+    "\u0420\u0443\u0441\u0441\u043a\u0438\u0439: \u041a\u0430\u043a\u043e\u0432\u044b \u043e\u0441\u043d\u043e\u0432\u043d\u044b\u0435 \u0442\u0440\u0435\u0431\u043e\u0432\u0430\u043d\u0438\u044f KYC \u0434\u043b\u044f \u0431\u0430\u043d\u043a\u043e\u0432?",
 ]
 
 TECH_ITEMS = [
-    ("🤖", "LLM", "OpenAI / Fine-Tuned Model"),
-    (chr(0x1F9E0), "Embeddings", "text-embedding-3"),
-    (chr(0x1F5C2), "Vector DB", "FAISS / Hybrid"),
-    (chr(0x1F517), "Framework", "LangChain"),
-    (chr(0x1F5A5), "UI", "Streamlit"),
-    (chr(0x2699), "Infra", "Python / FastAPI"),
+    ("\U0001F916", "LLM", "OpenAI / Fine-Tuned Model"),
+    ("\U0001F9E0", "Embeddings", "text-embedding-3"),
+    ("\U0001F5C2", "Vector DB", "FAISS / Hybrid"),
+    ("\U0001F517", "Framework", "LangChain"),
+    ("\U0001F5A5", "UI", "Streamlit"),
+    ("\u2699", "Infra", "Python / FastAPI"),
 ]
 
-# Force clean Unicode prompts/icons even if file encoding drifted in prior edits.
-STARTER_PROMPTS = [
-    "English: What are the main KYC requirements for banks?",
-    "తెలుగు: బ్యాంకుల్లో KYC కోసం అవసరమైన ప్రధాన పత్రాలు ఏమిటి?",
-    "中文: 银行KYC合规最重要的要求是什么？",
-    "Español: ¿Cuáles son los requisitos principales de KYC para bancos?",
-    "Français: Quelles sont les principales exigences KYC pour les banques ?",
-    "Русский: Каковы основные требования KYC для банков?",
-]
-TECH_ITEMS[0] = ("🤖", "LLM", "OpenAI / Fine-Tuned Model")
 
 def _as_html_text(text: str) -> str:
     return html.escape(str(text)).replace("\n", "<br>")
@@ -59,162 +49,59 @@ def inject_premium_css() -> None:
     st.markdown(
         """
 <style>
-:root{
-  color-scheme:light;
-  --bg:#F6F8FC;
-  --bg-soft:#EEF3FA;
-  --panel:#FFFFFF;
-  --panel-soft:rgba(255,255,255,0.86);
-  --text:#0B1220;
-  --muted:#64748B;
-  --navy:#123A6F;
-  --blue:#2563EB;
-  --green:#059669;
-  --border:rgba(15,23,42,.08);
-  --border-soft:rgba(37,99,235,.10);
-  --shadow:0 16px 34px rgba(15,23,42,.06);
-  --shadow-soft:0 10px 24px rgba(15,23,42,.045);
-  --radius-xl:22px;
-  --radius-lg:18px;
-  --radius-md:14px;
-}
-html, body, [data-testid="stAppViewContainer"]{
-  background:var(--bg) !important;
-  color:var(--text) !important;
-  color-scheme:light !important;
-}
-.stApp{
-  background:radial-gradient(circle at 18% 0%, rgba(37,99,235,.08), transparent 28%), linear-gradient(180deg, #F8FBFF 0%, #F4F7FC 100%) !important;
-}
-.block-container{max-width:none !important; padding:.1rem .16rem 8.2rem !important;}
-[data-testid="stHeader"]{background:transparent !important;}
-#MainMenu, footer{visibility:hidden;}
-[data-testid="stSidebar"]{background:var(--bg-soft) !important; border-right:1px solid var(--border) !important; min-width:300px !important;}
-[data-testid="stSidebar"] > div{padding-top:4px !important;}
-
-.sidebar-brand{display:flex; gap:12px; align-items:center; margin:4px 0 14px;}
-.brand-globe{font-size:40px; filter:drop-shadow(0 10px 18px rgba(37,99,235,.18)); animation:floatGlobe 3.6s ease-in-out infinite;}
-.sidebar-title{font-size:17px; font-weight:900; line-height:1.1; color:#08245A;}
-.sidebar-caption{font-size:11px; color:#5E78A8; margin-top:4px; font-weight:600;}
-.side-search{height:42px; border:1px solid var(--border); border-radius:14px; background:#FFFFFF; color:#94A3B8; display:flex; align-items:center; padding:0 12px; margin:8px 0 18px; font-size:13px;}
-.sidebar-section-label{margin:2px 0 10px; font-size:11px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; color:#7A8EAA;}
-
-[data-testid="stSidebar"] .stButton > button{
-  width:100% !important;
-  border-radius:12px !important;
-  border:1px solid #1D4ED8 !important;
-  background:linear-gradient(135deg,#2563EB,#0EA5E9) !important;
-  color:#FFFFFF !important;
-  font-weight:800 !important;
-}
-[data-testid="stSidebar"] .stExpander,
-[data-testid="stSidebar"] .stRadio > div{
-  background:#FFFFFF !important;
-  border:1px solid var(--border) !important;
-  border-radius:16px !important;
-}
-
-.product-shell,.chat-panel,.metrics-panel{background:var(--panel-soft); border:1px solid var(--border); border-radius:var(--radius-xl); box-shadow:var(--shadow);}
-.product-shell{padding:18px; margin:0 0 8px;}
-.greeting-row{display:flex; align-items:center; gap:8px; margin:0 0 10px 2px; color:#08245A; font-weight:850;}
-.greeting-pill{width:30px; height:30px; border-radius:10px; background:#FFF7ED; border:1px solid #FED7AA; display:flex; align-items:center; justify-content:center;}
-.greeting-sub{font-weight:600; color:#29456F; font-size:15px; margin-bottom:18px;}
-.hero-card{display:grid; grid-template-columns:112px 1fr 280px; gap:20px; align-items:center; min-height:142px; border:1px solid var(--border-soft); border-radius:var(--radius-xl); background:linear-gradient(135deg,rgba(255,255,255,.97),rgba(241,247,255,.90)); padding:18px 24px;}
-.hero-globe,.ai-globe{animation:floatGlobe 3.6s ease-in-out infinite;}
-.hero-globe{font-size:78px; filter:drop-shadow(0 16px 18px rgba(37,99,235,.22));}
-.hero-title{font-size:30px; font-weight:900; letter-spacing:-.04em; color:#08245A; margin:0 0 8px;}
-.hero-copy{font-size:15px; color:#274871; line-height:1.55;}
-.bank-art{font-size:82px; opacity:.96;}
-
-.proof-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:16px 0;}
-.proof-card,.info-card{background:#FFFFFF; border:1px solid var(--border); border-radius:var(--radius-xl); box-shadow:var(--shadow-soft); padding:18px;}
-.proof-icon{width:42px; height:42px; border-radius:14px; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center; font-size:21px; margin-bottom:10px;}
-.proof-title,.info-title{font-weight:900; color:#123A6F; font-size:15px;}
-.proof-text,.info-copy{font-size:12.5px; color:var(--muted); line-height:1.55; margin-top:6px;}
-.product-info-grid{display:grid; grid-template-columns:1.15fr 1fr; gap:14px; margin:14px 0 22px;}
-.tech-row{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px;}
-.tech-item{text-align:center; font-size:11px; color:#34516F;}
-.tech-ico{width:34px; height:34px; border-radius:12px; background:#EFF6FF; margin:0 auto 6px; display:flex; align-items:center; justify-content:center; color:#2563EB; font-size:17px;}
-
-.user-row{display:flex; justify-content:flex-end; margin:0 0 14px;}
-.user-bubble{max-width:72%; background:var(--navy); color:#FFFFFF; border-radius:16px 16px 4px 16px; padding:12px 18px; box-shadow:0 12px 24px rgba(18,58,111,.20); font-weight:700; line-height:1.5; font-size:14px;}
-.ai-wrap{display:grid; grid-template-columns:54px 1fr; gap:14px; align-items:start; margin:0 0 12px;}
-.ai-globe{font-size:44px; line-height:1; filter:drop-shadow(0 12px 14px rgba(37,99,235,.20));}
-.answer-shell,.thinking-shell{background:#FFFFFF; border:1px solid var(--border); border-radius:var(--radius-lg); padding:18px 20px; box-shadow:var(--shadow-soft); font-size:14.5px; line-height:1.72; color:var(--text);}
-.thinking-shell{display:flex; align-items:center; gap:10px; min-height:72px; position:relative; overflow:hidden;}
-.thinking-shell::after{content:""; position:absolute; inset:0; background:linear-gradient(110deg, transparent 25%, rgba(37,99,235,.14) 50%, transparent 75%); transform:translateX(-120%); animation:thinkingShimmer 1.35s linear infinite;}
-.thinking-dot{width:10px; height:10px; border-radius:50%; background:#2563EB; animation:thinkingPulse 1.2s ease-in-out infinite;}
-.thinking-text{color:#274871; font-weight:700;}
-.meta-pills{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;}
-.meta-pill{font-size:11px; font-weight:900; border-radius:999px; padding:5px 10px; border:1px solid var(--border); background:#F8FBFF; color:#123A6F;}
-.meta-pill.green{background:#ECFDF5; color:#047857; border-color:#BBF7D0;}
-
-.starter-label{margin:6px 0 8px; color:#123A6F; font-size:13px; font-weight:900;}
-.stButton > button[id*="starter-"]{
-  width:100% !important; border-radius:12px !important; border:1px solid #1D4ED8 !important;
-  background:linear-gradient(135deg,#2563EB,#0EA5E9) !important; color:#FFFFFF !important; font-weight:800 !important;
-}
-
-div[data-testid="stForm"]:has(.composer-marker) form{
-  border:none !important;
-  background:transparent !important;
-}
-div[data-testid="stForm"]:has(.composer-marker){
-  position:relative !important;
-  z-index:20 !important;
-  opacity:1 !important;
-  pointer-events:auto !important;
-  background:#FFFFFF !important;
-  border:1px solid rgba(37,99,235,.14) !important;
-  border-radius:16px !important;
-  box-shadow:0 12px 30px rgba(15,23,42,.08) !important;
-  padding:8px 10px !important;
-  margin-top:10px !important;
-  margin-bottom:0 !important;
-}
-.composer-row [data-testid="stElementContainer"]{margin-bottom:0 !important;}
-.composer-marker{display:none !important;}
-.composer-row [data-testid="column"]{display:flex; align-items:center;}
-.composer-row [data-testid="column"] > div{width:100%;}
-div[data-testid="stForm"]:has(.composer-marker) div[data-testid="stPopover"] button{
-  min-height:44px !important;
-  border-radius:var(--radius-md) !important;
-  background:#FFFFFF !important;
-  border:1px solid rgba(15,23,42,.08) !important;
-  color:#123A6F !important;
-}
-div[data-testid="stForm"]:has(.composer-marker) div[data-testid="stSelectbox"] > div[data-baseweb="select"] > div{
-  min-height:44px !important;
-  border-radius:var(--radius-md) !important;
-  background:#FBFDFF !important;
-  border:1px solid rgba(15,23,42,.08) !important;
-}
-div[data-testid="stForm"]:has(.composer-marker) [data-testid="stTextInput"] > div > div{
-  background:#FFFFFF !important;
-  border:1px solid rgba(37,99,235,.14) !important;
-  border-radius:var(--radius-md) !important;
-}
-div[data-testid="stForm"]:has(.composer-marker) [data-testid="stTextInput"] input{
-  min-height:44px !important;
-  padding:10px 14px !important;
-}
-div[data-testid="stForm"]:has(.composer-marker) [data-testid="stFormSubmitButton"] button{
-  min-height:44px !important;
-  border-radius:var(--radius-md) !important;
-  background:#123A6F !important;
-  color:#FFFFFF !important;
-  border:none !important;
-}
-
-@keyframes floatGlobe{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes thinkingPulse{0%,100%{opacity:.35; transform:scale(.9)}50%{opacity:1; transform:scale(1.05)}}
-@keyframes thinkingShimmer{0%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
-
-@media (max-width:1100px){
-  .hero-card{grid-template-columns:80px 1fr}
-  .bank-art{display:none}
-  .proof-grid,.product-info-grid,.tech-row{grid-template-columns:1fr}
-}
+:root{--bg:#F6F8FC;--bg-soft:#EEF3FA;--text:#0B1220;--border:rgba(15,23,42,.08);--navy:#123A6F}
+html, body, [data-testid="stAppViewContainer"]{background:var(--bg)!important;color:var(--text)!important}
+.stApp{background:linear-gradient(180deg,#F8FBFF 0%,#F4F7FC 100%)!important}
+.block-container{max-width:none!important;padding:.1rem .16rem 8.2rem!important}
+[data-testid="stHeader"]{background:transparent!important}
+#MainMenu, footer{visibility:hidden}
+[data-testid="stSidebar"]{background:var(--bg-soft)!important;border-right:1px solid var(--border)!important;min-width:300px!important}
+.sidebar-brand{display:flex;gap:12px;align-items:center;margin:4px 0 14px}
+.sidebar-title{font-size:17px;font-weight:900;line-height:1.1;color:#08245A}
+.sidebar-caption{font-size:11px;color:#5E78A8;margin-top:4px;font-weight:600}
+.side-search{height:42px;border:1px solid var(--border);border-radius:14px;background:#FFF;color:#94A3B8;display:flex;align-items:center;padding:0 12px;margin:8px 0 18px;font-size:13px}
+.sidebar-section-label{margin:2px 0 10px;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#7A8EAA}
+[data-testid="stSidebar"] .stButton > button,.stButton > button[id*="starter-"]{width:100%!important;border-radius:12px!important;border:1px solid #1D4ED8!important;background:linear-gradient(135deg,#2563EB,#0EA5E9)!important;color:#FFF!important;font-weight:800!important}
+.product-shell{background:rgba(255,255,255,.86);border:1px solid var(--border);border-radius:22px;box-shadow:0 16px 34px rgba(15,23,42,.06);padding:18px;margin:0 0 8px}
+.greeting-row{display:flex;align-items:center;gap:8px;margin:0 0 10px 2px;color:#08245A;font-weight:850}
+.greeting-pill{width:30px;height:30px;border-radius:10px;background:#FFF7ED;border:1px solid #FED7AA;display:flex;align-items:center;justify-content:center}
+.greeting-sub{font-weight:600;color:#29456F;font-size:15px;margin-bottom:18px}
+.hero-card{display:grid;grid-template-columns:112px 1fr 280px;gap:20px;align-items:center;min-height:142px;border:1px solid rgba(37,99,235,.10);border-radius:22px;background:linear-gradient(135deg,rgba(255,255,255,.97),rgba(241,247,255,.90));padding:18px 24px}
+.hero-title{font-size:30px;font-weight:900;letter-spacing:-.04em;color:#08245A;margin:0 0 8px}
+.hero-copy{font-size:15px;color:#274871;line-height:1.55}
+.proof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+.proof-card,.info-card{background:#FFF;border:1px solid var(--border);border-radius:22px;padding:18px}
+.proof-icon{width:42px;height:42px;border-radius:14px;background:#EFF6FF;color:#2563EB;display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:10px}
+.proof-title,.info-title{font-weight:900;color:#123A6F;font-size:15px}
+.proof-text,.info-copy{font-size:12.5px;color:#64748B;line-height:1.55;margin-top:6px}
+.product-info-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:14px;margin:14px 0 22px}
+.tech-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.tech-item{text-align:center;font-size:11px;color:#34516F}
+.tech-ico{width:34px;height:34px;border-radius:12px;background:#EFF6FF;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;color:#2563EB;font-size:17px}
+.user-row{display:flex;justify-content:flex-end;margin:0 0 14px}
+.user-bubble{max-width:72%;background:var(--navy);color:#FFF;border-radius:16px 16px 4px 16px;padding:12px 18px;font-weight:700;line-height:1.5;font-size:14px}
+.ai-wrap{display:grid;grid-template-columns:54px 1fr;gap:14px;align-items:start;margin:0 0 12px}
+.ai-globe{font-size:44px;line-height:1}
+.answer-shell,.thinking-shell{background:#FFF;border:1px solid var(--border);border-radius:18px;padding:18px 20px;box-shadow:0 10px 24px rgba(15,23,42,.045);font-size:14.5px;line-height:1.72}
+.thinking-shell{display:flex;align-items:center;gap:10px;min-height:72px}
+.thinking-dot{width:10px;height:10px;border-radius:50%;background:#2563EB}
+.thinking-text{color:#274871;font-weight:700}
+.meta-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.meta-pill{font-size:11px;font-weight:900;border-radius:999px;padding:5px 10px;border:1px solid var(--border);background:#F8FBFF;color:#123A6F}
+.meta-pill.green{background:#ECFDF5;color:#047857;border-color:#BBF7D0}
+.starter-label{margin:6px 0 8px;color:#123A6F;font-size:13px;font-weight:900}
+div[data-testid="stForm"]:has(.composer-marker){position:fixed!important;left:8px;right:8px;bottom:8px;z-index:90!important;opacity:0!important;pointer-events:none!important;background:#FFF!important;border:1px solid rgba(37,99,235,.14)!important;border-radius:16px!important;box-shadow:0 12px 30px rgba(15,23,42,.08)!important;padding:8px 10px!important;margin:0!important}
+div[data-testid="stForm"]:has(.composer-marker).composer-ready{opacity:1!important;pointer-events:auto!important}
+div[data-testid="stForm"]:has(.composer-marker) form{border:none!important;background:transparent!important}
+.composer-marker{display:none!important}
+.composer-row [data-testid="column"]{display:flex;align-items:center}
+.composer-row [data-testid="column"] > div{width:100%}
+div[data-testid="stForm"]:has(.composer-marker) div[data-testid="stPopover"] button,
+div[data-testid="stForm"]:has(.composer-marker) div[data-testid="stSelectbox"] > div[data-baseweb="select"] > div{min-height:44px!important;border-radius:14px!important;background:#FFF!important;border:1px solid rgba(15,23,42,.08)!important;color:#123A6F!important}
+div[data-testid="stForm"]:has(.composer-marker) [data-testid="stTextInput"] > div > div{background:#FFF!important;border:1px solid rgba(37,99,235,.14)!important;border-radius:14px!important}
+div[data-testid="stForm"]:has(.composer-marker) [data-testid="stTextInput"] input{min-height:44px!important;padding:10px 14px!important}
+div[data-testid="stForm"]:has(.composer-marker) [data-testid="stFormSubmitButton"] button{min-height:44px!important;border-radius:14px!important;background:#123A6F!important;color:#FFF!important;border:none!important}
+@media (max-width:1100px){.hero-card{grid-template-columns:80px 1fr}.proof-grid,.product-info-grid,.tech-row{grid-template-columns:1fr}}
 </style>
         """,
         unsafe_allow_html=True,
@@ -229,47 +116,17 @@ def render_header() -> None:
           <div class="greeting-row"><span class="greeting-pill" data-greeting-icon>{icon}</span><span data-greeting-text>{html.escape(greeting)}</span></div>
           <div class="greeting-sub">I&#39;m your Banking &amp; Finance Copilot.</div>
           <div class="hero-card">
-            <div class="hero-globe">&#127758;</div>
+            <div style="font-size:78px;">&#127758;</div>
             <div>
               <div class="hero-title">Banking &amp; Finance AI Copilot</div>
               <div class="hero-copy">Your intelligent assistant for banking, compliance, and financial intelligence.<br>
               Ask anything related to AML, KYC, FDIC, Basel III, RBI, regulations, and more. Upload PDF, DOCX, TXT, and image files for grounded answers from your reference material.</div>
             </div>
-            <div class="bank-art">&#127974;&#128737;&#65039;</div>
+            <div style="font-size:82px; text-align:center;">&#127974;&#128737;&#65039;</div>
           </div>
         </div>
         """,
         unsafe_allow_html=True,
-    )
-    components.html(
-        """
-<script>
-(function () {
-  let doc = document;
-  try {
-    if (window.parent && window.parent !== window && window.parent.document) {
-      doc = window.parent.document;
-    }
-  } catch (_e) {
-    doc = document;
-  }
-  function updateGreeting() {
-    const hour = new Date().getHours();
-    let greeting = "Good night";
-    let icon = String.fromCodePoint(0x1F319);
-    if (hour >= 5 && hour < 12) { greeting = "Good morning"; icon = String.fromCodePoint(0x1F324); }
-    else if (hour >= 12 && hour < 17) { greeting = "Good afternoon"; icon = String.fromCodePoint(0x2600); }
-    else if (hour >= 17 && hour < 21) { greeting = "Good evening"; icon = String.fromCodePoint(0x1F306); }
-    doc.querySelectorAll("[data-greeting-text]").forEach((n) => n.textContent = greeting);
-    doc.querySelectorAll("[data-greeting-icon]").forEach((n) => n.textContent = icon);
-  }
-  let attempts = 0;
-  const timer = setInterval(() => { attempts += 1; updateGreeting(); if (attempts > 30) clearInterval(timer); }, 120);
-  updateGreeting();
-})();
-</script>
-        """,
-        height=0,
     )
 
 
@@ -314,9 +171,9 @@ def render_welcome_card() -> None:
 def render_starter_prompts() -> str | None:
     selected = None
     st.markdown('<div class="starter-label">Popular prompts</div>', unsafe_allow_html=True)
-    columns = st.columns(3)
+    cols = st.columns(3)
     for index, prompt in enumerate(STARTER_PROMPTS):
-        with columns[index % 3]:
+        with cols[index % 3]:
             if st.button(prompt, key=f"starter-{index}", use_container_width=True):
                 selected = prompt
     return selected
@@ -334,7 +191,7 @@ def render_sidebar_brand() -> None:
     st.markdown(
         """
         <div class="sidebar-brand">
-          <div class="brand-globe">&#127758;</div>
+          <div style="font-size:40px;">&#127758;</div>
           <div>
             <div class="sidebar-title">Banking &amp; Finance<br>AI Copilot</div>
             <div class="sidebar-caption">Grounded. Trusted. Intelligent.</div>
@@ -358,9 +215,9 @@ def render_sidebar_summary(base_doc_count: int, upload_doc_count: int, upload_ch
 
 
 def render_session_insights(messages: list[dict]) -> None:
-    assistant_messages = [message for message in messages if message.get("role") == "assistant"]
-    avg_latency = round(mean(message.get("latency_ms", 0) for message in assistant_messages)) if assistant_messages else 0
-    avg_chunks = round(mean(message.get("retrieved_chunks", 0) for message in assistant_messages), 1) if assistant_messages else 0
+    assistant_messages = [m for m in messages if m.get("role") == "assistant"]
+    avg_latency = round(mean(m.get("latency_ms", 0) for m in assistant_messages)) if assistant_messages else 0
+    avg_chunks = round(mean(m.get("retrieved_chunks", 0) for m in assistant_messages), 1) if assistant_messages else 0
     st.markdown(
         f"""
         <div style="font-size:12px;color:#48618A; padding:4px 0;display:grid;grid-template-columns:1fr auto;gap:8px;"><span>Answers</span><strong style="color:#123A6F;">{len(assistant_messages)}</strong></div>
@@ -398,36 +255,27 @@ def _docx_bytes(answer: str, source_cards: list[dict]) -> bytes:
         from docx import Document
     except Exception:
         return b""
-    document = Document()
-    document.add_heading("Banking & Finance Copilot Answer", level=1)
-    document.add_paragraph(answer)
+    doc = Document()
+    doc.add_heading("Banking & Finance Copilot Answer", level=1)
+    doc.add_paragraph(answer)
     if source_cards:
-        document.add_heading("Sources", level=2)
+        doc.add_heading("Sources", level=2)
         for card in source_cards[:5]:
-            title = str(card.get("label", "Source"))
-            preview = str(card.get("preview", ""))[:300]
-            document.add_paragraph(f"{title}: {preview}")
+            doc.add_paragraph(f"{card.get('label', 'Source')}: {str(card.get('preview', ''))[:300]}")
     buf = io.BytesIO()
-    document.save(buf)
+    doc.save(buf)
     return buf.getvalue()
 
 
-def render_assistant_message(
-    message: dict,
-    message_key: str,
-    simplified_answers: bool,
-    show_source_cards: bool,
-    show_auto_comparison: bool,
-) -> None:
+def render_assistant_message(message: dict, message_key: str, simplified_answers: bool, show_source_cards: bool, show_auto_comparison: bool) -> None:
     answer = str(message.get("answer", "")).strip() if simplified_answers else str(message.get("answer", ""))
-    backend_label = str(message.get("backend", "OpenAI")).replace("GPT-4o", "OpenAI")
-
+    backend = str(message.get("backend", "OpenAI")).replace("GPT-4o", "OpenAI")
     st.markdown('<div class="ai-wrap"><div class="ai-globe">&#127758;</div><div>', unsafe_allow_html=True)
     st.markdown(
         f"""
         <div class="answer-shell">
           <div class="meta-pills">
-            <span class="meta-pill">{html.escape(backend_label)}</span>
+            <span class="meta-pill">{html.escape(backend)}</span>
             <span class="meta-pill">{html.escape(str(message.get("latency_ms", "--")))} ms</span>
             <span class="meta-pill">{html.escape(str(message.get("retrieved_chunks", "--")))} chunks</span>
             <span class="meta-pill green">{html.escape(str(message.get("confidence", "High")))} confidence</span>
@@ -438,7 +286,7 @@ def render_assistant_message(
         unsafe_allow_html=True,
     )
 
-    cols = st.columns(6)
+    cols = st.columns([1.15, 1.0, 1.0, 1.0, 0.72, 0.72, 4.0])
     with cols[0]:
         render_voice_output(answer, message_key, lang_hint=str(message.get("voice_lang_hint", "") or ""))
     with cols[1]:
@@ -448,46 +296,14 @@ def render_assistant_message(
     with cols[3]:
         docx_bytes = _docx_bytes(answer, message.get("source_cards", []))
         if docx_bytes:
-            st.download_button(
-                "DOCX",
-                data=docx_bytes,
-                file_name=f"copilot-answer-{message_key}.docx",
-                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                key=f"dl-docx-{message_key}",
-                use_container_width=True,
-            )
+            st.download_button("DOCX", data=docx_bytes, file_name=f"copilot-answer-{message_key}.docx", mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document", key=f"dl-docx-{message_key}", use_container_width=True)
         else:
             st.button("DOCX", key=f"dl-docx-unavail-{message_key}", disabled=True, use_container_width=True)
     with cols[4]:
-        st.button(chr(0x1F44D), key=f"up-{message_key}", use_container_width=True)
+        st.button("\U0001F44D", key=f"up-{message_key}", use_container_width=True)
     with cols[5]:
-        st.button(chr(0x1F44E), key=f"down-{message_key}", use_container_width=True)
-
+        st.button("\U0001F44E", key=f"down-{message_key}", use_container_width=True)
     st.markdown('<div style="font-size:11px;color:#64748B;margin:8px 0 0 2px;">AI can make mistakes. Verify important information with official sources.</div>', unsafe_allow_html=True)
-
-    if show_auto_comparison and message.get("comparison"):
-        with st.expander("Auto mode comparison", expanded=False):
-            for label, candidate in message["comparison"].items():
-                st.markdown(f"**{html.escape(str(label).title())} candidate**")
-                st.write(candidate.get("answer", ""))
-
-    agent_steps = message.get("agent_steps") or []
-    if agent_steps:
-        with st.expander("Autonomous Agent Execution Trace", expanded=False):
-            for step in agent_steps:
-                st.markdown(
-                    f"**Step {step.get('step', '?')} - {html.escape(str(step.get('action', '')).title())}**"
-                )
-                st.write(f"Reason: {step.get('thought', '')}")
-                st.code(str(step.get("input", "")) or "-", language="text")
-
-    agent_observations = message.get("agent_observations") or []
-    if agent_observations:
-        with st.expander("Tool Observations", expanded=False):
-            for obs in agent_observations:
-                st.markdown(f"**Tool:** `{obs.get('tool', '')}`")
-                st.write(obs.get("result", ""))
-
     st.markdown("</div></div>", unsafe_allow_html=True)
 
 
@@ -496,10 +312,7 @@ def render_assistant_thinking() -> None:
         """
         <div class="ai-wrap">
           <div class="ai-globe">&#127758;</div>
-          <div class="thinking-shell">
-            <span class="thinking-dot"></span>
-            <span class="thinking-text">Thinking...</span>
-          </div>
+          <div class="thinking-shell"><span class="thinking-dot"></span><span class="thinking-text">Thinking...</span></div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -516,40 +329,27 @@ def enforce_composer_pin() -> None:
 <script>
 (function () {
   let doc = document;
-  try {
-    if (window.parent && window.parent !== window && window.parent.document) {
-      doc = window.parent.document;
-    }
-  } catch (_e) {
-    doc = document;
-  }
-
+  try { if (window.parent && window.parent.document) doc = window.parent.document; } catch (_) {}
   function pinComposer() {
-    const marker = doc.querySelector(".composer-marker");
-    if (!marker) return false;
-    const formHost = marker.closest('[data-testid="stForm"]');
-    if (!formHost) return false;
+    const forms = Array.from(doc.querySelectorAll('[data-testid="stForm"]')).filter((n) => n.querySelector('.composer-marker'));
+    if (!forms.length) return false;
+    forms.forEach((n, i) => { if (i < forms.length - 1) n.style.display = 'none'; });
+    const formHost = forms[forms.length - 1];
     const sidebar = doc.querySelector('[data-testid="stSidebar"]');
-    const isDesktop = window.innerWidth > 1100;
-    const sidebarWidth = (isDesktop && sidebar) ? Math.max(300, sidebar.getBoundingClientRect().width) : 0;
-    formHost.style.position = "fixed";
-    formHost.style.left = (isDesktop ? sidebarWidth + 8 : 8) + "px";
-    formHost.style.right = "8px";
-    formHost.style.bottom = "8px";
-    formHost.style.zIndex = "90";
-    formHost.style.background = "#FFFFFF";
-    formHost.style.border = "1px solid rgba(37,99,235,.14)";
-    formHost.style.borderRadius = "16px";
-    formHost.style.boxShadow = "0 12px 30px rgba(15,23,42,.08)";
+    const desktop = window.innerWidth > 1100;
+    const sidebarWidth = (desktop && sidebar) ? Math.max(300, sidebar.getBoundingClientRect().width) : 0;
+    formHost.style.position = 'fixed';
+    formHost.style.left = (desktop ? sidebarWidth + 8 : 8) + 'px';
+    formHost.style.right = '8px';
+    formHost.style.bottom = '8px';
+    formHost.style.top = 'auto';
+    formHost.style.zIndex = '90';
+    formHost.classList.add('composer-ready');
     return true;
   }
-
   let tries = 0;
-  const timer = setInterval(() => {
-    tries += 1;
-    if (pinComposer() || tries > 40) clearInterval(timer);
-  }, 100);
-  window.addEventListener("resize", pinComposer);
+  const timer = setInterval(() => { tries += 1; if (pinComposer() || tries > 60) clearInterval(timer); }, 80);
+  window.addEventListener('resize', pinComposer);
 })();
 </script>
         """,

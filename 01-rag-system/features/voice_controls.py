@@ -8,23 +8,23 @@ from openai import OpenAI
 from streamlit_mic_recorder import mic_recorder
 
 
-def _transcribe_audio(audio_payload: dict) -> str:
+def _transcribe_audio(audio_payload: dict) -> tuple[str, str]:
     api_key = os.environ.get("OPENAI_API_KEY", "").strip()
     model_name = os.environ.get("OPENAI_STT_MODEL", "gpt-4o-mini-transcribe").strip()
     if not api_key:
         st.warning("Voice Input (Preview) needs OPENAI_API_KEY to transcribe microphone audio.")
-        return ""
+        return "", ""
 
     audio_bytes = audio_payload.get("bytes")
     audio_format = audio_payload.get("format", "webm")
     if not audio_bytes:
-        return ""
+        return "", ""
 
     client = OpenAI(api_key=api_key)
     audio_file = io.BytesIO(audio_bytes)
     audio_file.name = f"copilot_voice.{audio_format}"
     transcript = client.audio.transcriptions.create(model=model_name, file=audio_file)
-    return (getattr(transcript, "text", "") or "").strip()
+    return (getattr(transcript, "text", "") or "").strip(), (getattr(transcript, "language", "") or "").strip()
 
 
 def render_voice_input_preview() -> tuple[str, bool]:
@@ -44,10 +44,11 @@ def render_voice_input_preview() -> tuple[str, bool]:
         return "", True
 
     with st.spinner("Transcribing your voice input..."):
-        transcript = _transcribe_audio(audio_payload)
+        transcript, detected_lang = _transcribe_audio(audio_payload)
 
     st.session_state.last_voice_id = current_voice_id
     st.session_state.last_voice_transcript = transcript
+    st.session_state.last_voice_lang = detected_lang
 
     if transcript:
         return transcript, True

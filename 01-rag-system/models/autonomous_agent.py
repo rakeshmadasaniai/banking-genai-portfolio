@@ -70,7 +70,13 @@ def _final_prompt(
     observations: list[dict[str, Any]],
     retrieval: dict[str, Any],
     response_language: str,
+    response_profile: str,
 ) -> str:
+    profile_rule = {
+        "direct": "Keep answer concise and direct first.",
+        "detailed": "Provide detailed explanation with practical context.",
+        "balanced": "Provide clear moderate detail.",
+    }.get(response_profile, "Provide clear moderate detail.")
     return f"""
 You are a Banking & Finance Autonomous Agentic AI Copilot.
 
@@ -97,6 +103,7 @@ Rules:
 - If user asked direct fact, answer directly first.
 - Then provide concise key points.
 - Do not claim legal or compliance authority.
+- {profile_rule}
 """
 
 
@@ -226,7 +233,7 @@ def _execute_tool(
         return ({"tool": "date_check", "input": tool_input, "result": _date_check(tool_input or question)}, retrieval)
 
     if action == "self_check":
-        draft = llm_call(_final_prompt(question, [], [], retrieval, "same language as user"))
+        draft = llm_call(_final_prompt(question, [], [], retrieval, "same language as user", response_profile))
         check = llm_call(_self_check_prompt(question, draft, retrieval))
         return ({"tool": "self_check", "input": tool_input, "result": check}, retrieval)
 
@@ -240,6 +247,7 @@ def run_autonomous_agent(
     memory: list[dict[str, Any]] | None = None,
     response_language: str = "same language as the user question",
     retriever_call: Callable[[str], dict[str, Any]] | None = None,
+    response_profile: str = "balanced",
 ) -> dict[str, Any]:
     start = time.perf_counter()
     memory = memory or []
@@ -287,6 +295,7 @@ def run_autonomous_agent(
             observations=observations,
             retrieval=current_retrieval,
             response_language=response_language,
+            response_profile=response_profile,
         )
     )
 

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
 import time
 from typing import Any
 
@@ -39,6 +41,7 @@ MODEL_DESCRIPTIONS = {
     "Auto": "Selects the strongest grounded answer across available model paths.",
     "Autonomous Agent": "Plans, executes tools, analyzes evidence, self-checks, and answers with an agent trace.",
 }
+AGENT_MEMORY_PATH = Path(__file__).resolve().parent.parent / "data" / "agent_memory.json"
 
 
 def _chat_title(messages: list[dict[str, Any]]) -> str:
@@ -95,36 +98,83 @@ def _ensure_state() -> None:
         "uploaded_images": [],
         "model_mode": "OpenAI",
         "pending_question": "",
+        "last_voice_lang": "",
     }
     for k, v in defaults.items():
         if k not in st.session_state:
             st.session_state[k] = v
+    if "agent_memory" not in st.session_state:
+        st.session_state.agent_memory = _load_agent_memory()
 
 
-def _llm_text_call(prompt: str, retrieval: dict) -> str:
-    result = generate_openai_response(prompt, retrieval, uploaded_images=[])
+def _load_agent_memory() -> list[dict[str, Any]]:
+    try:
+        if AGENT_MEMORY_PATH.exists():
+            return json.loads(AGENT_MEMORY_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+    return []
+
+
+def _persist_agent_memory(memory: list[dict[str, Any]]) -> None:
+    try:
+        AGENT_MEMORY_PATH.parent.mkdir(parents=True, exist_ok=True)
+        AGENT_MEMORY_PATH.write_text(json.dumps(memory[-250:], ensure_ascii=False, indent=2), encoding="utf-8")
+    except Exception:
+        pass
+
+
+def _response_profile(question: str) -> str:
+    q = question.lower().strip()
+    direct_hints = ("what is", "define", "meaning", "who is", "when is", "quick", "short")
+    if len(q.split()) <= 10 or any(h in q for h in direct_hints):
+        return "direct"
+    return "detailed"
+
+
+def _llm_text_call(prompt: str, retrieval: dict, response_language: str, response_profile: str) -> str:
+    result = generate_openai_response(
+        prompt,
+        retrieval,
+        uploaded_images=[],
+        response_language=response_language,
+        response_profile=response_profile,
+    )
     return result.get("answer", "")
 
 
 def _run_selected_model(question: str, retrieval: dict, mode: str) -> dict:
     images = st.session_state.get("uploaded_images", [])
-    response_language = detect_input_language(question)
+    response_language = (st.session_state.get("last_voice_lang") or "").strip() or detect_input_language(question)
+    response_profile = _response_profile(question)
     if mode == "OpenAI":
-        return generate_openai_response(question, retrieval, uploaded_images=images)
+        return generate_openai_response(
+            question,
+            retrieval,
+            uploaded_images=images,
+            response_language=response_language,
+            response_profile=response_profile,
+        )
     if mode == "Fine-Tuned":
-        return generate_finetuned_response(question, retrieval, uploaded_images=images)
+        return generate_finetuned_response(
+            question,
+            retrieval,
+            uploaded_images=images,
+            response_language=response_language,
+            response_profile=response_profile,
+        )
     if mode == "Autonomous Agent":
-        if "agent_memory" not in st.session_state:
-            st.session_state.agent_memory = []
         result = run_autonomous_agent(
             question=question,
             retrieval=retrieval,
-            llm_call=lambda p: _llm_text_call(p, retrieval),
+            llm_call=lambda p: _llm_text_call(p, retrieval, response_language, response_profile),
             memory=st.session_state.agent_memory,
             response_language=response_language,
             retriever_call=lambda q: retrieve_shared_context(q, get_base_index(), st.session_state.upload_index),
+            response_profile=response_profile,
         )
         st.session_state.agent_memory.append({"question": question, "steps": result.get("agent_steps", [])})
+        _persist_agent_memory(st.session_state.agent_memory)
         return result
     return run_auto_mode(question, retrieval, uploaded_images=images)
 

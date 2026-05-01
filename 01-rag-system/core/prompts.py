@@ -71,8 +71,19 @@ Tone:
 """
 
 
-def build_model_prompt(system_prompt: str, question: str, context: str, response_language: str | None = None) -> str:
+def build_model_prompt(
+    system_prompt: str,
+    question: str,
+    context: str,
+    response_language: str | None = None,
+    response_profile: str = "balanced",
+) -> str:
     language_rule = response_language or "same language as the user question"
+    profile_rule = {
+        "direct": "Answer in 2-4 concise lines. Prioritize directness.",
+        "detailed": "Answer with richer explanation and practical details.",
+        "balanced": "Answer clearly with moderate detail.",
+    }.get(response_profile, "Answer clearly with moderate detail.")
     return f"""{system_prompt}
 
 Retrieved context:
@@ -83,6 +94,9 @@ User question: {question}
 Output language rule:
 - Respond in {language_rule}.
 - Keep the answer in one language only (no mixed-language output unless user asks).
+
+Response profile:
+- {profile_rule}
 
 Answer:
 """
