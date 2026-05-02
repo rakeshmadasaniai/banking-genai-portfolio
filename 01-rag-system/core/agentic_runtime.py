@@ -60,6 +60,9 @@ Rules:
 7. Always verify the final answer.
 8. If verification fails, rewrite using only retrieved evidence and tool results.
 9. Never expose hidden chain-of-thought. Show concise action summaries only.
+10. CRITICAL: If time horizon is <= 12 months, treat liquidity as high and
+    prioritize capital preservation. Do not ask redundant risk clarification
+    and do not recommend equities, REITs, or long-duration products.
 """.strip()
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -710,6 +713,40 @@ class AgenticRuntime:
         """
         text = f"{user_query} {chat_history_summary}".lower()
 
+        # Horizon detection (months + years)
+        horizon_months = None
+        month_match = re.search(r"(\d+)\s*(month|months)", text)
+        year_match = re.search(r"(\d+)\s*(year|years)", text)
+        if month_match:
+            horizon_months = int(month_match.group(1))
+        elif year_match:
+            horizon_months = int(year_match.group(1)) * 12
+
+        # Hard short-term override: no redundant clarification, force liquid conservative profile.
+        if horizon_months is not None and horizon_months <= 12:
+            return {
+                "status": "success",
+                "enough_information": True,
+                "risk_profile": "conservative",
+                "inferred_from": "time_horizon",
+                "signals": {
+                    "explicit_risk": None,
+                    "age_inferred": None,
+                    "loss_averse": True,
+                    "growth_seeking": False,
+                    "goal": "capital preservation",
+                    "horizon_years": round(horizon_months / 12.0, 2),
+                    "horizon_months": horizon_months,
+                    "liquidity_need": "high",
+                },
+                "agent_instruction": (
+                    f"User needs funds in {horizon_months} months. "
+                    "Use only liquid, conservative options (HYSA, money market, T-bills, short-term CDs). "
+                    "Do not use equities, REITs, or long-duration instruments."
+                ),
+                "required_clarification": [],
+            }
+
         # Explicit keyword signals
         explicit_risk = next(
             (r for r in ["conservative", "moderate", "aggressive"] if r in text),
@@ -814,6 +851,25 @@ class AgenticRuntime:
         horizon_years: int = 10,
     ) -> dict:
         """Build a full asset-class allocation with weighted expected return."""
+        if horizon_years <= 1:
+            allocation = [
+                {"asset_class": "High-Yield Savings Accounts", "allocation_pct": 35.0, "amount_usd": round(amount * 0.35, 2), "assumed_annual_return_pct": 4.8, "contribution_to_weighted_return": 1.68},
+                {"asset_class": "Money Market Funds", "allocation_pct": 25.0, "amount_usd": round(amount * 0.25, 2), "assumed_annual_return_pct": 4.9, "contribution_to_weighted_return": 1.225},
+                {"asset_class": "6-12 Month Treasury Bills", "allocation_pct": 25.0, "amount_usd": round(amount * 0.25, 2), "assumed_annual_return_pct": 5.0, "contribution_to_weighted_return": 1.25},
+                {"asset_class": "Short-Term CDs", "allocation_pct": 15.0, "amount_usd": round(amount * 0.15, 2), "assumed_annual_return_pct": 4.7, "contribution_to_weighted_return": 0.705},
+            ]
+            weighted_return = 0.0486
+            return {
+                "status": "success",
+                "risk_profile": "conservative",
+                "investment_amount": amount,
+                "horizon_years": horizon_years,
+                "allocation": allocation,
+                "weighted_expected_return": round(weighted_return, 4),
+                "weighted_return_pct": round(weighted_return * 100, 2),
+                "note": "Short-horizon safety override applied. Educational scenario only.",
+            }
+
         profile_key = risk_profile.lower()
         allocation_data = _PORTFOLIOS.get(profile_key, _PORTFOLIOS["moderate"])
 
