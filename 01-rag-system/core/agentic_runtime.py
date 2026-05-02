@@ -907,6 +907,16 @@ class AgenticRuntime:
         horizon_match = re.search(r"(\d+)\s*year", text)
         horizon = int(horizon_match.group(1)) if horizon_match else None
 
+        # Senior default assumptions: avoid blocking on generic "what should I do?"
+        senior_default_assumption = False
+        if inferred_from_age == "conservative":
+            if not goal:
+                goal = "retirement"
+                senior_default_assumption = True
+            if not horizon:
+                horizon = 10
+                senior_default_assumption = True
+
         # Determine profile. For investment planning, a profile alone is not enough;
         # the agent also needs a goal and a time/liquidity signal before building a portfolio.
         if explicit_risk:
@@ -953,6 +963,7 @@ class AgenticRuntime:
                 "growth_seeking": growth_seeking,
                 "goal": goal,
                 "horizon_years": horizon,
+                "senior_default_assumption": senior_default_assumption,
             },
             "required_clarification": clarifications if not enough else [],
         }
