@@ -96,6 +96,7 @@ def _ensure_state() -> None:
         "upload_index": None,
         "upload_doc_count": 0,
         "upload_chunk_count": 0,
+        "uploaded_docs": [],
         "uploaded_images": [],
         "model_mode": "Agentic Workspace",
         "pending_question": "",
@@ -172,11 +173,8 @@ def _run_selected_model(question: str, retrieval: dict, mode: str) -> dict:
         agent = AgenticRuntime(
             retriever=lambda q, top_k=5: retrieve_shared_context(
                 q, get_base_index(), st.session_state.upload_index
-            )
-        )
-        uploaded_text = "\n\n".join(
-            card.get("preview", "")
-            for card in (retrieval.get("source_cards", []) or [])
+            ),
+            uploaded_docs=st.session_state.get("uploaded_docs", []),
         )
         result = agent.run(
             user_query=question,

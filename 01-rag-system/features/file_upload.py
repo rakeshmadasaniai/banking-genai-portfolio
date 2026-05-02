@@ -12,6 +12,7 @@ def render_document_uploads() -> list:
         accept_multiple_files=True,
         help=None,
     )
+    st.session_state.uploaded_docs = uploaded_docs or []
     update_uploaded_index_state(uploaded_docs)
     st.caption("PDF | DOCX | TXT")
     return uploaded_docs or []
