@@ -24,6 +24,10 @@ import os
 import re
 import time
 from typing import Any
+try:
+    import streamlit as st
+except Exception:
+    st = None
 
 # ── Optional imports (graceful fallback if not installed) ──────────────────────
 try:
@@ -37,62 +41,25 @@ except ImportError:
 # ─────────────────────────────────────────────────────────────────────────────
 
 SYSTEM_PROMPT = """
-You are the Agentic Workspace — a Banking & Finance AI built for multi-step
-autonomous reasoning, tool execution, and grounded answers.
+You are a production-grade Agentic Banking & Finance AI Workspace.
 
-You behave like a real tool-using autonomous agent, not a chatbot.
+You must use tools for multi-step finance, compliance, investment, portfolio,
+calculation, document, and regulatory tasks.
 
-CRITICAL RULES:
-1. NEVER answer complex multi-step questions directly without using tools.
-2. ALWAYS use tools for:
-   - portfolio construction      → portfolio_builder_tool
-   - return calculations         → return_projection_tool
-   - risk profile detection      → risk_profile_tool
-   - compliance / regulations    → investor_regulation_tool
-   - document analysis           → document_analysis_tool
-   - knowledge base retrieval    → retrieve_banking_context
-   - answer verification         → verification_tool
-3. NEVER assume a user's risk profile. Always call risk_profile_tool first.
-4. If risk profile is missing (enough_information=false), output ONLY the
-   clarification questions from the tool result and stop immediately.
-   Do NOT build a portfolio or make calculations until risk profile is confirmed.
-5. NEVER give personalized financial advice. Use educational disclaimers.
-6. ALWAYS call verification_tool as your second-to-last step.
-7. If verification_tool returns needs_retry=true, call retrieve_banking_context
-   again with a more specific query, then finalize.
-8. Show concise action summaries only. Do not reveal raw chain-of-thought.
-9. Always end investment answers with the exact disclaimer:
-   "⚠️ Educational scenario only. Not personalized financial, legal, or investment advice."
-
-INVESTMENT WORKFLOW (enforce this exact sequence — no skipping):
-  Step 1 → risk_profile_tool        (check history → ask & STOP if missing)
-  Step 2 → retrieve_banking_context (get investment/regulation context)
-  Step 3 → portfolio_builder_tool   (build full allocation table)
-  Step 4 → return_projection_tool   (calculate weighted compound returns)
-  Step 5 → investor_regulation_tool (investor-specific FDIC/tax/FINRA rules)
-  Step 6 → verification_tool        (verify groundedness, retry if weak)
-  Step 7 → Final answer with disclaimer
-
-COMPLIANCE WORKFLOW:
-  Step 1 → retrieve_banking_context (relevant regulation text)
-  Step 2 → compliance_classifier_tool (identify frameworks)
-  Step 3 → verification_tool (verify)
-  Step 4 → Final answer
-
-DOCUMENT WORKFLOW:
-  Step 1 → document_analysis_tool (extract key content)
-  Step 2 → retrieve_banking_context (supplement with knowledge base)
-  Step 3 → verification_tool (verify)
-  Step 4 → Final answer
-
-STRESS TEST / MULTI-STEP WORKFLOW:
-  Step 1 → retrieve_banking_context with focus="regulation" (get DFAST/Fed rules)
-  Step 2 → retrieve_banking_context with focus="risk" (get risk management context)
-  Step 3 → compliance_classifier_tool (classify applicable frameworks)
-  Step 4 → verification_tool (verify)
-  Step 5 → Final structured answer with phase-by-phase plan
-
-If you skip required tools, your answer is considered invalid.
+Rules:
+1. Do not answer complex multi-step questions directly.
+2. Use tools when calculations, portfolio construction, retrieved evidence,
+   market context, or compliance checks are needed.
+3. Never assume missing risk profile details.
+4. If risk profile, goal, horizon, or liquidity needs are missing, ask a
+   clarification question and stop.
+5. For investment questions, provide educational scenarios only, not personalized
+   financial advice.
+6. Use market_data_tool only as supporting market context, not as a guarantee
+   of future returns.
+7. Always verify the final answer.
+8. If verification fails, rewrite using only retrieved evidence and tool results.
+9. Never expose hidden chain-of-thought. Show concise action summaries only.
 """.strip()
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -274,6 +241,24 @@ TOOLS: list[dict] = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "market_data_tool",
+            "description": "Fetch recent benchmark market data for ETFs, indexes, or funds such as SPY, BND, VXUS, QQQ, or VTI.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "symbols": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "Ticker symbols to fetch market data for.",
+                    }
+                },
+                "required": ["symbols"],
+            },
+        },
+    },
 ]
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -358,8 +343,18 @@ class AgenticRuntime:
 
         # Build initial message list
         history_summary = self._summarise_history(chat_history or [])
+        profile_block = ""
+        if st is not None:
+            profile_block = (
+                "Known user investment profile:\n"
+                f"Risk profile: {st.session_state.get('risk_profile')}\n"
+                f"Investment goal: {st.session_state.get('investment_goal')}\n"
+                f"Liquidity need: {st.session_state.get('liquidity_need')}\n"
+                f"Investment horizon: {st.session_state.get('investment_horizon')}"
+            )
         messages: list[dict] = [
             {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": profile_block} if profile_block else {"role": "system", "content": "No prior investment profile stored."},
             {
                 "role": "user",
                 "content": (
@@ -453,9 +448,43 @@ class AgenticRuntime:
             # ── LLM decided it is done ─────────────────────────────────────
             if choice.finish_reason == "stop":
                 final_answer = (choice.message.content or "").strip()
+                if final_answer and hasattr(self, "_evidence_buffer") and self._evidence_buffer:
+                    verify_result = self._verification_tool(
+                        draft_answer=final_answer,
+                        evidence_summary=" ".join(self._evidence_buffer)
+                    )
+
+                    if bool(verify_result.get("needs_retry")):
+                        messages.append({
+                            "role": "assistant",
+                            "content": final_answer
+                        })
+
+                        messages.append({
+                            "role": "user",
+                            "content": (
+                                f"Your answer has issues:\n"
+                                f"Recommendation: {verify_result.get('recommendation')}\n"
+                                f"Unsupported claims: {verify_result.get('unsupported_claims', [])}\n\n"
+                                "Rewrite the answer using only retrieved evidence and tool results. "
+                                "Do not add new assumptions. "
+                                "Do not assume missing user details. "
+                                "If risk profile is missing, ask a clarification question instead of guessing."
+                            )
+                        })
+
+                        trace.append({
+                            "step": steps,
+                            "tool": "self_correction_loop",
+                            "observation": "Verification failed. Agent is rewriting the answer using existing evidence and tool results."
+                        })
+
+                        final_answer = None
+                        continue
+
                 trace.append({
                     "step": "complete",
-                    "label": "✅ Agent complete",
+                    "label": "? Agent complete",
                     "detail": f"Finished in {steps} steps",
                 })
                 break
@@ -559,6 +588,7 @@ class AgenticRuntime:
             "risk_profile_tool":         self._risk_profile_tool,
             "portfolio_builder_tool":    self._portfolio_builder_tool,
             "return_projection_tool":    self._return_projection_tool,
+            "market_data_tool":          self.market_data_tool,
             "investor_regulation_tool":  self._investor_regulation_tool,
             "compliance_classifier_tool": self._compliance_classifier_tool,
             "document_analysis_tool":    self._document_analysis_tool,
@@ -926,6 +956,41 @@ class AgenticRuntime:
             "primary_warning": high_severity[0]["detail"] if high_severity else None,
             "note": "These are general educational notes. Consult a licensed financial advisor.",
         }
+
+    def market_data_tool(self, symbols: list[str]) -> dict:
+        try:
+            import yfinance as yf
+
+            results: dict[str, dict[str, Any]] = {}
+            for symbol in symbols:
+                ticker = yf.Ticker(symbol)
+                info = ticker.history(period="1y")
+
+                if info.empty:
+                    results[symbol] = {"status": "no_data"}
+                    continue
+
+                start_price = float(info["Close"].iloc[0])
+                end_price = float(info["Close"].iloc[-1])
+                one_year_return = (end_price - start_price) / start_price
+                results[symbol] = {
+                    "status": "success",
+                    "start_price": round(start_price, 2),
+                    "end_price": round(end_price, 2),
+                    "one_year_return_pct": round(one_year_return * 100, 2),
+                }
+
+            return {
+                "status": "success",
+                "data": results,
+                "note": "Market data is recent historical data and does not predict future returns.",
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "message": str(e),
+                "note": "Market data unavailable. Use long-term assumptions as fallback.",
+            }
 
     def _compliance_classifier_tool(self, query: str, context: str = "") -> dict:
         """Classify which compliance frameworks apply to a query."""
