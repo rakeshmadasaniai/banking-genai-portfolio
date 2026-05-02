@@ -322,14 +322,21 @@ def render_assistant_message(message: dict, message_key: str, simplified_answers
     if agent_steps:
         with st.expander("Autonomous Agent Execution Trace", expanded=False):
             for idx, step in enumerate(agent_steps, start=1):
-                st.markdown(f"**Step {idx} - {html.escape(str(step.get('tool', step.get('action', 'act'))))}**")
+                step_name = (
+                    step.get("tool")
+                    or step.get("action")
+                    or step.get("label")
+                    or step.get("step")
+                    or "act"
+                )
+                st.markdown(f"**Step {idx} - {html.escape(str(step_name))}**")
                 args = step.get("args", step.get("input", {}))
                 if args:
                     if isinstance(args, dict):
                         st.code(json.dumps(args, ensure_ascii=False, indent=2))
                     else:
                         st.code(str(args))
-                obs = step.get("observation") or step.get("result")
+                obs = step.get("observation") or step.get("result") or step.get("detail")
                 if obs:
                     st.write(obs)
     st.markdown("</div></div>", unsafe_allow_html=True)
