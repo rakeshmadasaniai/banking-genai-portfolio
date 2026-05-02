@@ -498,10 +498,10 @@ class AgenticRuntime:
                     }
                 )
 
-        # ── Safety preflight for investment planning ──────────────────────────
+        # ── Safety preflight for investment planning / life events ───────────
         # This prevents the agent from fabricating a risk profile or producing
         # a personalized portfolio when required user details are missing.
-        if self._looks_like_investment_request(user_query):
+        if self._looks_like_investment_request(user_query) or self._looks_like_life_event_query(user_query):
             risk_result = self._risk_profile_tool(
                 user_query=user_query,
                 chat_history_summary=history_summary,
@@ -521,6 +521,57 @@ class AgenticRuntime:
                 "label": "📋 Result: risk_profile_tool",
                 "detail": json.dumps(risk_result)[:600],
             })
+
+            # Life-event override: respond with immediate action-first guidance.
+            if risk_result.get("life_event") == "job_loss":
+                latency_ms = round((time.perf_counter() - start) * 1000)
+                return {
+                    "answer": (
+                        "I’m sorry you’re dealing with this. Priority is stability first, investing second.\n\n"
+                        "Immediate plan:\n"
+                        "1. Keep 6-12 months of expenses in liquid accounts (HYSA/T-bills/money market).\n"
+                        "2. Pause non-essential risk investing until cashflow is stable.\n"
+                        "3. Ring-fence near-term obligations (like tuition) in low-volatility instruments.\n"
+                        "4. If balances are large, spread deposits across institutions to stay within FDIC limits.\n\n"
+                        "One critical question: what are your approximate monthly expenses?"
+                    ),
+                    "trace": trace + [{
+                        "step": "complete",
+                        "label": "✅ Life-event override applied",
+                        "detail": "Job-loss path prioritized liquidity and emergency planning.",
+                    }],
+                    "tools_used": tools_used,
+                    "confidence": "High",
+                    "latency_ms": latency_ms,
+                    "requires_clarification": True,
+                    "clarification_questions": risk_result.get("required_clarification", []),
+                    "evidence_count": len(self._evidence_buffer),
+                }
+
+            if risk_result.get("life_event") == "divorce":
+                latency_ms = round((time.perf_counter() - start) * 1000)
+                return {
+                    "answer": (
+                        "For divorce scenarios, legal protection comes first before portfolio changes.\n\n"
+                        "Immediate plan:\n"
+                        "1. Do not move joint assets without counsel.\n"
+                        "2. Engage divorce attorney and confirm asset transfer documentation.\n"
+                        "3. Update beneficiaries and account authorities where permitted.\n"
+                        "4. Check FDIC concentration risk on large cash balances.\n\n"
+                        "After legal structure is clear, we can optimize your investment allocation."
+                    ),
+                    "trace": trace + [{
+                        "step": "complete",
+                        "label": "✅ Life-event override applied",
+                        "detail": "Divorce path prioritized legal and asset-protection workflow.",
+                    }],
+                    "tools_used": tools_used,
+                    "confidence": "High",
+                    "latency_ms": latency_ms,
+                    "requires_clarification": False,
+                    "clarification_questions": [],
+                    "evidence_count": len(self._evidence_buffer),
+                }
 
             if not risk_result.get("enough_information", False):
                 latency_ms = round((time.perf_counter() - start) * 1000)
@@ -1592,8 +1643,18 @@ class AgenticRuntime:
             "stocks", "bonds", "etf", "mutual fund", "$"
         ]
         return any(term in text for term in investment_terms) and any(
-            action in text for action in ["recommend", "build", "calculate", "analyze", "analyse", "allocate", "plan"]
+            action in text for action in ["recommend", "build", "calculate", "analyze", "analyse", "allocate", "plan", "what should i do", "help me", "strategy"]
         )
+
+    @staticmethod
+    def _looks_like_life_event_query(query: str) -> bool:
+        text = query.lower()
+        life_terms = [
+            "lost my job", "unemployed", "laid off", "fired", "redundant",
+            "divorce", "divorcing", "separated", "getting divorced",
+            "medical emergency", "hospital", "inheritance", "windfall",
+        ]
+        return any(t in text for t in life_terms)
 
     @staticmethod
     def _requires_regulatory_retrieval(query: str) -> bool:
