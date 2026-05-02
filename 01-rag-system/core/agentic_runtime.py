@@ -68,6 +68,15 @@ Rules:
     the answer is invalid and must be retried with retrieval.
 12. For comparison questions, return a structured Markdown table with columns:
     Requirement | Jurisdiction A | Jurisdiction B | Jurisdiction C | Notes.
+13. ACTION RULES:
+    - Never ask for information already present.
+    - Never ask more than one clarification question in a response.
+    - Never say "you should compare" when tools can compare now.
+    - Act on available data first; ask only when a critical variable is missing.
+14. MATH RULE:
+    For questions like "what return do I need", "can I retire", "how long to reach X":
+    call return_projection_tool first and compute required return scenarios.
+    If required annual return > 15%, label it unrealistic and suggest alternatives.
 """.strip()
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -204,6 +213,31 @@ TOOLS: list[dict] = [
                     },
                 },
                 "required": ["query"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "compliance_checker_tool",
+            "description": (
+                "Check ratio-based compliance against frameworks such as Basel III and "
+                "return PASS/FAIL by metric."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "ratios": {
+                        "type": "object",
+                        "description": "Map of ratio name to numeric value, e.g. cet1, tier1, total_capital, leverage.",
+                    },
+                    "framework": {
+                        "type": "string",
+                        "description": "Compliance framework name.",
+                        "default": "basel_iii",
+                    },
+                },
+                "required": ["ratios"],
             },
         },
     },
@@ -376,6 +410,7 @@ class AgenticRuntime:
 
         requires_retrieval = self._requires_regulatory_retrieval(user_query)
         comparison_request = self._is_comparison_question(user_query)
+        math_first_request = self._is_math_planning_question(user_query)
         if requires_retrieval:
             messages.append(
                 {
@@ -393,6 +428,16 @@ class AgenticRuntime:
                     "content": (
                         "Output policy: format comparison answers as a markdown table with columns "
                         "Requirement | Jurisdiction A | Jurisdiction B | Jurisdiction C | Notes."
+                    ),
+                }
+            )
+        if math_first_request:
+            messages.append(
+                {
+                    "role": "system",
+                    "content": (
+                        "Math-first policy: use return_projection_tool before asking for additional profile data. "
+                        "If required annual return exceeds 15%, mark as unrealistic and suggest alternatives."
                     ),
                 }
             )
@@ -653,6 +698,7 @@ class AgenticRuntime:
             "market_data_tool":          self.market_data_tool,
             "investor_regulation_tool":  self._investor_regulation_tool,
             "compliance_classifier_tool": self._compliance_classifier_tool,
+            "compliance_checker_tool":   self._compliance_checker_tool,
             "document_analysis_tool":    self._document_analysis_tool,
             "verification_tool":         self._verification_tool,
         }
@@ -794,6 +840,18 @@ class AgenticRuntime:
                 "required_clarification": [],
             }
 
+        goal_map = {
+            "retirement": ["retirement", "retire", "retiring", "retired", "pension"],
+            "growth": ["growth", "grow", "appreciate"],
+            "income": ["income", "dividend", "cash flow"],
+            "preservation": ["preservation", "protect", "safe"],
+        }
+        detected_goal = None
+        for g_name, g_keys in goal_map.items():
+            if any(k in text for k in g_keys):
+                detected_goal = g_name
+                break
+
         # Explicit keyword signals
         explicit_risk = next(
             (r for r in ["conservative", "moderate", "aggressive"] if r in text),
@@ -802,13 +860,22 @@ class AgenticRuntime:
 
         # Age-based inference
         inferred_from_age = None
-        age_match = re.search(r"\b(am|i'm|i am|age|aged?)\s*(\d{2})\b", text)
-        if not age_match:
-            age_match = re.search(r"\b(\d{2})\s*(years?\s*old|yr\s*old)\b", text)
+        age = None
+        age_patterns = [
+            r"i am (\d{2})\s*years?\s*old",
+            r"i'm (\d{2})\s*years?\s*old",
+            r"(\d{2})\s*years?\s*old",
+            r"aged?\s*(\d{2})",
+        ]
+        age_match = None
+        for p in age_patterns:
+            age_match = re.search(p, text)
+            if age_match:
+                age = int(age_match.group(1))
+                break
         if age_match:
             try:
-                age_candidates = re.findall(r"\d{2}", age_match.group(0))
-                age = int(age_candidates[0]) if age_candidates else 0
+                age = int(age or 0)
                 if age >= 60:
                     inferred_from_age = "conservative"
                 elif age >= 40:
@@ -831,9 +898,8 @@ class AgenticRuntime:
         )
 
         # Goal detection
-        goal = next(
-            (g for g in ["retirement", "growth", "income", "preservation", "education"]
-             if g in text),
+        goal = detected_goal or next(
+            (g for g in ["retirement", "growth", "income", "preservation", "education"] if g in text),
             None,
         )
 
@@ -961,6 +1027,7 @@ class AgenticRuntime:
             "principal_usd": round(amount, 2),
             "years": horizon_years,
             "weighted_annual_return_pct": round(weighted_return * 100, 2),
+            "return_feasibility": "unrealistic" if weighted_return > 0.15 else "reasonable",
             "future_value_nominal_usd": round(future_value, 2),
             "estimated_gain_usd": round(gain, 2),
             "inflation_adjusted_future_value_usd": round(real_fv, 2),
@@ -1137,6 +1204,40 @@ class AgenticRuntime:
             "framework_count": len(matched),
             "primary_framework": list(matched.keys())[0] if matched else "General Banking",
             "context_used": bool(context),
+        }
+
+    def _compliance_checker_tool(self, ratios: dict, framework: str = "basel_iii") -> dict:
+        """Check ratio metrics against framework thresholds (PASS/FAIL)."""
+        thresholds = {
+            "basel_iii": {
+                "cet1": 4.5,
+                "tier1": 6.0,
+                "total_capital": 8.0,
+                "leverage": 3.0,
+            }
+        }
+        limits = thresholds.get(framework.lower(), thresholds["basel_iii"])
+        results = {}
+        for k, v in (ratios or {}).items():
+            key = str(k).lower().strip()
+            if key in limits:
+                try:
+                    actual = float(v)
+                except Exception:
+                    continue
+                required = limits[key]
+                results[key] = {
+                    "actual": actual,
+                    "required": required,
+                    "status": "PASS" if actual >= required else "FAIL",
+                }
+        overall = all(r["status"] == "PASS" for r in results.values()) if results else False
+        return {
+            "status": "success",
+            "framework": framework,
+            "results": results,
+            "overall": overall,
+            "note": "Regulatory thresholds are simplified reference values.",
         }
 
     def _document_analysis_tool(
@@ -1363,6 +1464,18 @@ class AgenticRuntime:
         text = query.lower()
         comparison_terms = ["compare", "difference", "vs", "versus", "contrast", "better than"]
         return any(t in text for t in comparison_terms)
+
+    @staticmethod
+    def _is_math_planning_question(query: str) -> bool:
+        text = query.lower()
+        math_terms = [
+            "what return do i need",
+            "required return",
+            "can i retire",
+            "how long to reach",
+            "years to reach",
+        ]
+        return any(t in text for t in math_terms)
 
     @staticmethod
     def _summarise_history(history: list[dict]) -> str:
