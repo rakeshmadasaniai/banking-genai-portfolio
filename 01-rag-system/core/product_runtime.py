@@ -7,7 +7,7 @@ from typing import Any
 
 import streamlit as st
 
-from core.agentic_runtime import run_agentic_workflow
+from core.agentic_runtime import AgenticRuntime
 from core.retriever import get_base_index, retrieve_shared_context
 from core.utils import detect_input_language, list_base_knowledge_files
 from features.accessibility import apply_accessibility_styles, render_accessibility_controls
@@ -30,6 +30,7 @@ from features.product_ui import (
 )
 from features.voice_controls import render_voice_input_preview
 from models.auto_router import run_auto_mode
+from models.autonomous_agent import run_autonomous_agent
 from models.finetuned_mode import generate_finetuned_response
 from models.openai_mode import generate_openai_response
 
@@ -168,27 +169,37 @@ def _run_selected_model(question: str, retrieval: dict, mode: str) -> dict:
             response_profile=response_profile,
         )
     if mode == "Agentic Workspace":
-        uploaded_docs = st.session_state.get("uploaded_docs", []) or []
-        result = run_agentic_workflow(
-            user_query=question,
-            uploaded_files=uploaded_docs,
-            chat_history=st.session_state.messages,
-            retriever=lambda q: retrieve_shared_context(q, get_base_index(), st.session_state.upload_index),
+        agent = AgenticRuntime(
+            retriever=lambda q, top_k=5: retrieve_shared_context(
+                q, get_base_index(), st.session_state.upload_index
+            )
         )
-        st.session_state.agent_memory.append({"question": question, "steps": result.get("trace", [])})
+        uploaded_text = "\n\n".join(
+            card.get("preview", "")
+            for card in (retrieval.get("source_cards", []) or [])
+        )
+        result = agent.run_agentic_workflow(
+            user_query=question,
+            uploaded_text=uploaded_text,
+            chat_history=st.session_state.messages,
+        )
+        st.session_state.agent_memory.append({"question": question, "steps": result.get("agent_steps", [])})
         _persist_agent_memory(st.session_state.agent_memory)
-        return {
-            "answer": result.get("answer", ""),
-            "backend": "Agentic Workspace",
-            "latency_ms": result.get("latency_ms", 0),
-            "confidence": result.get("confidence", "Moderate"),
-            "agent_steps": result.get("trace", []),
-            "agent_observations": result.get("tools_used", []),
-            "route_reason": ", ".join(result.get("tools_used", [])),
-            "selection_reason": "Agentic Workspace tool-calling loop",
-            "available": True,
-            "language": response_language,
-        }
+        return result
+
+    if mode == "Autonomous Agent":
+        result = run_autonomous_agent(
+            question=question,
+            retrieval=retrieval,
+            llm_call=lambda p: _llm_text_call(p, retrieval, response_language, response_profile),
+            memory=st.session_state.agent_memory,
+            response_language=response_language,
+            retriever_call=lambda q: retrieve_shared_context(q, get_base_index(), st.session_state.upload_index),
+            response_profile=response_profile,
+        )
+        st.session_state.agent_memory.append({"question": question, "steps": result.get("agent_steps", [])})
+        _persist_agent_memory(st.session_state.agent_memory)
+        return result
     return run_auto_mode(question, retrieval, uploaded_images=images)
 
 
