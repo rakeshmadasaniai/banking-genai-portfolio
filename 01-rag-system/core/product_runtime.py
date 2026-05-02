@@ -97,7 +97,9 @@ def _ensure_state() -> None:
         "upload_chunk_count": 0,
         "uploaded_images": [],
         "model_mode": "Agentic Workspace",
+        "composer_model_mode": "Agentic Workspace",
         "pending_question": "",
+        "pending_thinking_id": "",
         "last_voice_lang": "",
     }
     for k, v in defaults.items():
@@ -107,6 +109,9 @@ def _ensure_state() -> None:
         st.session_state.model_mode = "Agentic Workspace"
     if st.session_state.model_mode not in MODEL_MODES:
         st.session_state.model_mode = "Agentic Workspace"
+    if st.session_state.composer_model_mode not in MODEL_MODES:
+        st.session_state.composer_model_mode = st.session_state.model_mode
+    st.session_state.model_mode = st.session_state.composer_model_mode
     if "agent_memory" not in st.session_state:
         st.session_state.agent_memory = _load_agent_memory()
 
@@ -234,17 +239,8 @@ def run_product_runtime() -> None:
             st.rerun()
 
         with st.expander("Workspace", expanded=True):
-            mode = st.radio(
-                "Model mode",
-                MODEL_MODES,
-                index=MODEL_MODES.index(st.session_state.model_mode),
-                horizontal=True,
-                label_visibility="collapsed",
-                key="model_mode_selector",
-            )
-            st.session_state.model_mode = mode
-            st.session_state.composer_model_mode = mode
-            st.caption(MODEL_DESCRIPTIONS[mode])
+            st.caption(f"Current mode: {st.session_state.model_mode}")
+            st.caption("Switch modes from the composer only.")
             accessibility = render_accessibility_controls()
             show_source_cards = st.toggle("Show source cards", value=False)
             show_auto_comparison = st.toggle("Auto mode comparison", value=False)
@@ -269,20 +265,22 @@ def run_product_runtime() -> None:
         if msg.get("role") == "user":
             render_user_message(str(msg.get("content", "")))
         else:
-            render_assistant_message(
-                msg,
-                message_key=f"history-{i}",
-                simplified_answers=accessibility.simplified_answers,
-                show_source_cards=show_source_cards,
-                show_auto_comparison=show_auto_comparison,
-            )
+            if msg.get("status") == "thinking":
+                render_assistant_thinking()
+            else:
+                render_assistant_message(
+                    msg,
+                    message_key=f"history-{i}",
+                    simplified_answers=accessibility.simplified_answers,
+                    show_source_cards=show_source_cards,
+                    show_auto_comparison=show_auto_comparison,
+                )
 
     # Process deferred generation so the user message appears in history above composer.
     pending_question = st.session_state.get("pending_question")
     if pending_question:
         if base_index is None:
             base_index = get_base_index()
-        render_assistant_thinking()
         retrieval = retrieve_shared_context(pending_question, base_index, st.session_state.upload_index)
         result = _run_selected_model(pending_question, retrieval, st.session_state.model_mode)
         if result.get("retrieval_override"):
@@ -305,9 +303,19 @@ def run_product_runtime() -> None:
             "agent_observations": result.get("agent_observations"),
             "voice_lang_hint": result.get("language", detect_input_language(pending_question)),
         }
-        st.session_state.messages.append(assistant_msg)
+        thinking_id = st.session_state.get("pending_thinking_id", "")
+        replaced = False
+        if thinking_id:
+            for idx, existing in enumerate(st.session_state.messages):
+                if existing.get("role") == "assistant" and existing.get("status") == "thinking" and existing.get("thinking_id") == thinking_id:
+                    st.session_state.messages[idx] = assistant_msg
+                    replaced = True
+                    break
+        if not replaced:
+            st.session_state.messages.append(assistant_msg)
         _save_active_chat()
         st.session_state.pending_question = ""
+        st.session_state.pending_thinking_id = ""
         st.rerun()
 
     st.markdown("<div class='composer-shell-static'>", unsafe_allow_html=True)
@@ -323,10 +331,11 @@ def run_product_runtime() -> None:
             composer_mode = st.selectbox(
                 "Composer model",
                 MODEL_MODES,
-                index=MODEL_MODES.index(st.session_state.model_mode),
+                index=MODEL_MODES.index(st.session_state.composer_model_mode),
                 label_visibility="collapsed",
                 key="composer_model_mode",
             )
+            st.session_state.composer_model_mode = composer_mode
             st.session_state.model_mode = composer_mode
         with c3:
             question = st.text_input(
@@ -358,6 +367,16 @@ def run_product_runtime() -> None:
     # Guarantee submit uses composer-selected mode (avoids stale sidebar/composer mismatch).
     st.session_state.model_mode = st.session_state.get("composer_model_mode", st.session_state.model_mode)
     st.session_state.messages.append({"role": "user", "content": question})
+    thinking_id = f"thinking-{int(time.time() * 1000)}"
+    st.session_state.messages.append(
+        {
+            "role": "assistant",
+            "status": "thinking",
+            "thinking_id": thinking_id,
+            "answer": "Thinking...",
+        }
+    )
     _save_active_chat()
     st.session_state.pending_question = question
+    st.session_state.pending_thinking_id = thinking_id
     st.rerun()
