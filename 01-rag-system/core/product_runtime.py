@@ -182,7 +182,8 @@ def _run_selected_model(question: str, retrieval: dict, mode: str) -> dict:
             user_query=question,
             chat_history=st.session_state.messages,
         )
-        st.session_state.agent_memory.append({"question": question, "steps": result.get("agent_steps", [])})
+        trace_steps = result.get("agent_steps") or result.get("trace") or []
+        st.session_state.agent_memory.append({"question": question, "steps": trace_steps})
         _persist_agent_memory(st.session_state.agent_memory)
         return result
 
@@ -311,8 +312,8 @@ def run_product_runtime() -> None:
             "route_reason": result.get("route_reason"),
             "selection_reason": result.get("selection_reason"),
             "candidate_scores": result.get("candidate_scores"),
-            "agent_steps": result.get("agent_steps"),
-            "agent_observations": result.get("agent_observations"),
+            "agent_steps": result.get("agent_steps") or result.get("trace") or [],
+            "agent_observations": result.get("agent_observations") or result.get("trace") or [],
             "voice_lang_hint": result.get("language", detect_input_language(pending_question)),
         }
         st.session_state.messages.append(assistant_msg)
