@@ -250,3 +250,270 @@ BASEL III MINIMUM CAPITAL RATIOS (ALWAYS CHECK TOGETHER):
 Basel III compliance quick rule:
 - A bank is compliant only if all required ratios meet or exceed thresholds.
 - If any one ratio is below minimum, classify as NON-COMPLIANT and report deficit per ratio.
+
+
+
+=============================================================
+BANKING KNOWLEDGE ADDITIONS — APPEND TO banking_knowledge.txt
+=============================================================
+Append ALL content below to the bottom of banking_knowledge.txt
+in your HuggingFace Space.
+=============================================================
+
+------------------------------------------------------------
+SECTION: KYC AUDIT FAILURE CONSEQUENCES
+------------------------------------------------------------
+KYC AUDIT FAILURE — REGULATORY CONSEQUENCES:
+Banks and financial institutions that fail KYC audits face
+the following consequences from regulators:
+
+Regulatory Actions:
+- Formal enforcement action from primary regulator
+  (OCC, Federal Reserve, FDIC in US; FCA in UK; RBI in India)
+- Cease and desist orders restricting new account openings
+- Mandatory Written Agreement with remediation timeline
+- Consent Orders requiring specific corrective actions
+- Matters Requiring Attention (MRAs) from examiners
+
+Financial Penalties:
+- Civil Money Penalties (CMPs): up to $1,000,000 per day
+  per violation under BSA in the United States
+- Disgorgement of profits from non-compliant accounts
+- Notable examples:
+  HSBC: $1.9 billion fine (2012) for AML/KYC failures
+  Standard Chartered: $1.1 billion (2019) for AML failures
+  Deutsche Bank: $630 million (2017) for AML failures
+  Capital One: $390 million (2021) for BSA violations
+
+Operational Consequences:
+- Appointment of independent compliance monitor
+  (bank pays monitor's fees, typically $1-5M per year)
+- Restriction on new products, services, or market expansion
+- Forced exit from certain customer segments or geographies
+- Enhanced supervision with more frequent examinations
+- Mandatory staffing increases in compliance department
+
+Reputational Consequences:
+- Public enforcement actions published by regulators
+- Loss of correspondent banking relationships
+- Customer and investor confidence damage
+- Share price decline (typically 3-8% on announcement)
+
+Criminal Consequences (willful violations):
+- Individual officer prosecution under BSA
+- Deferred Prosecution Agreements (DPAs)
+- Bank charter revocation in extreme cases
+
+KYC AUDIT FAILURE 48-HOUR ACTION PLAN:
+Hours 0-2:
+1. Engage external compliance counsel immediately
+   (attorney-client privilege protects communications)
+2. Issue litigation hold on ALL audit documentation
+   (do not alter, delete, or "fix" any records)
+3. Notify Board Audit Committee (fiduciary duty)
+4. Identify scope: which customers, branches, accounts affected
+
+Hours 2-8:
+5. Assess regulatory notification obligation
+   (OCC/Fed/FDIC may require prompt notification)
+6. Freeze onboarding of new high-risk customers immediately
+7. Assemble internal investigation team
+8. Begin gap analysis: which specific KYC requirements failed
+
+Hours 8-48:
+9. Draft remediation plan with realistic timeline
+10. Contact primary regulator proactively
+    (voluntary disclosure typically reduces penalties 30-50%)
+11. Assess civil money penalty exposure
+12. Review D&O insurance policy for coverage
+13. Prepare board and investor communications if material
+
+Proactive regulator contact is the single most effective
+way to reduce penalties in a KYC audit failure scenario.
+
+------------------------------------------------------------
+SECTION: FRAUD DISCOVERY CRISIS PROTOCOL
+------------------------------------------------------------
+BANK FRAUD DISCOVERY — IMMEDIATE ACTION PROTOCOL:
+
+Minute 0-30 (RIGHT NOW):
+1. Call General Counsel immediately
+   Attorney-client privilege protects everything said after this
+2. Issue litigation hold immediately
+   Preserve ALL trading records, emails, communications, system logs
+   One deleted record = potential obstruction of justice charge
+3. Do NOT alert the implicated trader(s) yet
+   Risk of evidence destruction, flight risk, or self-harm
+4. Lock trading system access for implicated desk
+5. Secure physical access to trading floor
+
+Hours 0-2:
+6. Notify CEO and Board Audit Committee
+   They have fiduciary duty — notify within 2 hours
+7. Engage forensic accounting firm immediately
+   You need independent verification of the fraud amount
+8. Engage external criminal defense counsel
+   Separate from regular counsel — specialized expertise needed
+9. Assess whether fraud is ongoing — stop the bleeding
+10. Do NOT make any public statements — not one word
+
+Regulatory Notifications (time-sensitive):
+11. SAR filing with FinCEN — MANDATORY under BSA
+    Legally required — do not tip off subject before filing
+    File as soon as practicable, within 30 days maximum
+12. Notify primary federal regulator proactively
+    OCC for national banks, Federal Reserve for state members,
+    FDIC for state non-members
+    Prompt notification = cooperation credit = reduced penalties
+13. Assess SEC disclosure obligation
+    If fraud is material (typically >5% of net income),
+    8-K filing may be required within 4 business days
+14. Check FINRA reporting if broker-dealer operations involved
+15. Review D&O insurance policy immediately
+
+Hours 8-48:
+16. Full forensic audit of trading desk — minimum 12 months back
+17. Identify all counterparties to fraudulent trades
+18. Asset tracing — where did the money go?
+19. Prepare board resolution authorizing investigation
+20. Consider voluntary disclosure to all relevant regulators
+    Reduces penalties by 30-50% in most cases
+
+Every minute of delay increases criminal and civil exposure.
+Proactive regulator contact is your single best legal defense.
+
+------------------------------------------------------------
+SECTION: DIVORCE FINANCIAL PROTECTION
+------------------------------------------------------------
+DIVORCE WITH JOINT INVESTMENTS — WHAT TO KNOW:
+
+Immediate Legal Actions:
+- Do NOT move, liquidate, or transfer any joint assets
+  without legal counsel — this constitutes dissipation
+  and seriously harms your legal position
+- Engage a divorce attorney immediately
+- Request a financial restraining order if concerned
+  about spouse moving or hiding assets
+- All joint investments subject to equitable distribution
+  (community property states: CA, TX, AZ, NV, WA, ID, LA, WI, NM)
+  (equitable states: all others — fair but not necessarily 50/50)
+
+Asset Protection Steps:
+- Get full written inventory of ALL joint accounts immediately
+- Do not close joint accounts unilaterally (legal risk)
+- Change passwords on YOUR individual (non-joint) accounts only
+- Update beneficiary designations on YOUR individual accounts
+- Monitor joint accounts for unauthorized activity
+
+FDIC Coverage in Divorce:
+- Joint accounts: insured $500,000 total ($250,000 per co-owner)
+- After legal separation: restructure based on new ownership
+- Amounts over $500,000 in joint accounts are uninsured
+- Example: $2,000,000 joint account = $1,500,000 UNINSURED
+
+Retirement Account Division:
+- 401(k), 403(b), pension plans require QDRO
+  (Qualified Domestic Relations Order)
+- QDRO allows division WITHOUT triggering early withdrawal penalty
+- IRA accounts: transfer incident to divorce is tax-free
+- Do NOT withdraw from retirement accounts — 10% penalty applies
+
+Tax Implications:
+- IRC Section 1041: transfers between spouses incident to divorce
+  are generally income-tax-free
+- Capital gains tax triggered when liquidating joint investments
+- Basis carries over to receiving spouse
+- Consult CPA before any liquidation of joint assets
+- Short-term vs long-term capital gains treatment applies
+
+Timing:
+- Do NOT make major investment changes until legal division complete
+- Court may freeze joint assets during proceedings
+- Financial advisor engagement should follow legal separation agreement
+
+------------------------------------------------------------
+SECTION: BASEL III ALL THRESHOLDS (SINGLE CHUNK)
+------------------------------------------------------------
+BASEL III MINIMUM CAPITAL RATIOS — ALL REQUIREMENTS:
+
+Capital Requirements (all four together):
+CET1 (Common Equity Tier 1) Ratio: minimum 4.5%
+Tier 1 Capital Ratio: minimum 6.0%
+Total Capital Ratio: minimum 8.0%
+Leverage Ratio: minimum 3.0%
+
+Capital Buffers (additional requirements):
+Capital Conservation Buffer: 2.5% (on top of minimums)
+  Making effective minimums:
+  CET1 effective minimum: 7.0% (4.5% + 2.5% buffer)
+  Tier 1 effective minimum: 8.5% (6.0% + 2.5% buffer)
+  Total Capital effective minimum: 10.5% (8.0% + 2.5% buffer)
+Countercyclical Buffer: 0% to 2.5% (jurisdiction-set)
+G-SIB Surcharge: 1.0% to 3.5% (for global systemically important banks)
+
+Liquidity Requirements:
+LCR (Liquidity Coverage Ratio): minimum 100%
+  Must hold enough HQLA to survive 30-day stress scenario
+NSFR (Net Stable Funding Ratio): minimum 100%
+  Stable funding must exceed required stable funding
+
+COMPLIANCE CHECK — HOW TO EVALUATE:
+Step 1: Compare each ratio to its minimum
+Step 2: Note any ratio below minimum as a VIOLATION
+Step 3: Calculate deficit: actual% minus minimum%
+Step 4: Overall verdict: COMPLIANT only if ALL ratios pass
+
+EXAMPLE COMPLIANCE CHECK:
+CET1: 4.6% vs 4.5% minimum → PASS (+0.1% margin)
+Tier 1: 5.7% vs 6.0% minimum → FAIL (-0.3% deficit)
+Total Capital: 7.8% vs 8.0% minimum → FAIL (-0.2% deficit)
+Leverage: 2.9% vs 3.0% minimum → FAIL (-0.1% deficit)
+VERDICT: NON-COMPLIANT — 3 of 4 ratios below minimum
+
+RBI IMPLEMENTATION (India) — HIGHER MINIMUMS:
+CET1: minimum 5.5% (higher than Basel III)
+Tier 1: minimum 7.0% (higher than Basel III)
+Total Capital: minimum 9.0% (higher than Basel III)
+Leverage: minimum 3.5% for D-SIBs, 3.0% for others
+
+------------------------------------------------------------
+SECTION: IMPOSSIBLE INVESTMENT REQUESTS
+------------------------------------------------------------
+IMPOSSIBLE INVESTMENT GUARANTEES — HOW TO RESPOND:
+
+The following are IMPOSSIBLE in legitimate investing:
+- Guaranteed returns above 5% with zero risk
+- Doubling money in short timeframes (6-12 months) safely
+- Any investment with "no risk" and high returns
+- "Safe" investments returning 15%+ consistently
+
+Reality of risk-return tradeoff:
+- Zero-risk instruments (current rates ~2024-2025):
+  Treasury Bills (3-6 month): ~4.8-5.3%
+  High-Yield Savings Accounts: ~4.5-5.0%
+  Money Market Funds: ~4.8-5.1%
+  6-Month CDs: ~4.5-5.0%
+
+- Higher return = higher risk (always):
+  S&P 500 historical average: ~10% annually (with volatility)
+  Small-cap stocks: ~12% average (higher volatility)
+  Emerging markets: ~8-11% average (high volatility)
+  Venture capital: ~20-25% average (with frequent total losses)
+
+Required return calculations:
+- $200K → $1M in 2 years: requires 123.6% annually (impossible)
+- $50K → $500K in 10 years: requires 25.9% annually (very high risk)
+- $100K → $1M in 20 years: requires 12.2% annually (aggressive but possible)
+- $100K → $1M in 30 years: requires 7.9% annually (moderate, realistic)
+
+When asked for impossible guarantees:
+1. Refuse clearly and immediately
+2. Explain the risk-return tradeoff
+3. State what zero-risk instruments actually return
+4. Offer realistic educational alternatives
+5. Never ask for more information to "fulfill" the request
+
+=============================================================
+END OF ADDITIONS — APPEND TO banking_knowledge.txt
+=============================================================
+
