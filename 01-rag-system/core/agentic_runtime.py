@@ -63,6 +63,11 @@ Rules:
 10. CRITICAL: If time horizon is <= 12 months, treat liquidity as high and
     prioritize capital preservation. Do not ask redundant risk clarification
     and do not recommend equities, REITs, or long-duration products.
+11. CRITICAL: For any regulatory/compliance/jurisdiction question, you MUST
+    call retrieve_banking_context before answering. If retrieval is not used,
+    the answer is invalid and must be retried with retrieval.
+12. For comparison questions, return a structured Markdown table with columns:
+    Requirement | Jurisdiction A | Jurisdiction B | Jurisdiction C | Notes.
 """.strip()
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -369,6 +374,29 @@ class AgenticRuntime:
             },
         ]
 
+        requires_retrieval = self._requires_regulatory_retrieval(user_query)
+        comparison_request = self._is_comparison_question(user_query)
+        if requires_retrieval:
+            messages.append(
+                {
+                    "role": "system",
+                    "content": (
+                        "Mandatory policy: call retrieve_banking_context before final answer "
+                        "for this query."
+                    ),
+                }
+            )
+        if comparison_request:
+            messages.append(
+                {
+                    "role": "system",
+                    "content": (
+                        "Output policy: format comparison answers as a markdown table with columns "
+                        "Requirement | Jurisdiction A | Jurisdiction B | Jurisdiction C | Notes."
+                    ),
+                }
+            )
+
         trace.append({"step": "start", "label": "🧠 Intent analysis", "detail": user_query})
 
         # ── Safety preflight for investment planning ──────────────────────────
@@ -453,6 +481,25 @@ class AgenticRuntime:
             # ── LLM decided it is done ─────────────────────────────────────
             if choice.finish_reason == "stop":
                 final_answer = (choice.message.content or "").strip()
+                if requires_retrieval and "retrieve_banking_context" not in tools_used:
+                    messages.append(
+                        {
+                            "role": "user",
+                            "content": (
+                                "Invalid attempt: you did not call retrieve_banking_context for this "
+                                "regulatory/compliance query. Call retrieve_banking_context now and rewrite."
+                            ),
+                        }
+                    )
+                    trace.append(
+                        {
+                            "step": steps,
+                            "tool": "retrieval_enforcer",
+                            "observation": "Final answer rejected because retrieval tool was not used.",
+                        }
+                    )
+                    final_answer = None
+                    continue
                 if final_answer and hasattr(self, "_evidence_buffer") and self._evidence_buffer:
                     verify_result = self._verification_tool(
                         draft_answer=final_answer,
@@ -1301,6 +1348,21 @@ class AgenticRuntime:
         return any(term in text for term in investment_terms) and any(
             action in text for action in ["recommend", "build", "calculate", "analyze", "analyse", "allocate", "plan"]
         )
+
+    @staticmethod
+    def _requires_regulatory_retrieval(query: str) -> bool:
+        text = query.lower()
+        terms = [
+            "regulation", "regulatory", "compliance", "jurisdiction", "kyc", "aml",
+            "fdic", "rbi", "fiu", "pmla", "basel", "finra", "sec", "sar", "str",
+        ]
+        return any(t in text for t in terms)
+
+    @staticmethod
+    def _is_comparison_question(query: str) -> bool:
+        text = query.lower()
+        comparison_terms = ["compare", "difference", "vs", "versus", "contrast", "better than"]
+        return any(t in text for t in comparison_terms)
 
     @staticmethod
     def _summarise_history(history: list[dict]) -> str:
