@@ -300,7 +300,7 @@ class AgenticRuntime:
     hard-codes the execution order.
     """
 
-    MAX_STEPS = 12
+    MAX_STEPS = 8
 
     def __init__(self, retriever=None, uploaded_docs=None):
         self.retriever = retriever          # your existing retriever object
@@ -427,6 +427,8 @@ class AgenticRuntime:
         final_answer = ""
         requires_clarification = False
         clarification_questions: list[str] = []
+        self_correction_attempts = 0
+        max_self_corrections = 1
 
         while steps < self.MAX_STEPS:
             steps += 1
@@ -454,7 +456,8 @@ class AgenticRuntime:
                         evidence_summary=" ".join(self._evidence_buffer)
                     )
 
-                    if bool(verify_result.get("needs_retry")):
+                    if bool(verify_result.get("needs_retry")) and self_correction_attempts < max_self_corrections:
+                        self_correction_attempts += 1
                         messages.append({
                             "role": "assistant",
                             "content": final_answer
@@ -565,6 +568,15 @@ class AgenticRuntime:
                 "I need a little more information before I can build your investment plan.\n\n"
                 "Please clarify:\n"
                 + "\n".join(f"{i+1}. {q}" for i, q in enumerate(clarification_questions))
+            )
+
+        # Ensure we never return a blank answer after tool execution.
+        if not final_answer and self._evidence_buffer:
+            final_answer = (
+                "I gathered evidence but could not fully finalize a verified response in one pass. "
+                "Here is the grounded summary from the executed tools:\n\n"
+                + "\n".join(f"- {item[:220]}" for item in self._evidence_buffer[:6])
+                + "\n\n⚠️ Educational guidance only. Not personalized financial, legal, or investment advice."
             )
 
         confidence = self._score_confidence(final_answer, tools_used)
