@@ -559,6 +559,7 @@ class AgenticRuntime:
         clarification_questions: list[str] = []
         self_correction_attempts = 0
         max_self_corrections = 1
+        verify_snapshot: dict[str, Any] | None = None
 
         while steps < self.MAX_STEPS:
             steps += 1
@@ -604,6 +605,8 @@ class AgenticRuntime:
                         draft_answer=final_answer,
                         evidence_summary=" ".join(self._evidence_buffer)
                     )
+                    verify_snapshot = verify_result
+                    tools_used.append("verification_tool")
 
                     if bool(verify_result.get("needs_retry")) and self_correction_attempts < max_self_corrections:
                         self_correction_attempts += 1
@@ -728,13 +731,14 @@ class AgenticRuntime:
                 + "\n\n⚠️ Educational guidance only. Not personalized financial, legal, or investment advice."
             )
 
-        confidence = self._score_confidence(final_answer, tools_used)
+        confidence = self._score_confidence(final_answer, tools_used, verify_snapshot)
 
         return {
             "answer": final_answer or "I was unable to generate a grounded answer. Please try rephrasing.",
             "trace": trace,
             "tools_used": list(dict.fromkeys(tools_used)),  # deduplicated, order-preserving
             "confidence": confidence,
+            "confidence_score_pct": int(round(float((verify_snapshot or {}).get("confidence_score", 0.9)) * 100)) if verify_snapshot else None,
             "latency_ms": latency_ms,
             "requires_clarification": requires_clarification,
             "clarification_questions": clarification_questions,
@@ -1651,8 +1655,20 @@ class AgenticRuntime:
         return " | ".join(filtered[-3:])
 
     @staticmethod
-    def _score_confidence(answer: str, tools_used: list[str]) -> str:
+    def _score_confidence(answer: str, tools_used: list[str], verify_snapshot: dict | None = None) -> str:
         if not answer:
+            return "Low"
+        if verify_snapshot:
+            if bool(verify_snapshot.get("needs_retry")):
+                return "Low"
+            vconf = str(verify_snapshot.get("confidence", "")).strip().lower()
+            if vconf in {"high", "moderate", "low"}:
+                return vconf.capitalize()
+            score = float(verify_snapshot.get("confidence_score", 0.0) or 0.0)
+            if score >= 0.85:
+                return "High"
+            if score >= 0.55:
+                return "Moderate"
             return "Low"
         verification_ran = "verification_tool" in tools_used
         tool_count = len(tools_used)
