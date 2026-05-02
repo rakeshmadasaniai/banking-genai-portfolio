@@ -178,9 +178,8 @@ def _run_selected_model(question: str, retrieval: dict, mode: str) -> dict:
             card.get("preview", "")
             for card in (retrieval.get("source_cards", []) or [])
         )
-        result = agent.run_agentic_workflow(
+        result = agent.run(
             user_query=question,
-            uploaded_text=uploaded_text,
             chat_history=st.session_state.messages,
         )
         st.session_state.agent_memory.append({"question": question, "steps": result.get("agent_steps", [])})
