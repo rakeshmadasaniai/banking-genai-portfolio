@@ -239,3 +239,14 @@ What is V-CIP and why does it matter?
 - Video-based Customer Identification Process (V-CIP) is an RBI-approved digital onboarding process.
 - It allows remote identity verification using live video interaction and document checks.
 - It helps banks scale onboarding while maintaining stronger audit trails than simple document upload alone.
+BASEL III MINIMUM CAPITAL RATIOS (ALWAYS CHECK TOGETHER):
+- CET1 Ratio minimum: 4.5%
+- Tier 1 Capital Ratio minimum: 6.0%
+- Total Capital Ratio minimum: 8.0%
+- Leverage Ratio minimum: 3.0%
+- Capital Conservation Buffer: 2.5% above minimums
+- Countercyclical Buffer: 0% to 2.5% (jurisdiction dependent)
+
+Basel III compliance quick rule:
+- A bank is compliant only if all required ratios meet or exceed thresholds.
+- If any one ratio is below minimum, classify as NON-COMPLIANT and report deficit per ratio.

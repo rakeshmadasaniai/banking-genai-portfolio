@@ -219,6 +219,25 @@ TOOLS: list[dict] = [
     {
         "type": "function",
         "function": {
+            "name": "required_return_tool",
+            "description": (
+                "Calculate required annual return to reach a target from a principal over N years, "
+                "with feasibility assessment."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "principal": {"type": "number"},
+                    "target": {"type": "number"},
+                    "years": {"type": "integer"},
+                },
+                "required": ["principal", "target", "years"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "compliance_checker_tool",
             "description": (
                 "Check ratio-based compliance against frameworks such as Basel III and "
@@ -443,6 +462,41 @@ class AgenticRuntime:
             )
 
         trace.append({"step": "start", "label": "🧠 Intent analysis", "detail": user_query})
+
+        # Math preflight for required-return questions to prevent guess/loop behavior.
+        if self._is_math_planning_question(user_query):
+            parsed = self._parse_required_return_inputs(user_query)
+            if parsed:
+                rr = self._required_return_tool(
+                    principal=parsed["principal"],
+                    target=parsed["target"],
+                    years=parsed["years"],
+                )
+                tools_used.append("required_return_tool")
+                trace.append(
+                    {
+                        "step": "tool_call",
+                        "label": "🔧 required_return_tool",
+                        "detail": json.dumps(parsed, indent=2),
+                    }
+                )
+                trace.append(
+                    {
+                        "step": "observation",
+                        "label": "📋 Result: required_return_tool",
+                        "detail": json.dumps(rr)[:600],
+                    }
+                )
+                messages.append(
+                    {
+                        "role": "system",
+                        "content": (
+                            "Precomputed required return result for this math question: "
+                            + json.dumps(rr)
+                            + ". Use this result directly. Do not loop with 0% return guesses."
+                        ),
+                    }
+                )
 
         # ── Safety preflight for investment planning ──────────────────────────
         # This prevents the agent from fabricating a risk profile or producing
@@ -695,6 +749,7 @@ class AgenticRuntime:
             "risk_profile_tool":         self._risk_profile_tool,
             "portfolio_builder_tool":    self._portfolio_builder_tool,
             "return_projection_tool":    self._return_projection_tool,
+            "required_return_tool":      self._required_return_tool,
             "market_data_tool":          self.market_data_tool,
             "investor_regulation_tool":  self._investor_regulation_tool,
             "compliance_classifier_tool": self._compliance_classifier_tool,
@@ -838,6 +893,36 @@ class AgenticRuntime:
                     "Do not use equities, REITs, or long-duration instruments."
                 ),
                 "required_clarification": [],
+            }
+
+        life_events = {
+            "job_loss": ["lost my job", "lost job", "unemployed", "laid off", "fired", "redundant", "no income"],
+            "divorce": ["divorce", "separation", "separated"],
+            "medical": ["medical emergency", "hospital", "critical illness", "surgery"],
+            "inheritance": ["inherited", "inheritance", "windfall"],
+            "retirement_now": ["just retired", "retiring now", "retired now"],
+        }
+        detected_events = {event: any(k in text for k in keywords) for event, keywords in life_events.items()}
+        if detected_events.get("job_loss"):
+            return {
+                "status": "success",
+                "enough_information": True,
+                "risk_profile": "conservative",
+                "inferred_from": "life_event_job_loss",
+                "life_event": "job_loss",
+                "immediate_priority": "liquidity",
+                "signals": {
+                    "goal": "capital preservation",
+                    "liquidity_need": "high",
+                    "horizon_years": 1,
+                },
+                "agent_instruction": (
+                    "User lost their job. Prioritize emergency fund first, pause non-essential investing, "
+                    "and ask monthly expenses to size 6-12 months liquidity reserve."
+                ),
+                "required_clarification": [
+                    "What are your approximate monthly expenses so I can size an emergency fund first?"
+                ],
             }
 
         goal_map = {
@@ -1044,6 +1129,51 @@ class AgenticRuntime:
             "inflation_adjusted_future_value_usd": round(real_fv, 2),
             "assumed_inflation_rate_pct": 3.0,
             "note": "Projections are illustrative. Past performance does not guarantee future results.",
+        }
+
+    def _required_return_tool(self, principal: float, target: float, years: int) -> dict:
+        """Reverse calculator: required annual return from principal -> target in given years."""
+        try:
+            principal = float(principal)
+            target = float(target)
+            years = int(years)
+        except Exception:
+            return {"status": "error", "message": "Invalid inputs"}
+
+        if principal <= 0 or years <= 0 or target <= principal:
+            return {
+                "status": "error",
+                "message": "Inputs must satisfy principal>0, years>0, and target>principal.",
+            }
+
+        required_rate = (target / principal) ** (1 / years) - 1
+        required_pct = round(required_rate * 100, 2)
+
+        if required_pct > 50:
+            feasibility = "impossible"
+            assessment = "No legitimate diversified strategy can reliably sustain this return."
+        elif required_pct > 20:
+            feasibility = "extremely_high_risk"
+            assessment = "Only speculative paths could target this return with very high loss risk."
+        elif required_pct > 12:
+            feasibility = "aggressive"
+            assessment = "Above long-run equity averages and unlikely as a planning baseline."
+        else:
+            feasibility = "realistic"
+            assessment = "Potentially feasible with a suitable diversified strategy and risk tolerance."
+
+        realistic_10pct = round(principal * ((1.10) ** years), 2)
+
+        return {
+            "status": "success",
+            "principal": principal,
+            "target": target,
+            "years": years,
+            "required_annual_return_pct": required_pct,
+            "feasibility": feasibility,
+            "assessment": assessment,
+            "sp500_avg_return_pct": 10.0,
+            "realistic_10pct_projection": realistic_10pct,
         }
 
     def _investor_regulation_tool(
@@ -1481,6 +1611,7 @@ class AgenticRuntime:
         text = query.lower()
         math_terms = [
             "what return do i need",
+            "what return rate would i need",
             "required return",
             "can i retire",
             "how long to reach",
@@ -1489,10 +1620,35 @@ class AgenticRuntime:
         return any(t in text for t in math_terms)
 
     @staticmethod
+    def _parse_required_return_inputs(query: str) -> dict | None:
+        text = query.lower().replace(",", "")
+        money = [float(x) for x in re.findall(r"\$?\s*(\d+(?:\.\d+)?)", text)]
+        year_match = re.search(r"(\d+)\s*(year|years)", text)
+        years = int(year_match.group(1)) if year_match else None
+        if len(money) < 2 or not years:
+            return None
+        # Heuristic: smaller amount is principal, larger is target.
+        principal = min(money[0], money[1])
+        target = max(money[0], money[1])
+        if target <= principal:
+            return None
+        return {"principal": principal, "target": target, "years": years}
+
+    @staticmethod
     def _summarise_history(history: list[dict]) -> str:
-        """Return last 3 user turns as a compact summary."""
-        user_turns = [m["content"] for m in history if m.get("role") == "user"]
-        return " | ".join(user_turns[-3:]) if user_turns else ""
+        """Return compact profile/life-event summary without stale amount pollution."""
+        user_turns = [str(m["content"]) for m in history if m.get("role") == "user"]
+        if not user_turns:
+            return ""
+        keep_terms = [
+            "risk", "goal", "horizon", "retire", "retirement", "income",
+            "growth", "preservation", "job", "unemployed", "laid off",
+            "divorce", "medical", "inherit", "liquidity",
+        ]
+        filtered = [t for t in user_turns if any(k in t.lower() for k in keep_terms)]
+        if not filtered:
+            filtered = user_turns[-1:]
+        return " | ".join(filtered[-3:])
 
     @staticmethod
     def _score_confidence(answer: str, tools_used: list[str]) -> str:
