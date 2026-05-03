@@ -77,6 +77,15 @@ Rules:
     For questions like "what return do I need", "can I retire", "how long to reach X":
     call return_projection_tool first and compute required return scenarios.
     If required annual return > 15%, label it unrealistic and suggest alternatives.
+15. DECISION ENGINE RULES:
+    If the situation is obvious, do not ask unnecessary clarification.
+    You must make a clear decision for structuring/smurfing, sanctions-sensitive
+    flows, likely scams or unrealistic guaranteed returns, and compliance
+    override pressure.
+16. SCAM DETECTION RULE:
+    If a query mentions doubling money quickly, guaranteed high return, zero-risk,
+    or forex/crypto friend schemes, treat as likely scam and advise not to send
+    money until independently verified by licensed professionals.
 """.strip()
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -103,6 +112,24 @@ TOOLS: list[dict] = [
                     },
                 },
                 "required": ["query"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "decision_preflight_tool",
+            "description": (
+                "Detect obvious fraud, compliance, sanctions, structuring, math, or short-horizon "
+                "investment triggers before asking clarifying questions."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "user_query": {"type": "string"},
+                    "chat_history_summary": {"type": "string"},
+                },
+                "required": ["user_query"],
             },
         },
     },
@@ -471,6 +498,34 @@ class AgenticRuntime:
 
         trace.append({"step": "start", "label": "🧠 Intent analysis", "detail": user_query})
 
+        preflight = self._decision_preflight_tool(
+            user_query=user_query,
+            chat_history_summary=history_summary,
+        )
+        tools_used.append("decision_preflight_tool")
+        trace.append(
+            {
+                "step": "preflight",
+                "tool": "decision_preflight_tool",
+                "observation": preflight,
+            }
+        )
+        preflight_instruction = str(preflight.get("instruction", "") or "").strip()
+        preflight_action = str(preflight.get("action", "") or "").strip()
+        suppress_investment_clarification = preflight_action in {
+            "compliance_escalation",
+            "document_and_escalate",
+            "sanctions_review",
+            "refuse_high_risk_investment",
+        }
+        if preflight_instruction:
+            messages.append(
+                {
+                    "role": "system",
+                    "content": f"Decision preflight result: {preflight_instruction}",
+                }
+            )
+
         # Fast-path: high-risk AML crisis guidance (speed + reliability).
         if self._is_aml_crisis_query(user_query):
             latency_ms = round((time.perf_counter() - start) * 1000)
@@ -569,7 +624,7 @@ class AgenticRuntime:
         # ── Safety preflight for investment planning / life events ───────────
         # This prevents the agent from fabricating a risk profile or producing
         # a personalized portfolio when required user details are missing.
-        if investment_request or life_event_request:
+        if (investment_request and not suppress_investment_clarification) or life_event_request:
             risk_result = self._risk_profile_tool(
                 user_query=user_query,
                 chat_history_summary=history_summary,
@@ -903,6 +958,7 @@ class AgenticRuntime:
     def _execute_tool(self, tool_name: str, args: dict) -> Any:
         dispatch = {
             "retrieve_banking_context":  self._retrieve_banking_context,
+            "decision_preflight_tool":   self._decision_preflight_tool,
             "risk_profile_tool":         self._risk_profile_tool,
             "portfolio_builder_tool":    self._portfolio_builder_tool,
             "return_projection_tool":    self._return_projection_tool,
@@ -1005,6 +1061,88 @@ class AgenticRuntime:
             "context": context,
             "sources": ["Banking knowledge base (local fallback)"],
             "chunk_count": len(relevant),
+        }
+
+    def _decision_preflight_tool(self, user_query: str, chat_history_summary: str = "") -> dict:
+        text = f"{chat_history_summary}\n{user_query}".lower()
+
+        triggers: list[str] = []
+        action = ""
+        instruction = ""
+
+        if (
+            ("under $10,000" in text or "under 10000" in text or "just under" in text)
+            and any(w in text for w in ["transaction", "transactions", "cash", "deposit", "wire"])
+        ):
+            triggers.append("possible_structuring")
+            action = "compliance_escalation"
+            instruction = (
+                "Classify this as possible structuring/smurfing. Explain that repeated transactions "
+                "just below reporting thresholds are a red flag. Escalate to BSA/AML/compliance officer, "
+                "document facts, follow internal escalation policy, and consider SAR/STR review."
+            )
+
+        if any(p in text for p in ["manager told me to ignore", "told me to ignore", "ignore compliance issue"]):
+            triggers.append("manager_override_red_flag")
+            if not action:
+                action = "document_and_escalate"
+            instruction += (
+                " Also address manager override risk: document facts, use whistleblower/escalation channels, "
+                "and never bypass policy."
+            )
+
+        if any(w in text for w in ["iran", "sanction", "ofac", "blocked country", "embargo"]):
+            triggers.append("sanctions_screening")
+            action = "sanctions_review"
+            instruction = (
+                "Classify as sanctions-sensitive. Require OFAC screening, blocked-party checks, purpose "
+                "documentation, approved-channel requirements, and license/general-license review before any action."
+            )
+
+        if (
+            ("double" in text and any(w in text for w in ["3 months", "three months", "90 days", "month"]))
+            or ("guaranteed" in text and any(w in text for w in ["20%", "zero risk", "risk-free", "return"]))
+            or any(w in text for w in ["forex", "crypto scheme", "trading signal"])
+        ):
+            triggers.append("likely_investment_scam")
+            action = "refuse_high_risk_investment"
+            instruction = (
+                "Treat this as likely scam or extremely high-risk speculation. Do not ask risk tolerance. "
+                "Advise not to send money based on this claim. Explain that doubling money in months is unrealistic."
+            )
+
+        math_terms = ["how much will i have", "future value", "at 65", "retire", "retirement", "return do i need"]
+        if any(t in text for t in math_terms) and any(ch.isdigit() for ch in text):
+            triggers.append("math_routing_required")
+            if not action:
+                action = "calculate"
+            instruction += (
+                " Use return projection/required return tools immediately. If age appears in history, use it and "
+                "do not ask for age again."
+            )
+
+        age = None
+        for pattern in (r"i am (\d{2})", r"i'm (\d{2})", r"(\d{2})\s*years?\s*old", r"age\s*(\d{2})"):
+            m = re.search(pattern, text)
+            if m:
+                age = int(m.group(1))
+                break
+        if age is not None and age >= 65:
+            triggers.append("retirement_age")
+            if not action:
+                action = "retirement_preservation_framework"
+            instruction += (
+                f" User is {age}; treat as retirement-stage planning unless contradicted and use "
+                "conservative/moderate-conservative educational framework."
+            )
+
+        return {
+            "status": "success",
+            "triggers": triggers,
+            "action": action,
+            "should_ask_clarification": len(triggers) == 0,
+            "instruction": instruction.strip(),
+            "age": age,
         }
 
     def _risk_profile_tool(
