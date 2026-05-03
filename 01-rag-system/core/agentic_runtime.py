@@ -591,6 +591,40 @@ class AgenticRuntime:
             })
 
             # Life-event override: respond with immediate action-first guidance.
+            if risk_result.get("life_event") == "medical_terminal":
+                latency_ms = round((time.perf_counter() - start) * 1000)
+                return {
+                    "answer": (
+                        "I’m very sorry you’re facing this. Focus on an urgent 30-day estate plan.\n\n"
+                        "Week 1:\n"
+                        "1. Estate attorney today; draft/sign will.\n"
+                        "2. Durable POA + healthcare directive.\n"
+                        "3. Update beneficiaries across all accounts.\n\n"
+                        "Week 2:\n"
+                        "4. FDIC concentration review for $2,500,000 (multi-bank distribution needed).\n"
+                        "5. Set 12-18 month liquidity reserve for household/care costs.\n\n"
+                        "Week 3:\n"
+                        "6. Mortgage strategy review ($1,200,000 payoff vs liquidity needs).\n"
+                        "7. Inheritance transfer checklist for both children.\n\n"
+                        "Week 4:\n"
+                        "8. Finalize and store all signed documents with executors.\n"
+                        "9. Create family instruction sheet (accounts, advisors, contacts).\n\n"
+                        "⚠️ Educational scenario only. Not personalized financial, legal, or investment advice."
+                    ),
+                    "trace": trace + [{
+                        "step": "complete",
+                        "label": "Life-event override applied",
+                        "detail": "Medical terminal path prioritized 30-day estate and legal actions.",
+                    }],
+                    "tools_used": tools_used,
+                    "confidence": "High",
+                    "confidence_score_pct": 95,
+                    "latency_ms": latency_ms,
+                    "requires_clarification": False,
+                    "clarification_questions": [],
+                    "evidence_count": len(self._evidence_buffer),
+                }
+
             if risk_result.get("life_event") == "job_loss":
                 latency_ms = round((time.perf_counter() - start) * 1000)
                 return {
@@ -1021,11 +1055,36 @@ class AgenticRuntime:
         life_events = {
             "job_loss": ["lost my job", "lost job", "unemployed", "laid off", "fired", "redundant", "no income"],
             "divorce": ["divorce", "separation", "separated"],
+            "medical_terminal": [
+                "terminal", "terminally ill", "diagnosed", "illness",
+                "months to live", "cancer", "medical emergency",
+                "critically ill", "hospice", "end of life",
+            ],
             "medical": ["medical emergency", "hospital", "critical illness", "surgery"],
             "inheritance": ["inherited", "inheritance", "windfall"],
             "retirement_now": ["just retired", "retiring now", "retired now"],
         }
         detected_events = {event: any(k in text for k in keywords) for event, keywords in life_events.items()}
+        if detected_events.get("medical_terminal"):
+            return {
+                "status": "success",
+                "enough_information": True,
+                "risk_profile": "conservative",
+                "inferred_from": "life_event_medical_terminal",
+                "life_event": "medical_terminal",
+                "immediate_priority": "estate_legal_urgency",
+                "signals": {
+                    "goal": "capital preservation and family transfer",
+                    "liquidity_need": "high",
+                    "horizon_years": 1,
+                },
+                "agent_instruction": (
+                    "URGENT estate-planning mode. Do not ask risk profile. "
+                    "Prioritize attorney, will, POA, beneficiary updates, FDIC concentration review, "
+                    "and mortgage/payoff decision path."
+                ),
+                "required_clarification": [],
+            }
         if detected_events.get("job_loss"):
             return {
                 "status": "success",
@@ -1721,6 +1780,8 @@ class AgenticRuntime:
             "lost my job", "unemployed", "laid off", "fired", "redundant",
             "divorce", "divorcing", "separated", "getting divorced",
             "medical emergency", "hospital", "inheritance", "windfall",
+            "terminal", "terminally ill", "months to live", "hospice",
+            "end of life", "diagnosed",
         ]
         return any(t in text for t in life_terms)
 
