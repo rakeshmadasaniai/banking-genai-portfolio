@@ -430,6 +430,14 @@ class AgenticRuntime:
         requires_retrieval = self._requires_regulatory_retrieval(user_query)
         comparison_request = self._is_comparison_question(user_query)
         math_first_request = self._is_math_planning_question(user_query)
+        investment_request = self._looks_like_investment_request(user_query)
+        life_event_request = self._looks_like_life_event_query(user_query)
+        simple_query = self._is_simple_query(user_query)
+
+        # Adaptive latency profile: keep quality for complex tasks, speed up simple ones.
+        loop_max_steps = 4 if simple_query else self.MAX_STEPS
+        response_max_tokens = 700 if simple_query else 1200
+        should_verify = not simple_query
         if requires_retrieval:
             messages.append(
                 {
@@ -561,7 +569,7 @@ class AgenticRuntime:
         # ── Safety preflight for investment planning / life events ───────────
         # This prevents the agent from fabricating a risk profile or producing
         # a personalized portfolio when required user details are missing.
-        if self._looks_like_investment_request(user_query) or self._looks_like_life_event_query(user_query):
+        if investment_request or life_event_request:
             risk_result = self._risk_profile_tool(
                 user_query=user_query,
                 chat_history_summary=history_summary,
@@ -672,7 +680,7 @@ class AgenticRuntime:
         max_self_corrections = 1
         verify_snapshot: dict[str, Any] | None = None
 
-        while steps < self.MAX_STEPS:
+        while steps < loop_max_steps:
             steps += 1
 
             try:
@@ -682,7 +690,7 @@ class AgenticRuntime:
                     tools=TOOLS,
                     tool_choice="auto",
                     temperature=0.0,
-                    max_tokens=1200,
+                    max_tokens=response_max_tokens,
                 )
             except Exception as exc:
                 return self._fallback(user_query, f"OpenAI error: {exc}")
@@ -711,7 +719,7 @@ class AgenticRuntime:
                     )
                     final_answer = None
                     continue
-                if final_answer and hasattr(self, "_evidence_buffer") and self._evidence_buffer:
+                if should_verify and final_answer and hasattr(self, "_evidence_buffer") and self._evidence_buffer:
                     verify_result = self._verification_tool(
                         draft_answer=final_answer,
                         evidence_summary=" ".join(self._evidence_buffer)
@@ -1766,6 +1774,18 @@ class AgenticRuntime:
             any(k in text for k in ["write", "draft", "create"])
             and "aml policy" in text
         )
+
+    @staticmethod
+    def _is_simple_query(query: str) -> bool:
+        text = query.lower().strip()
+        if len(text.split()) <= 10:
+            return True
+        complex_terms = [
+            "compare", "jurisdiction", "policy", "audit", "compliance", "basel",
+            "retire", "portfolio", "invest", "crypto", "lending", "payments",
+            "fraud", "pep", "cayman", "48 hours", "action plan",
+        ]
+        return not any(t in text for t in complex_terms)
 
     @staticmethod
     def _build_licensing_matrix_response() -> str:
