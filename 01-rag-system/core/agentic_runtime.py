@@ -1082,7 +1082,15 @@ class AgenticRuntime:
                 "document facts, follow internal escalation policy, and consider SAR/STR review."
             )
 
-        if any(p in text for p in ["manager told me to ignore", "told me to ignore", "ignore compliance issue"]):
+        if any(
+            p in text
+            for p in [
+                "manager told me to ignore",
+                "manager said ignore",
+                "told me to ignore",
+                "ignore compliance issue",
+            ]
+        ):
             triggers.append("manager_override_red_flag")
             if not action:
                 action = "document_and_escalate"

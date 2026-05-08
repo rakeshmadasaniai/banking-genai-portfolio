@@ -1,0 +1,40 @@
+name: Quality Gates
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  test-and-compile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install minimal deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install streamlit openai
+
+      - name: Syntax compile
+        run: |
+          python -m py_compile \
+            01-rag-system/core/agentic_runtime.py \
+            01-rag-system/core/product_runtime.py \
+            01-rag-system/app.py
+
+      - name: Decision regression tests
+        working-directory: 01-rag-system
+        run: |
+          python -m unittest discover -s tests -p "test_*.py"
+
+      - name: Generate portfolio report
+        run: |
+          python 01-rag-system/evaluation/generate_portfolio_report.py

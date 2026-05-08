@@ -25,6 +25,14 @@ I did not want this to be a one-screen chatbot demo. I wanted it to behave like 
 - multilingual enough for broader banking users
 - strong enough to discuss as an engineering system, not just a UI
 
+## World-Class Execution Plan
+
+I maintain a concrete week-by-week delivery plan in:
+
+- [`WORLDCLASS_WEEK1_TO_WEEK6.md`](WORLDCLASS_WEEK1_TO_WEEK6.md)
+
+This is the operating plan used to move the project from strong prototype quality to production-grade architecture, reliability, governance, and distribution.
+
 ## Live Product
 
 - **Live app:** [banking-finance-rag](https://huggingface.co/spaces/RakeshMadasani/banking-finance-rag)
@@ -204,6 +212,26 @@ The committed snapshot is intentionally honest about the environment it was run 
 - the Fine-Tuned and Auto paths still completed and produced auditable CSV/JSON artifacts
 
 I prefer showing that reality instead of pretending every backend was active in every run. A reviewer can open the raw result files, see which rows were available, and rerun the exact same packs in a fully configured environment.
+
+### Portfolio report generator
+
+To generate a single recruiter-friendly report from committed summary artifacts:
+
+- `python 01-rag-system/evaluation/generate_portfolio_report.py`
+- Output: `01-rag-system/evaluation/reports/latest_portfolio_report.md`
+
+This keeps the published numbers traceable and reproducible.
+
+### Regression tests for decision-critical behavior
+
+I also added deterministic tests for high-risk agent decisions:
+
+- `01-rag-system/tests/test_agentic_decision_engine.py`
+
+Run locally:
+
+- `cd 01-rag-system`
+- `python -m unittest discover -s tests -p "test_*.py"`
 
 ### Why I kept the raw result files
 
