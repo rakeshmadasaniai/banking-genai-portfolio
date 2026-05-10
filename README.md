@@ -1,5 +1,5 @@
 ---
-title: Banking & Finance AI Copilot
+title: Autonomous Banking & Finance AI Agent
 emoji: 🌎
 colorFrom: blue
 colorTo: indigo
@@ -10,10 +10,10 @@ app_file: 01-rag-system/app.py
 pinned: false
 ---
 
-# Banking & Finance GenAI Portfolio
+# Autonomous Banking & Finance AI Agent Portfolio
 
 **Rakesh Madasani**  
-[Live Banking & Finance Copilot](https://huggingface.co/spaces/RakeshMadasani/banking-finance-rag) | [Hugging Face Profile](https://huggingface.co/RakeshMadasani) | [GitHub](https://github.com/rakeshmadasaniai/banking-genai-portfolio) | [LinkedIn](https://www.linkedin.com/in/rakesh-madasani-b217b71b0/)
+[Live Autonomous Banking & Finance AI Agent](https://huggingface.co/spaces/RakeshMadasani/banking-finance-rag) | [Hugging Face Profile](https://huggingface.co/RakeshMadasani) | [GitHub](https://github.com/rakeshmadasaniai/banking-genai-portfolio) | [LinkedIn](https://www.linkedin.com/in/rakesh-madasani-b217b71b0/)
 
 This repository is the full build story behind my Banking & Finance Copilot: a live grounded AI product focused on USA and India banking, compliance, AML, KYC, FDIC, Basel III, and RBI workflows.
 

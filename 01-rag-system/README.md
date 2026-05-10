@@ -1,4 +1,4 @@
-# Banking & Finance Copilot
+# Autonomous Banking & Finance AI Agent
 
 Banking & Finance Copilot is a grounded AI product for USA and India banking, compliance, and financial intelligence. It combines retrieval over curated banking material with multiple model paths, source-backed answer cards, uploads, multilingual support, and evaluation workflows that are committed in the repo alongside the app itself.
 
