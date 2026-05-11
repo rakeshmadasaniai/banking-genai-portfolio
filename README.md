@@ -30,6 +30,7 @@ I did not want this to be a one-screen chatbot demo. I wanted it to behave like 
 I maintain a concrete week-by-week delivery plan in:
 
 - [`WORLDCLASS_WEEK1_TO_WEEK6.md`](WORLDCLASS_WEEK1_TO_WEEK6.md)
+- [`AUTONOMY_EVALUATION.md`](AUTONOMY_EVALUATION.md)
 
 This is the operating plan used to move the project from strong prototype quality to production-grade architecture, reliability, governance, and distribution.
 

@@ -136,6 +136,7 @@ Supporting scripts:
 - `summarize_eval_sets.py`
 
 Latest committed result snapshots live in [`evaluation/results`](./evaluation/results).
+Autonomy audit for current release is tracked in [`../AUTONOMY_EVALUATION.md`](../AUTONOMY_EVALUATION.md).
 
 ### Latest committed summaries
 
