@@ -94,8 +94,8 @@ html, body, [data-testid="stAppViewContainer"]{background:var(--bg)!important;co
 .meta-pill{font-size:11px;font-weight:900;border-radius:999px;padding:5px 10px;border:1px solid var(--border);background:#F8FBFF;color:#123A6F}
 .meta-pill.green{background:#ECFDF5;color:#047857;border-color:#BBF7D0}
 .starter-label{margin:6px 0 8px;color:#123A6F;font-size:13px;font-weight:900}
-.composer-shell-static{position:fixed!important;left:calc(var(--composer-left, 316px) + 8px)!important;right:8px!important;bottom:8px!important;z-index:85!important;background:#FFF!important;border:1px solid rgba(37,99,235,.14)!important;border-radius:16px!important;box-shadow:0 12px 30px rgba(15,23,42,.08)!important;padding:8px 10px!important;margin:0!important}
-.composer-shell form{border:none!important;background:transparent!important}
+.composer-shell-static{position:fixed!important;left:calc(var(--composer-left, 316px) + 8px)!important;right:8px!important;bottom:8px!important;top:auto!important;transform:none!important;z-index:2147483000!important;background:#FFF!important;border:1px solid rgba(37,99,235,.14)!important;border-radius:16px!important;box-shadow:0 12px 30px rgba(15,23,42,.08)!important;padding:8px 10px!important;margin:0!important}
+.composer-shell-static form{border:none!important;background:transparent!important}
 .composer-marker{display:none!important}
 .composer-pending{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
 .composer-ready{visibility:visible!important;opacity:1!important;pointer-events:auto!important}
@@ -371,14 +371,23 @@ def enforce_composer_pin() -> None:
     const shell = doc.querySelector(".composer-shell-static");
     if (!shell) return false;
     const sidebar = doc.querySelector('[data-testid="stSidebar"]');
-    const isMobile = Math.min(window.innerWidth || 0, doc.documentElement.clientWidth || 0) <= 1100;
+    const viewportWidth = Math.min(window.innerWidth || 0, doc.documentElement.clientWidth || 0);
+    const isMobile = viewportWidth <= 1100;
     const left = (!isMobile && sidebar) ? Math.max(300, Math.round(sidebar.getBoundingClientRect().width)) : 0;
     doc.documentElement.style.setProperty("--composer-left", String(left) + "px");
-    shell.style.position = "fixed";
-    shell.style.bottom = "8px";
-    shell.style.right = "8px";
-    shell.style.left = (isMobile ? "8px" : `calc(${left}px + 8px)`);
-    shell.style.zIndex = "90";
+    shell.style.cssText = [
+      "position:fixed !important",
+      "bottom:8px !important",
+      "top:auto !important",
+      "right:8px !important",
+      `left:${isMobile ? "8px" : `calc(${left}px + 8px)`} !important`,
+      "transform:none !important",
+      "margin:0 !important",
+      "z-index:2147483000 !important"
+    ].join(";");
+    if (doc.body) {
+      doc.body.style.paddingBottom = "124px";
+    }
     shell.classList.add("composer-ready");
     return true;
   }
@@ -391,7 +400,7 @@ def enforce_composer_pin() -> None:
   window.addEventListener("resize", pinComposer);
   window.addEventListener("scroll", pinComposer, { passive: true });
   const observer = new MutationObserver(() => pinComposer());
-  observer.observe(doc.body, { childList: true, subtree: true });
+  if (doc.body) observer.observe(doc.body, { childList: true, subtree: true, attributes: true });
   setTimeout(pinComposer, 300);
 })();
 </script>
