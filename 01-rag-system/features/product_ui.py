@@ -22,12 +22,12 @@ STARTER_PROMPTS = [
 ]
 
 TECH_ITEMS = [
-    ("\U0001F916", "LLM", "OpenAI / Fine-Tuned Model"),
-    ("\U0001F9E0", "Embeddings", "text-embedding-3"),
-    ("\U0001F5C2", "Vector DB", "FAISS / Hybrid"),
-    ("\U0001F517", "Framework", "LangChain"),
+    ("\U0001F9E0", "Agent Runtime", "Autonomous Max + Tool Loop"),
+    ("\U0001F916", "LLM", "OpenAI Function Calling"),
+    ("\U0001F5C2", "Retrieval", "FAISS + Hybrid Context"),
+    ("\U0001F517", "Orchestration", "Decision Preflight + Verification"),
     ("\U0001F5A5", "UI", "Streamlit"),
-    ("\u2699", "Infra", "Python / FastAPI"),
+    ("\u2699", "Infra", "Python + Persistent Task Queue"),
 ]
 
 
@@ -157,7 +157,7 @@ def render_homepage_product_intro() -> None:
           <div class="product-info-grid">
             <div class="info-card">
               <div class="info-title">About this Copilot</div>
-              <div class="info-copy">A product-grade AI assistant for banking and finance professionals. Ask questions, upload documents, and review grounded answers with confidence signals and transparent sources.</div>
+              <div class="info-copy">An autonomous banking AI agent built for real operations: it plans, calls tools, verifies groundedness, self-corrects, and logs policy decisions. It supports multilingual Q&amp;A, document workflows, and persistent autonomous background tasks with auditable execution traces.</div>
             </div>
             <div class="info-card">
               <div class="info-title">Tech Stack</div>
@@ -212,7 +212,6 @@ def render_sidebar_brand() -> None:
 def render_sidebar_summary(base_doc_count: int, upload_doc_count: int, upload_chunk_count: int) -> None:
     st.markdown(
         f"""
-        <div style="font-size:12px;color:#48618A;padding:4px 0;display:grid;grid-template-columns:1fr auto;gap:8px;"><span>Base files</span><strong style="color:#123A6F;">{base_doc_count}</strong></div>
         <div style="font-size:12px;color:#48618A;padding:4px 0;display:grid;grid-template-columns:1fr auto;gap:8px;"><span>Uploaded docs</span><strong style="color:#123A6F;">{upload_doc_count}</strong></div>
         <div style="font-size:12px;color:#48618A;padding:4px 0;display:grid;grid-template-columns:1fr auto;gap:8px;"><span>Uploaded chunks</span><strong style="color:#123A6F;">{upload_chunk_count}</strong></div>
         """,
@@ -372,9 +371,15 @@ def enforce_composer_pin() -> None:
     const shell = doc.querySelector(".composer-shell-static");
     if (!shell) return false;
     const sidebar = doc.querySelector('[data-testid="stSidebar"]');
-    const isMobile = window.innerWidth <= 1100;
+    const isMobile = Math.min(window.innerWidth || 0, doc.documentElement.clientWidth || 0) <= 1100;
     const left = (!isMobile && sidebar) ? Math.max(300, Math.round(sidebar.getBoundingClientRect().width)) : 0;
     doc.documentElement.style.setProperty("--composer-left", String(left) + "px");
+    shell.style.position = "fixed";
+    shell.style.bottom = "8px";
+    shell.style.right = "8px";
+    shell.style.left = (isMobile ? "8px" : `calc(${left}px + 8px)`);
+    shell.style.zIndex = "90";
+    shell.classList.add("composer-ready");
     return true;
   }
 
@@ -384,6 +389,9 @@ def enforce_composer_pin() -> None:
     if (pinComposer() || n > 40) clearInterval(t);
   }, 80);
   window.addEventListener("resize", pinComposer);
+  window.addEventListener("scroll", pinComposer, { passive: true });
+  const observer = new MutationObserver(() => pinComposer());
+  observer.observe(doc.body, { childList: true, subtree: true });
   setTimeout(pinComposer, 300);
 })();
 </script>
