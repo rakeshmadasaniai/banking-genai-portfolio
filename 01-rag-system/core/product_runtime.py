@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 import time
 from typing import Any
+from datetime import datetime, timezone
+from uuid import uuid4
 
 import streamlit as st
 
@@ -44,6 +46,8 @@ MODEL_DESCRIPTIONS = {
     "Agentic Workspace": "Tool-calling agent that plans, retrieves, analyzes, verifies, and answers with execution trace.",
 }
 AGENT_MEMORY_PATH = Path(__file__).resolve().parent.parent / "data" / "agent_memory.json"
+AUTONOMOUS_QUEUE_PATH = Path(__file__).resolve().parent.parent / "data" / "autonomous_queue.json"
+AUTONOMOUS_AUDIT_PATH = Path(__file__).resolve().parent.parent / "data" / "autonomous_audit_log.jsonl"
 
 
 def _chat_title(messages: list[dict[str, Any]]) -> str:
@@ -112,6 +116,10 @@ def _ensure_state() -> None:
         st.session_state.model_mode = "Autonomous Max"
     if "agent_memory" not in st.session_state:
         st.session_state.agent_memory = _load_agent_memory()
+    if "autonomous_queue" not in st.session_state:
+        st.session_state.autonomous_queue = _load_autonomous_queue()
+    if "autonomous_loop_enabled" not in st.session_state:
+        st.session_state.autonomous_loop_enabled = False
 
 
 def _load_agent_memory() -> list[dict[str, Any]]:
@@ -129,6 +137,52 @@ def _persist_agent_memory(memory: list[dict[str, Any]]) -> None:
         AGENT_MEMORY_PATH.write_text(json.dumps(memory[-250:], ensure_ascii=False, indent=2), encoding="utf-8")
     except Exception:
         pass
+
+
+def _load_autonomous_queue() -> list[dict[str, Any]]:
+    try:
+        if AUTONOMOUS_QUEUE_PATH.exists():
+            data = json.loads(AUTONOMOUS_QUEUE_PATH.read_text(encoding="utf-8"))
+            if isinstance(data, list):
+                return data
+    except Exception:
+        return []
+    return []
+
+
+def _persist_autonomous_queue(queue: list[dict[str, Any]]) -> None:
+    try:
+        AUTONOMOUS_QUEUE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        AUTONOMOUS_QUEUE_PATH.write_text(
+            json.dumps(queue[-500:], ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+    except Exception:
+        pass
+
+
+def _append_autonomous_audit(event: dict[str, Any]) -> None:
+    try:
+        AUTONOMOUS_AUDIT_PATH.parent.mkdir(parents=True, exist_ok=True)
+        payload = dict(event)
+        payload["logged_at_utc"] = datetime.now(timezone.utc).isoformat()
+        with AUTONOMOUS_AUDIT_PATH.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(payload, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
+
+
+def _policy_decision_from_result(question: str, result: dict[str, Any]) -> str:
+    q = question.lower()
+    triggers = {"sanction", "ofac", "iran", "structuring", "smurf", "pep", "aml", "sar"}
+    if any(t in q for t in triggers):
+        return "escalation_required"
+    confidence = str(result.get("confidence", "Moderate"))
+    if confidence == "Low":
+        return "human_review_recommended"
+    if result.get("requires_clarification"):
+        return "needs_more_input"
+    return "auto_completed"
 
 
 def _response_profile(question: str) -> str:
@@ -218,6 +272,34 @@ def _run_selected_model(question: str, retrieval: dict, mode: str) -> dict:
     return run_auto_mode(question, retrieval, uploaded_images=images)
 
 
+def _run_autonomous_task(task: dict[str, Any], base_index) -> dict[str, Any]:
+    question = str(task.get("question", "")).strip()
+    if not question:
+        return {"status": "skipped", "reason": "empty_question"}
+    retrieval = retrieve_shared_context(question, base_index, st.session_state.upload_index)
+    result = _run_selected_model(question, retrieval, "Autonomous Max")
+    policy_decision = _policy_decision_from_result(question, result)
+    _append_autonomous_audit(
+        {
+            "task_id": task.get("id"),
+            "task_label": task.get("label"),
+            "question": question,
+            "mode": "Autonomous Max",
+            "policy_decision": policy_decision,
+            "confidence": result.get("confidence"),
+            "latency_ms": result.get("latency_ms"),
+            "tools_used": result.get("tools_used", []),
+            "requires_clarification": result.get("requires_clarification", False),
+        }
+    )
+    return {
+        "status": "completed",
+        "result": result,
+        "retrieval": retrieval,
+        "policy_decision": policy_decision,
+    }
+
+
 def run_product_runtime() -> None:
     st.set_page_config(page_title="Banking & Finance Copilot", page_icon="🌍", layout="wide", initial_sidebar_state="expanded")
     _ensure_state()
@@ -271,6 +353,42 @@ def run_product_runtime() -> None:
             st.session_state.model_mode = mode
             st.session_state.composer_model_mode = mode
             st.caption(MODEL_DESCRIPTIONS[mode])
+            st.markdown('<div class="sidebar-section-label">Autonomous Ops</div>', unsafe_allow_html=True)
+            st.session_state.autonomous_loop_enabled = st.toggle(
+                "Autonomous background execution",
+                value=bool(st.session_state.autonomous_loop_enabled),
+                key="autonomous_loop_toggle",
+            )
+            task_label = st.text_input(
+                "Task label",
+                value="",
+                placeholder="Example: Daily compliance sweep",
+                key="autonomous_task_label",
+            )
+            task_question = st.text_area(
+                "Autonomous task prompt",
+                value="",
+                placeholder="Describe the task the autonomous agent should run.",
+                height=80,
+                key="autonomous_task_prompt",
+            )
+            if st.button("Queue autonomous task", use_container_width=True, key="queue_autonomous_task_btn"):
+                if task_question.strip():
+                    st.session_state.autonomous_queue.append(
+                        {
+                            "id": f"task-{uuid4().hex[:12]}",
+                            "label": task_label.strip() or "Autonomous Task",
+                            "question": task_question.strip(),
+                            "status": "pending",
+                            "created_at_utc": datetime.now(timezone.utc).isoformat(),
+                        }
+                    )
+                    _persist_autonomous_queue(st.session_state.autonomous_queue)
+                    st.success("Autonomous task queued.")
+                else:
+                    st.warning("Add a task prompt before queueing.")
+            pending_count = sum(1 for t in st.session_state.autonomous_queue if t.get("status") == "pending")
+            st.caption(f"Pending autonomous tasks: {pending_count}")
             accessibility = render_accessibility_controls()
             show_source_cards = st.toggle("Show source cards", value=False)
             show_auto_comparison = st.toggle("Auto mode comparison", value=False)
@@ -302,6 +420,59 @@ def run_product_runtime() -> None:
                 show_source_cards=show_source_cards,
                 show_auto_comparison=show_auto_comparison,
             )
+
+    if (
+        st.session_state.get("autonomous_loop_enabled")
+        and not st.session_state.get("pending_question")
+        and st.session_state.get("autonomous_queue")
+    ):
+        pending_idx = next(
+            (idx for idx, task in enumerate(st.session_state.autonomous_queue) if task.get("status") == "pending"),
+            None,
+        )
+        if pending_idx is not None:
+            task = st.session_state.autonomous_queue[pending_idx]
+            task["status"] = "running"
+            task["started_at_utc"] = datetime.now(timezone.utc).isoformat()
+            _persist_autonomous_queue(st.session_state.autonomous_queue)
+            if base_index is None:
+                base_index = get_base_index()
+            render_user_message(f"[Autonomous Task] {task.get('label', 'Task')}: {task.get('question', '')}")
+            render_assistant_thinking()
+            task_outcome = _run_autonomous_task(task, base_index)
+            if task_outcome.get("status") == "completed":
+                result = task_outcome["result"]
+                retrieval = task_outcome["retrieval"]
+                policy_decision = task_outcome["policy_decision"]
+                assistant_msg = {
+                    "role": "assistant",
+                    "answer": result.get("answer", ""),
+                    "backend": result.get("backend", "Autonomous Max"),
+                    "latency_ms": result.get("latency_ms", 0),
+                    "retrieved_chunks": retrieval.get("retrieved_chunks", 0),
+                    "sources": retrieval.get("sources", []),
+                    "source_cards": retrieval.get("source_cards", []),
+                    "confidence": result.get("confidence", "Moderate"),
+                    "comparison": result.get("comparison"),
+                    "route_reason": result.get("route_reason"),
+                    "selection_reason": f"Autonomous task execution ({policy_decision}).",
+                    "candidate_scores": result.get("candidate_scores"),
+                    "agent_steps": result.get("agent_steps") or result.get("trace") or [],
+                    "agent_observations": result.get("agent_observations") or result.get("trace") or [],
+                    "voice_lang_hint": result.get("language", detect_input_language(task.get("question", ""))),
+                }
+                st.session_state.messages.append({"role": "user", "content": f"[Autonomous Task] {task.get('question', '')}"})
+                st.session_state.messages.append(assistant_msg)
+                task["status"] = "completed"
+                task["completed_at_utc"] = datetime.now(timezone.utc).isoformat()
+                task["policy_decision"] = policy_decision
+            else:
+                task["status"] = "failed"
+                task["failure_reason"] = task_outcome.get("reason", "unknown")
+                task["completed_at_utc"] = datetime.now(timezone.utc).isoformat()
+            _persist_autonomous_queue(st.session_state.autonomous_queue)
+            _save_active_chat()
+            st.rerun()
 
     # Process deferred generation so the user message appears in history above composer.
     pending_question = st.session_state.get("pending_question")
