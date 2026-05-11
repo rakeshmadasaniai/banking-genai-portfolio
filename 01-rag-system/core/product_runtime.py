@@ -34,9 +34,10 @@ from models.autonomous_agent import run_autonomous_agent
 from models.finetuned_mode import generate_finetuned_response
 from models.openai_mode import generate_openai_response
 
-MODEL_MODES = ["OpenAI", "Fine-Tuned", "Auto", "Agentic Workspace"]
+MODEL_MODES = ["Autonomous Max", "OpenAI", "Fine-Tuned", "Auto", "Agentic Workspace"]
 
 MODEL_DESCRIPTIONS = {
+    "Autonomous Max": "Fully autonomous supervisor mode: resolves missing inputs with explicit assumptions and continues execution.",
     "OpenAI": "Most stable live mode for grounded financial answers.",
     "Fine-Tuned": "Domain-adapted banking model path for specialized tone and phrasing.",
     "Auto": "Selects the strongest grounded answer across available model paths.",
@@ -98,7 +99,7 @@ def _ensure_state() -> None:
         "upload_chunk_count": 0,
         "uploaded_docs": [],
         "uploaded_images": [],
-        "model_mode": "Agentic Workspace",
+        "model_mode": "Autonomous Max",
         "pending_question": "",
         "last_voice_lang": "",
     }
@@ -108,7 +109,7 @@ def _ensure_state() -> None:
     if st.session_state.model_mode == "Autonomous Agent":
         st.session_state.model_mode = "Agentic Workspace"
     if st.session_state.model_mode not in MODEL_MODES:
-        st.session_state.model_mode = "Agentic Workspace"
+        st.session_state.model_mode = "Autonomous Max"
     if "agent_memory" not in st.session_state:
         st.session_state.agent_memory = _load_agent_memory()
 
@@ -169,6 +170,22 @@ def _run_selected_model(question: str, retrieval: dict, mode: str) -> dict:
             response_language=response_language,
             response_profile=response_profile,
         )
+    if mode == "Autonomous Max":
+        agent = AgenticRuntime(
+            retriever=lambda q, top_k=5: retrieve_shared_context(
+                q, get_base_index(), st.session_state.upload_index
+            ),
+            uploaded_docs=st.session_state.get("uploaded_docs", []),
+        )
+        result = agent.run_fully_autonomous(
+            user_query=question,
+            chat_history=st.session_state.messages,
+        )
+        trace_steps = result.get("agent_steps") or result.get("trace") or []
+        st.session_state.agent_memory.append({"question": question, "steps": trace_steps})
+        _persist_agent_memory(st.session_state.agent_memory)
+        return result
+
     if mode == "Agentic Workspace":
         agent = AgenticRuntime(
             retriever=lambda q, top_k=5: retrieve_shared_context(

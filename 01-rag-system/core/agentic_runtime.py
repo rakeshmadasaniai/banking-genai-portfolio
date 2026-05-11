@@ -953,6 +953,67 @@ class AgenticRuntime:
             "evidence_count": len(self._evidence_buffer),
         }
 
+    def run_fully_autonomous(
+        self,
+        user_query: str,
+        chat_history: list[dict] | None = None,
+    ) -> dict:
+        """
+        Autonomous supervisor wrapper:
+        - Runs normal agent flow first.
+        - If the agent asks clarifications, auto-resolves with explicit assumptions
+          and re-runs in the same tool-calling architecture.
+        """
+        first = self.run(user_query=user_query, chat_history=chat_history)
+        if not first.get("requires_clarification"):
+            first["backend"] = "Autonomous Max"
+            return first
+
+        clarification_questions = first.get("clarification_questions", []) or []
+        assumptions = (
+            "Autonomous supervisor assumptions (explicit): "
+            "risk_profile=moderate, investment_goal=long_term_growth, "
+            "liquidity_need=medium unless short-horizon detected, "
+            "investment_horizon=10_years unless user stated otherwise. "
+            "If compliance/sanctions/scam signals are present, prioritize safety escalation over investment planning."
+        )
+        augmented_query = (
+            f"{user_query}\n\n"
+            f"{assumptions}\n"
+            "Do not ask follow-up clarification questions. "
+            "Proceed with these assumptions, show them briefly, then produce the best grounded answer.\n"
+            f"Unresolved questions to auto-resolve: {clarification_questions}"
+        )
+        second_history = list(chat_history or [])
+        second_history.append({"role": "user", "content": user_query})
+        second_history.append(
+            {
+                "role": "assistant",
+                "content": "Supervisor note: continuing autonomously with explicit assumptions.",
+            }
+        )
+
+        second = self.run(user_query=augmented_query, chat_history=second_history)
+        second_trace = second.get("trace", []) or []
+        supervisor_trace = [
+            {
+                "step": "supervisor",
+                "tool": "autonomous_supervisor",
+                "observation": "Clarification was required; supervisor injected explicit assumptions and resumed autonomous execution.",
+            }
+        ]
+        second["trace"] = supervisor_trace + second_trace
+        second["backend"] = "Autonomous Max"
+        second["requires_clarification"] = False
+        second["clarification_questions"] = []
+
+        if not second.get("answer"):
+            second["answer"] = (
+                "I proceeded autonomously with explicit assumptions but could not complete a fully grounded final answer. "
+                "Please retry with one additional detail if you want a tighter result."
+            )
+        return second
+
     # ── Tool dispatcher ───────────────────────────────────────────────────────
 
     def _execute_tool(self, tool_name: str, args: dict) -> Any:
