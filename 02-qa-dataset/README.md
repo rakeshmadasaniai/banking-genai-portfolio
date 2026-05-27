@@ -1,69 +1,87 @@
-# Banking & Finance QA Dataset
+# BankingQA Dataset
 
- This project contains the banking and finance instruction dataset used for downstream fine-tuning.
+This folder contains the BankingQA-3K instruction dataset workflow used by the Banking & Finance AI Agent.
+
+## Purpose
+
+Create a reusable domain dataset for banking and financial compliance instruction tuning. The dataset turns curated banking material into structured instruction-response pairs that support the downstream QLoRA adaptation workflow.
 
 ## Dataset
-[banking-finance-qa-dataset](https://huggingface.co/datasets/RakeshMadasani/banking-finance-qa-dataset)
 
-## Screenshot
-Published dataset page with train and validation splits:
+[banking-finance-qa-dataset](https://huggingface.co/datasets/RakeshMadasani/banking-finance-qa-dataset)
 
 ![Dataset on Hugging Face](screenshots/dataset-hf-splits.png)
 
 ## Summary
-- 3,002 instruction-response pairs
-- 2,701 train samples
-- 301 validation samples
-- Alpaca-style format
-- English language
-- Banking and finance domain
 
-## Coverage
-- AML / KYC
-- CDD / EDD
-- FDIC
-- Basel III
-- RBI
-- SAR / CTR
-- compliance topics
-- finance fundamentals
+| Item | Value |
+|---|---:|
+| Total examples | 3,002 |
+| Train samples | 2,701 |
+| Validation samples | 301 |
+| Format | Alpaca-style instruction data |
+| Language | English |
+| Domain | Banking, finance, AML, KYC, compliance |
 
-## What it demonstrates
-- domain data curation
-- instruction dataset creation
-- validation and split design
-- Hugging Face dataset publishing
+## Architecture
 
-## Data Methodology
-
-The dataset was built by turning curated banking and compliance material into instruction-style examples intended for downstream fine-tuning. The focus was not just on volume, but on having a usable spread of topics, clean formatting, and a validation pass before publishing.
-
-In practice, that meant:
-
-- selecting questions that map naturally to banking, compliance, and regulatory supervision
-- structuring examples in Alpaca-style `instruction`, `input`, and `output` fields
-- validating the finished dataset for structural consistency and duplicate issues before upload
-
-## Example Schema
-
-```json
-{
-  "instruction": "What is the FDIC deposit insurance limit in the United States?",
-  "input": "",
-  "output": "The FDIC insures deposits up to $250,000 per depositor, per insured bank, per account ownership category."
-}
+```mermaid
+flowchart LR
+    A["Curated banking material"] --> B["Question generation"]
+    B --> C["Instruction / input / output schema"]
+    C --> D["Validation and duplicate checks"]
+    D --> E["Train / validation split"]
+    E --> F["Hugging Face Dataset"]
 ```
 
-## Code Entry Points
-- `generate_dataset.py` - builds banking instruction-response pairs from curated source material
-- `validate_dataset.py` - runs duplicate and structural checks on the generated dataset
-- `upload_to_hf.py` - publishes the dataset and dataset card to Hugging Face
+## Coverage
 
-## Why it stands out
-This project turns raw banking and compliance material into a reusable ML asset rather than stopping at prompt experimentation. It shows the data layer behind the model and application work in the rest of the portfolio.
+- AML, KYC, CDD, and EDD.
+- FDIC deposit insurance.
+- Basel III capital concepts.
+- RBI and India banking compliance topics.
+- SAR, CTR, transaction monitoring, and financial crime concepts.
+- General banking and finance fundamentals.
+
+## Key Files
+
+| File | Role |
+|---|---|
+| `generate_dataset.py` | Builds instruction-response examples from curated material. |
+| `validate_dataset.py` | Checks structure, duplicates, and dataset quality signals. |
+| `upload_to_hf.py` | Publishes dataset artifacts and dataset card to Hugging Face. |
+| `screenshots/` | Published dataset page screenshots for portfolio review. |
+
+## How To Run
+
+```bash
+cd 02-qa-dataset
+python generate_dataset.py
+python validate_dataset.py
+python upload_to_hf.py
+```
+
+Set `HF_TOKEN` before upload if publishing to the Hub.
+
+## Inputs And Outputs
+
+Inputs:
+
+- Curated banking and compliance source material.
+- Topic coverage plan across AML, KYC, FDIC, RBI, Basel III, and banking operations.
+
+Outputs:
+
+- Alpaca-style dataset with `instruction`, `input`, and `output` fields.
+- Train and validation splits.
+- Hugging Face dataset repository.
+
+## Evaluation Notes
+
+The dataset is validated structurally before publishing. It is designed for fine-tuning and domain adaptation, not as a formal legal or regulatory authority. Downstream quality should be measured through model evaluation and grounded answer testing.
 
 ## Limitations
 
-- instruction-style datasets can still inherit phrasing bias from the source material used to create them
-- U.S. and India banking topics are useful together, but not always perfectly balanced in representation
-- the dataset is a strong domain adaptation asset, but it should not be treated as formal regulatory ground truth
+- The dataset is English-only in its current published form.
+- Coverage is strongest for banking/compliance concepts represented in the curated material.
+- Dataset answers should be treated as training material, not official regulatory advice.

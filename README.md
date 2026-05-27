@@ -1,5 +1,5 @@
 ---
-title: Autonomous Banking & Finance AI Agent
+title: Banking & Finance AI Agent
 emoji: 🌎
 colorFrom: blue
 colorTo: indigo
@@ -10,290 +10,185 @@ app_file: 01-rag-system/app.py
 pinned: false
 ---
 
-# Autonomous Banking & Finance AI Agent Portfolio
+# Banking & Finance AI Agent
 
-**Rakesh Madasani**  
-[Live Autonomous Banking & Finance AI Agent](https://huggingface.co/spaces/RakeshMadasani/banking-finance-rag) | [Hugging Face Profile](https://huggingface.co/RakeshMadasani) | [GitHub](https://github.com/rakeshmadasaniai/banking-genai-portfolio) | [LinkedIn](https://www.linkedin.com/in/rakesh-madasani-b217b71b0/)
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![Hugging Face Spaces](https://img.shields.io/badge/Hugging%20Face-Spaces-yellow)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.56-red)
+![FastAPI](https://img.shields.io/badge/FastAPI-memory%20backend-009688)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Status](https://img.shields.io/badge/Status-Active-brightgreen)
 
-This repository is the full build story behind my Banking & Finance Copilot: a live grounded AI product focused on USA and India banking, compliance, AML, KYC, FDIC, Basel III, and RBI workflows.
+**Production-grade GenAI system for grounded banking, compliance, and financial knowledge workflows.**
 
-I did not want this to be a one-screen chatbot demo. I wanted it to behave like a real product:
+I built this system to answer one question: what does it take to move a GenAI product beyond a chatbot demo and into a reliable, measurable AI system?
 
-- grounded on visible source material
-- measurable with repeatable evaluation packs
-- flexible across OpenAI, Fine-Tuned, and Auto routing
-- multilingual enough for broader banking users
-- strong enough to discuss as an engineering system, not just a UI
+The result is a live Banking & Finance AI Agent with retrieval, model routing, domain adaptation, conversational memory work, evaluation packs, multilingual UX, upload workflows, voice support, and an autonomy audit. It is intentionally positioned as an AI agent and grounded GenAI platform, not AGI and not an overclaimed fully autonomous production system.
 
-## World-Class Execution Plan
+## Live Links
 
-I maintain a concrete week-by-week delivery plan in:
+| Asset | Link |
+|---|---|
+| Live app | [Hugging Face Space](https://huggingface.co/spaces/RakeshMadasani/banking-finance-rag) |
+| GitHub repository | [banking-genai-portfolio](https://github.com/rakeshmadasaniai/banking-genai-portfolio) |
+| Fine-tuned model | [banking-finance-mistral-qlora](https://huggingface.co/RakeshMadasani/banking-finance-mistral-qlora) |
+| Dataset | [banking-finance-qa-dataset](https://huggingface.co/datasets/RakeshMadasani/banking-finance-qa-dataset) |
 
-- [`WORLDCLASS_WEEK1_TO_WEEK6.md`](WORLDCLASS_WEEK1_TO_WEEK6.md)
-- [`AUTONOMY_EVALUATION.md`](AUTONOMY_EVALUATION.md)
+## What This System Does
 
-This is the operating plan used to move the project from strong prototype quality to production-grade architecture, reliability, governance, and distribution.
+- Answers banking, finance, AML, KYC, FDIC, Basel III, RBI, and compliance questions with retrieved context.
+- Supports OpenAI, Fine-Tuned, Auto, Agentic Workspace, and Autonomous Max paths where configured.
+- Renders source-grounded answer cards with latency, confidence, retrieved chunks, source cards, copy/export actions, and read-aloud controls.
+- Accepts text, document uploads, image-supported workflows, multilingual prompts, and voice input/output paths.
+- Includes a published BankingQA-3K dataset and a QLoRA Mistral-7B adapter for domain model adaptation.
+- Ships repeatable evaluation packs, committed result snapshots, and an autonomy evaluation note instead of only screenshots.
 
-## Live Product
-
-- **Live app:** [banking-finance-rag](https://huggingface.co/spaces/RakeshMadasani/banking-finance-rag)
-- **Dataset:** [banking-finance-qa-dataset](https://huggingface.co/datasets/RakeshMadasani/banking-finance-qa-dataset)
-- **Fine-tuned model:** [banking-finance-mistral-qlora](https://huggingface.co/RakeshMadasani/banking-finance-mistral-qlora)
-
-## What This Repo Shows
-
-| Layer | What is in the repo | Why it matters |
-|---|---|---|
-| Product | A live Banking & Finance Copilot | Shows a shipped, testable AI product |
-| Retrieval | FAISS + banking knowledge + source cards | Keeps answers grounded and explainable |
-| Data | A domain-specific QA dataset | Shows data ownership, not just prompting |
-| Model | QLoRA fine-tuning workflow | Shows model adaptation beyond API usage |
-| Backend | Conversational memory API | Shows system thinking and architecture depth |
-| Evaluation | 120-query domain set + 120-query multilingual set | Shows repeatable measurement, not anecdotal demos |
-
-## Where The Product Code Lives
-
-If someone lands on this repo from GitHub first, the main product code is not hidden in a separate private service. It lives directly inside [`01-rag-system`](01-rag-system):
-
-- [`01-rag-system/core`](01-rag-system/core)
-  runtime orchestration, retrieval flow, prompts, and shared utilities
-- [`01-rag-system/features`](01-rag-system/features)
-  product UI, uploads, voice output, answer cards, and interaction behavior
-- [`01-rag-system/models`](01-rag-system/models)
-  OpenAI mode, Fine-Tuned mode, and Auto routing logic
-
-That structure matters because I wanted the repo to read like a real product codebase, not a single README pointing to an external demo.
-
-## How The Portfolio Evolves
-
-This repo is one system built in layers.
-
-### 1. Product layer
-
-I started with the user-facing assistant in [`01-rag-system`](01-rag-system). The goal was simple: if someone asks a banking or compliance question, the product should answer clearly and show the evidence behind the answer.
-
-### 2. Data layer
-
-Once the first retrieval system worked, I created a banking QA dataset in [`02-qa-dataset`](02-qa-dataset) so the domain logic would not live only inside prompts and chunk text.
-
-### 3. Model layer
-
-Then I fine-tuned a banking-domain adapter in [`03-qlora-finetuning`](03-qlora-finetuning) to show that I can move from application wiring into actual model adaptation.
-
-### 4. Backend layer
-
-Finally, I added session memory and orchestration work in [`04-conversational-memory`](04-conversational-memory), which made the portfolio feel more like a real product system than a single-page demo.
-
-## Architecture
-
-### End-to-End System
-
-```mermaid
-flowchart LR
-    A["Curated banking knowledge"] --> B["Chunking and preprocessing"]
-    B --> C["Embeddings"]
-    C --> D["FAISS index"]
-    D --> E["Shared grounded context"]
-
-    A --> F["Instruction dataset generation"]
-    F --> G["Banking QA dataset"]
-    G --> H["QLoRA fine-tuning"]
-    H --> I["Published banking adapter"]
-
-    E --> J["OpenAI path"]
-    E --> K["Fine-Tuned path"]
-    E --> L["Auto routing"]
-
-    J --> M["Live Banking & Finance Copilot"]
-    K --> M
-    L --> M
-
-    M --> N["Sources, confidence, latency, uploads, read aloud"]
-    M --> O["Conversational memory backend"]
-```
-
-### Live Product Runtime
+## Architecture Overview
 
 ```mermaid
 flowchart TD
-    U["Question or uploaded document"] --> R["Shared retrieval"]
-    R --> C["Grounded context"]
-    C --> O["OpenAI mode"]
-    C --> F["Fine-Tuned mode"]
-    C --> A["Auto mode"]
+    U["User input: text, document, image, or voice"] --> IR["Input router"]
+    IR --> UP["Upload and document parsing"]
+    IR --> VI["Voice input path"]
+    IR --> Q["Normalized user query"]
 
-    A --> S["Selection logic"]
-    O --> X["Answer card"]
-    F --> X
-    S --> X
+    UP --> KB["Runtime knowledge context"]
+    Q --> RC["Retrieval coordinator"]
+    KB --> RC
 
-    X --> Y["Latency, confidence, sources, read aloud"]
+    RC --> FAISS["Implemented: FAISS dense vector search"]
+    RC -. "roadmap" .-> BM25["Planned: BM25 sparse search"]
+    BM25 -. "roadmap" .-> RRF["Planned: reciprocal rank fusion"]
+    FAISS --> GC["Grounded context"]
+    RRF -. "future hybrid context" .-> GC
+
+    GC --> ORCH["LLM orchestration layer"]
+    ORCH --> OAI["OpenAI mode"]
+    ORCH --> FT["Fine-Tuned mode"]
+    ORCH --> AUTO["Auto routing"]
+    ORCH --> AGENT["Agentic / Autonomous modes"]
+
+    OAI --> EVAL["Evaluation + confidence scoring"]
+    FT --> EVAL
+    AUTO --> EVAL
+    AGENT --> EVAL
+
+    EVAL --> RESP["Response with sources, confidence, latency, and actions"]
+    RESP --> MEM["Session memory and audit context"]
+    MEM --> ORCH
 ```
 
-## Main Product: Banking & Finance Copilot
+## System Design
 
-The main product lives in [`01-rag-system`](01-rag-system).
+The system is built in four layers:
 
-What it does well:
-- grounded banking and compliance Q&A
-- OpenAI, Fine-Tuned, and Auto modes
-- source-backed answers with visible evidence
-- PDF, DOCX, TXT, and image upload support
-- multilingual answer support
-- evaluation workflows committed alongside the app
+| Layer | Runtime area | Purpose |
+|---|---|---|
+| AI agent runtime | `01-rag-system` | Live Streamlit product, retrieval, orchestration, source-grounded UI, uploads, voice, and agent paths. |
+| BankingQA dataset | `02-qa-dataset` | 3,002-pair instruction dataset covering banking, compliance, AML, KYC, Basel III, FDIC, RBI, and finance topics. |
+| Domain model adaptation | `03-qlora-finetuning` | QLoRA workflow for adapting Mistral-7B-Instruct-v0.3 to banking and financial compliance terminology. |
+| Memory and orchestration | `04-conversational-memory` | FastAPI memory backend with session handling, history management, summarization, and backend comparison. |
 
-### Product Walkthrough
+The current live Space keeps the original folder path `01-rag-system` so existing Hugging Face deployment URLs and `app_file` metadata continue to work. Documentation now positions that folder as the AI agent runtime while preserving compatibility.
 
-#### A clean first impression for the product
+## Evaluation Metrics
 
-This is the opening experience of the Banking & Finance Copilot: stable sidebar, mode selector, welcome guidance, and multilingual starter questions that make the product feel usable immediately.
-
-![Banking Copilot home experience](01-rag-system/screenshots/banking-copilot-home-experience.png)
-
-#### A grounded English answer that feels concise and useful
-
-This example shows the assistant answering a KYC question in English with a direct explanation, compact bullets, visible latency, and retrieved source support.
-
-![English KYC answer walkthrough](01-rag-system/screenshots/english-kyc-answer-walkthrough.png)
-
-#### The same product experience working in Telugu
-
-This screenshot shows the answer structure holding up in Telugu, which is important because the product is meant to feel consistent across languages, not just translated.
-
-![Telugu KYC answer walkthrough](01-rag-system/screenshots/telugu-kyc-answer-walkthrough.png)
-
-#### Multilingual grounding working in Chinese as well
-
-This example shows the same KYC workflow in Chinese, which helps demonstrate that multilingual support is part of the product design, not just a side feature.
-
-![Chinese KYC answer walkthrough](01-rag-system/screenshots/chinese-kyc-answer-walkthrough.png)
-
-## Evaluation
-
-The repo includes two larger evaluation packs inside [`01-rag-system/evaluation`](01-rag-system/evaluation):
-
-- `evaluation_queries.md`
-  120 domain-specific banking, AML, KYC, Basel III, FDIC, RBI, CECL, and payments questions
-- `evaluation_multilingual.md`
-  120 multilingual questions grouped across OpenAI, Fine-Tuned, and Auto modes
-
-The folder also includes:
-
-- `run_eval_sets.py` to run both evaluation packs automatically
-- `summarize_eval_sets.py` to summarize any generated CSV
-- committed result snapshots in [`01-rag-system/evaluation/results`](01-rag-system/evaluation/results)
-- raw CSV outputs plus JSON summaries, so the runs are inspectable rather than just summarized in prose
-
-### Latest committed evaluation snapshots
-
-**Domain evaluation pack**
+These numbers are from committed project files and should be read as traceable project evidence, not marketing claims.
 
 | Metric | Result |
 |---|---|
-| Total prompts | 120 |
-| Available evaluated rows | 80 |
-| Average latency | 2037.0 ms |
-| Median latency | 2036.0 ms |
+| Evaluation prompts | 240 total prompts across domain and multilingual packs |
+| Latest available evaluated rows | 160 rows across committed domain and multilingual snapshots |
+| Domain pack average latency | 2037.0 ms |
+| Multilingual pack average latency | 2031.8 ms |
+| Dataset size | 3,002 QA pairs |
+| Fine-tuning method | Mistral-7B QLoRA |
+| Final train loss | 1.13 |
+| Current retrieval implementation | FAISS dense vector retrieval |
+| Sparse retrieval / RRF | Roadmap item, not claimed as live implementation |
 
-**Multilingual evaluation pack**
+For the current autonomy positioning, see [`AUTONOMY_EVALUATION.md`](AUTONOMY_EVALUATION.md). For the generated portfolio report, see [`01-rag-system/evaluation/reports/latest_portfolio_report.md`](01-rag-system/evaluation/reports/latest_portfolio_report.md).
 
-| Metric | Result |
-|---|---|
-| Total prompts | 120 |
-| Available evaluated rows | 80 |
-| Average latency | 2031.8 ms |
-| Median latency | 2031.5 ms |
+## Key Capabilities
 
-### What those numbers mean
+### Grounded Banking Answers
 
-The committed snapshot is intentionally honest about the environment it was run in:
+The runtime retrieves banking material before generation, then presents answers with source cards, confidence labels, latency, and chunk metadata.
 
-- the full packs contain 120 prompts each
-- the committed run has 80 available rows because the OpenAI path was not active in that local export
-- the Fine-Tuned and Auto paths still completed and produced auditable CSV/JSON artifacts
+### Model Orchestration
 
-I prefer showing that reality instead of pretending every backend was active in every run. A reviewer can open the raw result files, see which rows were available, and rerun the exact same packs in a fully configured environment.
+OpenAI mode provides a stable general path, Fine-Tuned mode connects the domain adapter path where hosted inference is configured, and Auto mode scores candidate answers based on groundedness, completeness, and latency.
 
-### Portfolio report generator
+### Agentic Runtime Work
 
-To generate a single recruiter-friendly report from committed summary artifacts:
+The repo includes agentic/autonomous runtime work with tool-style execution traces and autonomy evaluation. This is presented honestly as a tool-calling AI system and agentic workflow layer, not as AGI.
 
-- `python 01-rag-system/evaluation/generate_portfolio_report.py`
-- Output: `01-rag-system/evaluation/reports/latest_portfolio_report.md`
+### Domain Data and Model Adaptation
 
-This keeps the published numbers traceable and reproducible.
+The dataset and QLoRA adapter show the system is not only prompt engineering. It includes a reusable data asset and a domain-adapted model artifact.
 
-### Regression tests for decision-critical behavior
+### Memory and API Layer
 
-I also added deterministic tests for high-risk agent decisions:
+The FastAPI memory backend demonstrates session-aware conversation handling, summarization/truncation, health checks, and backend comparison endpoints.
 
-- `01-rag-system/tests/test_agentic_decision_engine.py`
+## Demo Workflow
 
-Run locally:
+1. Open the [live Space](https://huggingface.co/spaces/RakeshMadasani/banking-finance-rag).
+2. Ask a banking or compliance question such as `What are the main KYC requirements for banks?`.
+3. Switch modes to compare OpenAI, Fine-Tuned, Auto, and agentic paths where configured.
+4. Upload a PDF, DOCX, or TXT document and ask a document-grounded question.
+5. Inspect confidence, source cards, latency, retrieved chunks, and read-aloud output.
+6. Review evaluation artifacts under `01-rag-system/evaluation`.
 
-- `cd 01-rag-system`
-- `python -m unittest discover -s tests -p "test_*.py"`
-
-### Why I kept the raw result files
-
-The most valuable part of the evaluation setup is not just the summary table. It is that the repo contains:
-
-- the question packs
-- the runner scripts
-- the summarizer
-- the committed outputs
-
-So if someone asks, "How did you test it?" I can point to the exact prompts, exact outputs, and exact summaries rather than hand-picked screenshots.
-
-Those results matter to me because they make the product discussable in a serious way. If someone asks how I tested it, I can point to committed query packs, reproducible runners, timestamped results, and summaries instead of hand-wavy claims.
-
-## Other Projects In The Portfolio
-
-### [02-qa-dataset](02-qa-dataset)
-
-This is the dataset layer behind the banking system. It contains the curated QA data used to support model adaptation and domain coverage.
-
-![Dataset screenshot](02-qa-dataset/screenshots/dataset-hf-splits.png)
-
-### [03-qlora-finetuning](03-qlora-finetuning)
-
-This is the model adaptation layer. It shows the QLoRA workflow used to adapt a Mistral model for banking-domain answers.
-
-![QLoRA model page screenshot](03-qlora-finetuning/screenshots/model-page-demo.png)
-
-### [04-conversational-memory](04-conversational-memory)
-
-This is the backend layer that adds session memory, orchestration, and API structure to the broader assistant system.
-
-## Best Entry Points In Code
-
-If someone wants to inspect the implementation rather than just the screenshots, these are the best places to start:
-
-- `01-rag-system/app.py`
-- `01-rag-system/core/product_runtime.py`
-- `01-rag-system/core/retriever.py`
-- `01-rag-system/features/product_ui.py`
-- `01-rag-system/models/auto_router.py`
-- `01-rag-system/models/openai_mode.py`
-- `01-rag-system/models/finetuned_mode.py`
-- `01-rag-system/evaluation/run_eval_sets.py`
-- `01-rag-system/evaluation/summarize_eval_sets.py`
-- `02-qa-dataset/generate_dataset.py`
-- `03-qlora-finetuning/inference_demo.py`
-- `04-conversational-memory/app/main.py`
-- `04-conversational-memory/app/rag_chain.py`
-
-## Repo Structure
+## Repository Structure
 
 ```text
 banking-genai-portfolio/
 |-- README.md
-|-- 01-rag-system/
-|-- 02-qa-dataset/
-|-- 03-qlora-finetuning/
-`-- 04-conversational-memory/
+|-- ROADMAP.md
+|-- EVALUATION.md
+|-- SYSTEM_DESIGN.md
+|-- CONTRIBUTING.md
+|-- AUTONOMY_EVALUATION.md
+|-- 01-rag-system/                 # AI agent runtime and live Streamlit app
+|-- 02-qa-dataset/                 # BankingQA-3K dataset build/publish workflow
+|-- 03-qlora-finetuning/           # Mistral-7B QLoRA adaptation workflow
+`-- 04-conversational-memory/      # FastAPI memory and orchestration backend
 ```
 
-## Closing Note
+## Run Locally
 
-The part I value most in this portfolio is not that it calls an LLM. It is that the repo shows the full path from idea to product: retrieval, data, model work, backend orchestration, evaluation, and a live user-facing deployment that someone can test today.
+```bash
+git clone https://github.com/rakeshmadasaniai/banking-genai-portfolio.git
+cd banking-genai-portfolio
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r 01-rag-system/requirements.txt
+copy .env.example .env
+streamlit run 01-rag-system/app.py
+```
+
+Minimum environment:
+
+```env
+OPENAI_API_KEY=
+HF_TOKEN=
+MODEL_MODE=OpenAI
+TOP_K=4
+TEMPERATURE=0.2
+```
+
+## Known Limitations
+
+- The live retrieval path is FAISS dense search; BM25 and reciprocal rank fusion are documented as roadmap work until implemented in code.
+- Fine-Tuned mode depends on an available hosted endpoint or compatible local inference environment.
+- Streamlit session state is not durable across browser restarts; the separate FastAPI memory backend demonstrates the production direction.
+- The system is educational and portfolio-grade; it is not legal, financial, investment, or compliance advice.
+
+## Roadmap
+
+See [`ROADMAP.md`](ROADMAP.md) for the planned reliability, agentic architecture, governance, and production-hardening phases.
+
+## License and Contact
+
+This repository is intended as an AI engineering portfolio and educational system. For questions, reach out through [GitHub](https://github.com/rakeshmadasaniai), [Hugging Face](https://huggingface.co/RakeshMadasani), or [LinkedIn](https://www.linkedin.com/in/rakesh-madasani-b217b71b0/).

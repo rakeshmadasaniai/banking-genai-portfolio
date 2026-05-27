@@ -1,79 +1,83 @@
-# Banking Finance QLoRA Fine-Tuned Model
+# Domain Model Adaptation
 
-This project contains the fine-tuning workflow for adapting a Mistral-based LLM to banking and finance question answering.
+This folder contains the QLoRA fine-tuning workflow used to adapt Mistral-7B-Instruct-v0.3 to banking and financial compliance terminology.
+
+## Purpose
+
+Show the model adaptation layer behind the Banking & Finance AI Agent. The goal is not only to call external APIs, but to demonstrate data preparation, parameter-efficient fine-tuning, adapter publishing, and inference testing.
 
 ## Model
+
 [banking-finance-mistral-qlora](https://huggingface.co/RakeshMadasani/banking-finance-mistral-qlora)
 
-## Published Model Page
 ![Published QLoRA model page](screenshots/model-page-demo.png)
 
-## Recommended Demo Questions
+## Architecture
 
-If you want to capture a stronger inference screenshot for this project, use these questions:
-
-- `What is the FDIC deposit insurance limit in the United States?`
-- `What are the three stages of money laundering?`
-- `What is the difference between AML and KYC?`
-
-These prompts are short, easy to judge, and representative of the banking/compliance domain adaptation shown by the model.
-
-## Base Model
-`mistralai/Mistral-7B-Instruct-v0.3`
+```mermaid
+flowchart LR
+    A["BankingQA-3K dataset"] --> B["Prompt formatting"]
+    B --> C["Mistral-7B-Instruct-v0.3"]
+    C --> D["4-bit NF4 quantization"]
+    D --> E["LoRA adapter training"]
+    E --> F["Validation / training metrics"]
+    F --> G["Published Hugging Face adapter"]
+```
 
 ## Fine-Tuning Summary
-- Method: QLoRA
-- Quantization: 4-bit NF4
-- LoRA rank: 16
-- LoRA alpha: 32
-- LoRA dropout: 0.05
-- Training samples: 2,701
-- Validation samples: 301
-- Global steps: 676
-- Final train loss: 1.13
 
-## Training Environment
+| Item | Value |
+|---|---|
+| Base model | `mistralai/Mistral-7B-Instruct-v0.3` |
+| Method | QLoRA |
+| Quantization | 4-bit NF4 |
+| LoRA rank | 16 |
+| LoRA alpha | 32 |
+| LoRA dropout | 0.05 |
+| Training samples | 2,701 |
+| Validation samples | 301 |
+| Global steps | 676 |
+| Final train loss | 1.13 |
 
-- notebook-based QLoRA workflow
-- designed for practical notebook GPU usage rather than full distributed training
-- built around an adapter approach so a 7B model could be adapted without full fine-tuning
+## Key Files
 
-## Code Entry Points
-- `Banking_QLoRA_Mistral7B_updated.ipynb` - main notebook used for the QLoRA workflow
-- `inference_demo.py` - lightweight inference script for loading the published adapter and testing example prompts
+| File | Role |
+|---|---|
+| `Banking_QLoRA_Mistral7B_updated.ipynb` | Main notebook for dataset formatting, QLoRA setup, training, and publishing. |
+| `inference_demo.py` | Lightweight script for loading the adapter and testing domain prompts. |
+| `screenshots/` | Published model page and training-progress screenshots. |
 
-## Why QLoRA
+## How To Run
 
-- **4-bit NF4 quantization:** reduces memory usage enough to make 7B-scale fine-tuning practical in notebook GPU environments
-- **LoRA adapters:** updates a small trainable parameter set instead of full-model weights
-- **Cost-efficient experimentation:** a good fit for domain adaptation when full fine-tuning is too heavy
+The notebook is the main training artifact. For local inference, use:
 
-## What it demonstrates
-- parameter-efficient fine-tuning
-- PEFT/LoRA configuration
-- domain adaptation using custom data
-- Hugging Face model publishing
+```bash
+cd 03-qlora-finetuning
+python inference_demo.py
+```
 
-## Output Snapshot
+You need access to the base model, the published adapter, and a compatible local GPU/CPU environment. Full 7B inference can be heavy on consumer machines.
 
-Example sample outputs from the fine-tuned model included banking-domain answers for prompts such as:
-- FDIC deposit insurance limits
-- the stages of money laundering
-- Basel-related banking questions
+## Inputs And Outputs
 
-These examples showed that the adapter was capable of producing domain-specific responses after fine-tuning, even though formal benchmark scoring is still a planned improvement.
+Inputs:
 
-## Before vs After Snapshot
+- BankingQA-3K instruction dataset.
+- Mistral-7B-Instruct-v0.3 base model.
+- PEFT/QLoRA configuration.
 
-| Prompt type | Base model tendency | Fine-tuned model tendency |
-|---|---|---|
-| Banking definitions | usually reasonable but generic | more direct banking-specific phrasing |
-| Compliance language | broad but sometimes high-level | more targeted AML / KYC / SAR / CTR terminology |
-| India-focused regulation | can be vague or mix jurisdictions | better alignment with RBI-oriented wording from the custom dataset |
+Outputs:
 
-## Why it stands out
-This project shows that the portfolio goes beyond app development and dataset creation into actual model adaptation. Publishing the adapter with a model card, tokenizer files, and LoRA configuration makes the work visible and inspectable as a real model artifact.
+- Published LoRA adapter.
+- Training metrics.
+- Model card and inference demo path.
 
-## Limitation to state clearly
+## Evaluation Notes
 
-This repository publishes a QLoRA adapter artifact, not a fully hosted standalone inference service by itself. To run it end to end, the adapter still needs to be loaded with the compatible base model in a suitable inference environment.
+The current folder documents training configuration and final train loss. A stronger future benchmark should compare the base model, adapter model, OpenAI path, and Auto routing on the same held-out banking evaluation pack.
+
+## Limitations
+
+- This publishes an adapter artifact, not a fully hosted standalone inference service.
+- Runtime quality depends on loading the compatible base model plus adapter correctly.
+- The model should be evaluated on held-out prompts before making strong accuracy claims.

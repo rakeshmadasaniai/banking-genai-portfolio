@@ -1,7 +1,72 @@
-.venv/
-**/.venv/
+# Python
+__pycache__/
 **/__pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+**/.venv/
+**/venv/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+.streamlit/secrets.toml
+**/.streamlit/secrets.toml
+
+# Streamlit and local app state
+.streamlit/
+**/.streamlit/
+*.log
+logs/
+
+# Local model artifacts and generated indexes
+models/
+checkpoints/
+outputs/
+wandb/
+runs/
+mlruns/
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.onnx
+*.gguf
+**/faiss_index/
+**/vectorstore/
+**/*.faiss
+**/*.pkl
+
+# Data artifacts that should not be committed accidentally
+*.parquet
+*.arrow
+*.sqlite
+*.db
+*.duckdb
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Large local screenshots; curated tracked screenshots can be force-added if needed
 01-rag-system/screenshots/*.png
 01-rag-system/screenshots/*.jpg
 01-rag-system/screenshots/*.jpeg

@@ -1,194 +1,97 @@
-# Autonomous Banking & Finance AI Agent
+# AI Agent Runtime
 
-Banking & Finance Copilot is a grounded AI product for USA and India banking, compliance, and financial intelligence. It combines retrieval over curated banking material with multiple model paths, source-backed answer cards, uploads, multilingual support, and evaluation workflows that are committed in the repo alongside the app itself.
+This folder contains the live deployed Banking & Finance AI Agent runtime. It is still named `01-rag-system` for Hugging Face deployment compatibility, but its role in the system is the agent runtime: Streamlit UI, retrieval, model routing, agentic workflows, uploads, voice controls, source cards, and evaluation.
 
-## Live Product
+## Purpose
 
-[banking-finance-rag on Hugging Face](https://huggingface.co/spaces/RakeshMadasani/banking-finance-rag)
+Provide a product-quality AI workflow interface for banking, compliance, and financial knowledge tasks. The runtime prioritizes grounded answers, clear confidence signals, source visibility, multilingual support, and stable user interaction.
 
-## What This Project Is
-
-This is the product layer of the broader portfolio. The goal was not just to make a banking chatbot answer questions. The goal was to make it behave like a product someone could open, test, trust, and discuss seriously:
-
-- grounded answers instead of free-floating generation
-- visible source support
-- multiple model modes with clear routing behavior
-- uploads for real user documents
-- multilingual interaction
-- reproducible evaluation, not just screenshots
-
-## Where The Code Is
-
-The live Hugging Face Space is only the deployment target. The actual product implementation is committed here in this project:
-
-- [`core`](./core)
-  retrieval orchestration, runtime flow, prompts, and shared utilities
-- [`features`](./features)
-  UI rendering, uploads, read-aloud, answer formatting, and user interaction
-- [`models`](./models)
-  OpenAI mode, Fine-Tuned mode, and Auto routing logic
-
-That is important because I wanted the repo to stand on its own as a real product codebase, not just point outward to a demo URL.
-
-## What The User Can Do
-
-- ask banking, AML, KYC, FDIC, Basel III, RBI, and compliance questions
-- switch between `OpenAI`, `Fine-Tuned`, and `Auto` modes
-- upload PDF, DOCX, TXT, and image files
-- inspect retrieved sources under each answer
-- use read-aloud on the final response
-- test multilingual questions
-
-## Why The Product Is Structured This Way
-
-Trust was the main design constraint. For finance and compliance questions, a polished answer alone is not enough. The product needs to show where the answer came from and make its behavior explainable.
-
-That is why the app is built around:
-
-- shared retrieval before generation
-- source cards and chunk previews
-- model-mode transparency
-- latency and confidence visibility
-- evaluation packs committed in the repository
-
-## Model Modes
-
-### OpenAI
-
-This is the strongest general-purpose answer path and the most stable baseline for live testing.
-
-### Fine-Tuned
-
-This uses the banking-domain Mistral adapter. It is valuable when the hosted path is configured and when lower-latency or domain-style responses are desirable.
-
-### Auto
-
-Auto retrieves once, evaluates candidate answer paths, and selects the winner. That makes the routing logic easier to reason about than a hidden black-box switch.
-
-## Product Architecture
+## Architecture
 
 ```mermaid
-flowchart LR
-    A["Built-in banking knowledge + uploaded docs"] --> B["Chunking and preprocessing"]
-    B --> C["Embeddings"]
-    C --> D["FAISS retrieval"]
-    D --> E["Shared grounded context"]
-    E --> F["OpenAI mode"]
-    E --> G["Fine-Tuned mode"]
-    E --> H["Auto routing"]
-    F --> I["Answer card"]
-    G --> I
-    H --> I
-    I --> J["Sources, confidence, latency, read aloud"]
+flowchart TD
+    A["User input"] --> B["Streamlit product runtime"]
+    B --> C["Upload / voice / text handling"]
+    C --> D["Chunking and embeddings"]
+    D --> E["FAISS dense retrieval"]
+    E --> F["Grounded context"]
+    F --> G["OpenAI mode"]
+    F --> H["Fine-Tuned mode"]
+    F --> I["Auto mode"]
+    F --> J["Agentic / Autonomous modes"]
+    G --> K["Answer renderer"]
+    H --> K
+    I --> K
+    J --> K
+    K --> L["Sources, confidence, latency, actions, read aloud"]
 ```
 
-## How It Works
+## Key Files
 
-1. The app loads curated banking knowledge files and any uploaded user documents.
-2. Documents are chunked and embedded.
-3. FAISS retrieves the most relevant context for the question.
-4. The selected model mode answers from that shared context.
-5. The UI renders the answer together with:
-   - mode
-   - latency
-   - chunk count
-   - source cards
-   - confidence label
+| File or folder | Role |
+|---|---|
+| `app.py` | Streamlit entry point used by the live Hugging Face Space. |
+| `core/product_runtime.py` | Main product orchestration, mode selection, retrieval calls, session state, and response handling. |
+| `core/agentic_runtime.py` | Agentic/autonomous workflow implementation and tool-style reasoning layer. |
+| `core/retriever.py` | Shared context retrieval over runtime indexes. |
+| `core/vector_store.py` | FAISS vector store construction. |
+| `features/product_ui.py` | Premium UI cards, sidebar, metrics, and answer rendering. |
+| `features/voice_input.py` / `features/voice_output.py` | Speech-to-text and text-to-speech integration paths. |
+| `models/openai_mode.py` | OpenAI answer path. |
+| `models/finetuned_mode.py` | Fine-tuned model endpoint path. |
+| `models/auto_router.py` | Candidate scoring and automatic model selection. |
+| `evaluation/` | Domain and multilingual evaluation packs, runners, summaries, and reports. |
 
-## Product Walkthrough
-
-### A clean first impression for the product
-
-This is the opening experience of the Banking & Finance Copilot: the stable sidebar, the mode selector, the welcome guidance, and multilingual starter questions that make the product feel usable from the first click.
-
-![Banking Copilot home experience](screenshots/banking-copilot-home-experience.png)
-
-### A grounded English answer that feels concise and useful
-
-This example shows the assistant answering a KYC question in English with a direct explanation, short supporting bullets, visible latency, and a retrieved source card underneath the answer.
-
-![English KYC answer walkthrough](screenshots/english-kyc-answer-walkthrough.png)
-
-### The same product experience working in Telugu
-
-This screenshot matters because it shows the product doing more than translation. The answer stays structured, readable, and grounded while responding to the question naturally in Telugu.
-
-![Telugu KYC answer walkthrough](screenshots/telugu-kyc-answer-walkthrough.png)
-
-### Multilingual grounding working in Chinese as well
-
-This example shows the same KYC flow in Chinese, which helps demonstrate that the product experience is consistent across languages rather than being strong only in English.
-
-![Chinese KYC answer walkthrough](screenshots/chinese-kyc-answer-walkthrough.png)
-
-## Evaluation
-
-The [`evaluation`](./evaluation) folder includes two larger committed evaluation packs:
-
-- `evaluation_queries.md`
-  120 domain-specific prompts across OpenAI, Fine-Tuned, and Auto
-- `evaluation_multilingual.md`
-  120 multilingual prompts across the same three modes
-
-Supporting scripts:
-
-- `run_eval_sets.py`
-- `summarize_eval_sets.py`
-
-Latest committed result snapshots live in [`evaluation/results`](./evaluation/results).
-Autonomy audit for current release is tracked in [`../AUTONOMY_EVALUATION.md`](../AUTONOMY_EVALUATION.md).
-
-### Latest committed summaries
-
-| Evaluation set | Total prompts | Available evaluated rows | Average latency | Median latency |
-|---|---:|---:|---:|---:|
-| Domain set | 120 | 80 | 2037.0 ms | 2036.0 ms |
-| Multilingual set | 120 | 80 | 2031.8 ms | 2031.5 ms |
-
-### Reading the snapshot correctly
-
-Those numbers are the committed run snapshot, not a made-up "best case" table:
-
-- each pack contains 120 prompts
-- 80 rows were available in the committed export
-- the missing rows reflect backend availability in that local run, not missing evaluation logic
-
-I prefer that level of honesty because anyone reviewing the repo can inspect the CSVs and JSON summaries directly and see what was measured versus what was unavailable in that environment.
-
-## Run Locally
-
-### Prerequisites
-
-- Python 3.10+
-- OpenAI API key
-
-### Install
+## How To Run
 
 ```bash
+cd 01-rag-system
 pip install -r requirements.txt
-```
-
-### Environment
-
-```bash
-OPENAI_API_KEY=your_api_key_here
-OPENAI_MODEL=gpt-4o-mini
-OPENAI_STT_MODEL=gpt-4o-mini-transcribe
-OPENAI_TTS_MODEL=gpt-4o-mini-tts
-OPENAI_TTS_VOICE=alloy
-FINETUNED_MODEL_ID=RakeshMadasani/banking-finance-mistral-qlora
-FINETUNED_ENDPOINT_URL=
-HF_TOKEN=your_hugging_face_token
-```
-
-### Start the app
-
-```bash
 streamlit run app.py
 ```
 
-## Notes
+Required environment:
 
-- Fine-Tuned mode becomes fully live when a hosted endpoint is configured. The adapter, routing logic, and evaluation path are in the repo today; the hosted endpoint is the last operational piece for a fully public demo of that mode.
-- Voice input and some upload flows are still environment-sensitive because they depend on browser/runtime behavior.
-- The app is built for groundedness and explainability first, not raw throughput.
+```env
+OPENAI_API_KEY=
+HF_TOKEN=
+OPENAI_MODEL=gpt-4o-mini
+FINETUNED_MODEL_ID=RakeshMadasani/banking-finance-mistral-qlora
+```
+
+## Inputs And Outputs
+
+Inputs:
+
+- User questions in English or supported multilingual prompts.
+- PDF, DOCX, TXT, and image-oriented upload workflows.
+- Voice input where browser/runtime support is available.
+- Mode selection across OpenAI, Fine-Tuned, Auto, Agentic Workspace, and Autonomous Max.
+
+Outputs:
+
+- Source-grounded answer cards.
+- Confidence label and latency.
+- Retrieved chunk/source metadata.
+- Copy/export actions and read-aloud audio.
+- Agent trace and audit-style context where agentic modes are used.
+
+## Evaluation Notes
+
+The runtime includes:
+
+- 120 domain prompts in `evaluation/evaluation_queries.md`.
+- 120 multilingual prompts in `evaluation/evaluation_multilingual.md`.
+- Runner and summarizer scripts for repeatable evaluation.
+- Committed snapshots under `evaluation/results`.
+- A generated report under `evaluation/reports/latest_portfolio_report.md`.
+- Decision-critical tests under `tests/`.
+
+Latest committed snapshots show about 2.03s average latency for available rows in both domain and multilingual evaluation exports.
+
+## Limitations
+
+- Current retrieval is FAISS dense vector retrieval. BM25 and reciprocal rank fusion are roadmap work unless implemented later.
+- Fine-Tuned mode requires a configured endpoint or compatible local runtime.
+- Streamlit session state is suitable for live demos but not durable production memory by itself.
+- Outputs are educational and must not be treated as legal, investment, financial, or compliance advice.
