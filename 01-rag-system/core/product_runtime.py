@@ -103,7 +103,7 @@ def _ensure_state() -> None:
         "upload_chunk_count": 0,
         "uploaded_docs": [],
         "uploaded_images": [],
-        "model_mode": "Autonomous Max",
+        "model_mode": "OpenAI",
         "pending_question": "",
         "last_voice_lang": "",
     }
@@ -113,7 +113,7 @@ def _ensure_state() -> None:
     if st.session_state.model_mode == "Autonomous Agent":
         st.session_state.model_mode = "Agentic Workspace"
     if st.session_state.model_mode not in MODEL_MODES:
-        st.session_state.model_mode = "Autonomous Max"
+        st.session_state.model_mode = "OpenAI"
     if "agent_memory" not in st.session_state:
         st.session_state.agent_memory = _load_agent_memory()
     if "autonomous_queue" not in st.session_state:
