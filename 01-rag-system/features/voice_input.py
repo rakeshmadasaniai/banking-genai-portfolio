@@ -4,8 +4,6 @@ import io
 import os
 
 import streamlit as st
-from openai import OpenAI
-from streamlit_mic_recorder import mic_recorder
 
 
 def _get_transcript(audio_payload: dict) -> str:
@@ -20,6 +18,8 @@ def _get_transcript(audio_payload: dict) -> str:
     if not audio_bytes:
         return ""
 
+    from openai import OpenAI
+
     client = OpenAI(api_key=api_key)
     audio_file = io.BytesIO(audio_bytes)
     audio_file.name = f"copilot_voice.{audio_format}"
@@ -28,6 +28,8 @@ def _get_transcript(audio_payload: dict) -> str:
 
 
 def render_voice_input() -> tuple[str, bool]:
+    from streamlit_mic_recorder import mic_recorder
+
     st.markdown("### Voice Input")
     st.caption("Use the microphone button to speak your banking question.")
 

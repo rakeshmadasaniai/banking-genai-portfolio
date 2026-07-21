@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import streamlit as st
 
-from core.retriever import update_uploaded_index_state
-
 
 def render_document_uploads() -> list:
     uploaded_docs = st.file_uploader(
@@ -13,6 +11,8 @@ def render_document_uploads() -> list:
         help=None,
     )
     st.session_state.uploaded_docs = uploaded_docs or []
+    from core.retriever import update_uploaded_index_state
+
     update_uploaded_index_state(uploaded_docs)
     st.caption("PDF | DOCX | TXT")
     return uploaded_docs or []

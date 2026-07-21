@@ -1,13 +1,11 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from io import BytesIO
 import os
 from pathlib import Path
 
 import streamlit as st
-from docx import Document as DocxDocument
-from langchain_core.documents import Document
-from pypdf import PdfReader
 
 from core.chunking import split_documents
 from core.utils import file_signature, format_context_sections, list_base_knowledge_files, preview_text, source_label, weak_retrieval
@@ -15,6 +13,12 @@ from core.vector_store import VectorIndex, build_vector_index
 
 
 EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+
+
+@dataclass
+class Document:
+    page_content: str
+    metadata: dict
 
 
 def load_base_documents() -> list[Document]:
@@ -32,6 +36,8 @@ def get_base_index() -> VectorIndex | None:
 
 
 def _parse_pdf(uploaded_file) -> list[Document]:
+    from pypdf import PdfReader
+
     reader = PdfReader(BytesIO(uploaded_file.getvalue()))
     pages = []
     for page_number, page in enumerate(reader.pages, start=1):
@@ -47,6 +53,8 @@ def _parse_pdf(uploaded_file) -> list[Document]:
 
 
 def _parse_docx(uploaded_file) -> list[Document]:
+    from docx import Document as DocxDocument
+
     doc = DocxDocument(BytesIO(uploaded_file.getvalue()))
     paragraphs = [paragraph.text.strip() for paragraph in doc.paragraphs if paragraph.text.strip()]
     if not paragraphs:

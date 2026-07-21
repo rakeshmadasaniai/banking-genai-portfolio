@@ -9,7 +9,6 @@ from uuid import uuid4
 
 import streamlit as st
 
-from core.agentic_runtime import AgenticRuntime
 from core.retriever import get_base_index, retrieve_shared_context
 from core.utils import detect_input_language, list_base_knowledge_files
 from features.accessibility import apply_accessibility_styles, render_accessibility_controls
@@ -31,10 +30,6 @@ from features.product_ui import (
     render_welcome_card,
 )
 from features.voice_controls import render_voice_input_preview
-from models.auto_router import run_auto_mode
-from models.autonomous_agent import run_autonomous_agent
-from models.finetuned_mode import generate_finetuned_response
-from models.openai_mode import generate_openai_response
 
 MODEL_MODES = ["Autonomous Max", "OpenAI", "Fine-Tuned", "Auto", "Agentic Workspace"]
 
@@ -194,6 +189,8 @@ def _response_profile(question: str) -> str:
 
 
 def _llm_text_call(prompt: str, retrieval: dict, response_language: str, response_profile: str) -> str:
+    from models.openai_mode import generate_openai_response
+
     result = generate_openai_response(
         prompt,
         retrieval,
@@ -209,6 +206,8 @@ def _run_selected_model(question: str, retrieval: dict, mode: str) -> dict:
     response_language = (st.session_state.get("last_voice_lang") or "").strip() or detect_input_language(question)
     response_profile = _response_profile(question)
     if mode == "OpenAI":
+        from models.openai_mode import generate_openai_response
+
         return generate_openai_response(
             question,
             retrieval,
@@ -217,6 +216,8 @@ def _run_selected_model(question: str, retrieval: dict, mode: str) -> dict:
             response_profile=response_profile,
         )
     if mode == "Fine-Tuned":
+        from models.finetuned_mode import generate_finetuned_response
+
         return generate_finetuned_response(
             question,
             retrieval,
@@ -225,6 +226,8 @@ def _run_selected_model(question: str, retrieval: dict, mode: str) -> dict:
             response_profile=response_profile,
         )
     if mode == "Autonomous Max":
+        from core.agentic_runtime import AgenticRuntime
+
         agent = AgenticRuntime(
             retriever=lambda q, top_k=5: retrieve_shared_context(
                 q, get_base_index(), st.session_state.upload_index
@@ -241,6 +244,8 @@ def _run_selected_model(question: str, retrieval: dict, mode: str) -> dict:
         return result
 
     if mode == "Agentic Workspace":
+        from core.agentic_runtime import AgenticRuntime
+
         agent = AgenticRuntime(
             retriever=lambda q, top_k=5: retrieve_shared_context(
                 q, get_base_index(), st.session_state.upload_index
@@ -257,6 +262,8 @@ def _run_selected_model(question: str, retrieval: dict, mode: str) -> dict:
         return result
 
     if mode == "Autonomous Agent":
+        from models.autonomous_agent import run_autonomous_agent
+
         result = run_autonomous_agent(
             question=question,
             retrieval=retrieval,
@@ -269,6 +276,8 @@ def _run_selected_model(question: str, retrieval: dict, mode: str) -> dict:
         st.session_state.agent_memory.append({"question": question, "steps": result.get("agent_steps", [])})
         _persist_agent_memory(st.session_state.agent_memory)
         return result
+    from models.auto_router import run_auto_mode
+
     return run_auto_mode(question, retrieval, uploaded_images=images)
 
 

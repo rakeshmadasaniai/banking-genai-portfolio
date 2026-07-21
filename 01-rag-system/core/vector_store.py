@@ -5,8 +5,6 @@ import os
 from typing import Any
 
 import streamlit as st
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.vectorstores import FAISS
 
 from core.utils import keyword_tokens
 
@@ -48,7 +46,9 @@ class VectorIndex:
 
 
 @st.cache_resource(show_spinner=False)
-def get_embeddings(model_name: str) -> HuggingFaceEmbeddings:
+def get_embeddings(model_name: str) -> Any:
+    from langchain_community.embeddings import HuggingFaceEmbeddings
+
     return HuggingFaceEmbeddings(model_name=model_name)
 
 
@@ -71,6 +71,8 @@ def build_vector_index(documents: list, embeddings_model_name: str, origin: str)
         return _build_keyword_index(documents, origin)
 
     try:
+        from langchain_community.vectorstores import FAISS
+
         vectorstore = FAISS.from_documents(documents, get_embeddings(embeddings_model_name))
         return VectorIndex(
             vectorstore=vectorstore,

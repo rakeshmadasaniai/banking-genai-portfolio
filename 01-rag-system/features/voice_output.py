@@ -4,7 +4,6 @@ import hashlib
 import os
 
 import streamlit as st
-from openai import OpenAI
 
 
 def _audio_cache_key(message_key: str, answer: str) -> str:
@@ -17,6 +16,8 @@ def _generate_audio(answer: str, lang_hint: str = "") -> bytes | None:
     if not api_key:
         st.info("Read Answer Aloud needs OPENAI_API_KEY so the app can generate speech.")
         return None
+
+    from openai import OpenAI
 
     client = OpenAI(api_key=api_key)
     model_name = os.environ.get("OPENAI_TTS_MODEL", "gpt-4o-mini-tts").strip()
