@@ -301,7 +301,7 @@ def _run_autonomous_task(task: dict[str, Any], base_index) -> dict[str, Any]:
 
 
 def run_product_runtime() -> None:
-    st.set_page_config(page_title="Banking & Finance Copilot", page_icon="🌍", layout="wide", initial_sidebar_state="expanded")
+    st.set_page_config(page_title="Banking & Finance AI Agent", page_icon="🌍", layout="wide", initial_sidebar_state="expanded")
     _ensure_state()
 
     inject_premium_css()

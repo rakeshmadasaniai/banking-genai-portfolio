@@ -101,11 +101,11 @@ html, body, [data-testid="stAppViewContainer"]{background:var(--bg)!important;co
 .composer-ready{visibility:visible!important;opacity:1!important;pointer-events:auto!important}
 .composer-row [data-testid="column"]{display:flex;align-items:center}
 .composer-row [data-testid="column"] > div{width:100%}
-.composer-shell div[data-testid="stPopover"] button,
-.composer-shell div[data-testid="stSelectbox"] > div[data-baseweb="select"] > div{min-height:44px!important;border-radius:14px!important;background:#FFF!important;border:1px solid rgba(15,23,42,.08)!important;color:#123A6F!important}
-.composer-shell [data-testid="stTextInput"] > div > div{background:#FFF!important;border:1px solid rgba(37,99,235,.14)!important;border-radius:14px!important}
-.composer-shell [data-testid="stTextInput"] input{min-height:44px!important;padding:10px 14px!important}
-.composer-shell [data-testid="stFormSubmitButton"] button{min-height:44px!important;border-radius:14px!important;background:#123A6F!important;color:#FFF!important;border:none!important}
+.composer-shell-static div[data-testid="stPopover"] button,
+.composer-shell-static div[data-testid="stSelectbox"] > div[data-baseweb="select"] > div{min-height:44px!important;border-radius:14px!important;background:#FFF!important;border:1px solid rgba(15,23,42,.08)!important;color:#123A6F!important}
+.composer-shell-static [data-testid="stTextInput"] > div > div{background:#FFF!important;border:1px solid rgba(37,99,235,.14)!important;border-radius:14px!important}
+.composer-shell-static [data-testid="stTextInput"] input{min-height:44px!important;padding:10px 14px!important}
+.composer-shell-static [data-testid="stFormSubmitButton"] button{min-height:44px!important;border-radius:14px!important;background:#123A6F!important;color:#FFF!important;border:none!important}
 @media (max-width:1100px){.hero-card{grid-template-columns:80px 1fr}.proof-grid,.product-info-grid,.tech-row{grid-template-columns:1fr}.composer-shell-static{left:8px!important}}
 @keyframes floatGlobe{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 </style>
