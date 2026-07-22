@@ -101,6 +101,10 @@ def _ensure_state() -> None:
         "model_mode": "OpenAI",
         "pending_question": "",
         "last_voice_lang": "",
+        "risk_profile": None,
+        "investment_goal": None,
+        "liquidity_need": None,
+        "investment_horizon": None,
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -186,6 +190,36 @@ def _response_profile(question: str) -> str:
     if len(q.split()) <= 10 or any(h in q for h in direct_hints):
         return "direct"
     return "detailed"
+
+
+def _update_investment_memory(user_query: str) -> None:
+    q = user_query.lower()
+
+    if "conservative" in q:
+        st.session_state.risk_profile = "conservative"
+    elif "moderate" in q:
+        st.session_state.risk_profile = "moderate"
+    elif "aggressive" in q:
+        st.session_state.risk_profile = "aggressive"
+
+    if "growth" in q:
+        st.session_state.investment_goal = "growth"
+    elif "income" in q:
+        st.session_state.investment_goal = "income"
+    elif "preservation" in q or "protect" in q:
+        st.session_state.investment_goal = "capital preservation"
+    elif "retirement" in q or "retire" in q:
+        st.session_state.investment_goal = "retirement"
+
+    if "1 year" in q or "2 years" in q or "3 years" in q or "short term" in q:
+        st.session_state.liquidity_need = "high"
+    elif "long term" in q or "10 years" in q or "ten years" in q:
+        st.session_state.liquidity_need = "low"
+
+    if "10 years" in q or "ten years" in q:
+        st.session_state.investment_horizon = "10 years"
+    elif "5 years" in q or "five years" in q:
+        st.session_state.investment_horizon = "5 years"
 
 
 def _llm_text_call(prompt: str, retrieval: dict, response_language: str, response_profile: str) -> str:
@@ -486,6 +520,7 @@ def run_product_runtime() -> None:
     # Process deferred generation so the user message appears in history above composer.
     pending_question = st.session_state.get("pending_question")
     if pending_question:
+        _update_investment_memory(pending_question)
         if base_index is None:
             base_index = get_base_index()
         render_assistant_thinking()
@@ -563,6 +598,7 @@ def run_product_runtime() -> None:
 
     # Guarantee submit uses composer-selected mode (avoids stale sidebar/composer mismatch).
     st.session_state.model_mode = st.session_state.get("composer_model_mode", st.session_state.model_mode)
+    _update_investment_memory(question)
     st.session_state.messages.append({"role": "user", "content": question})
     _save_active_chat()
     st.session_state.pending_question = question
