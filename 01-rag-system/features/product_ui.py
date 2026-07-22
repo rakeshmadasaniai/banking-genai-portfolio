@@ -50,10 +50,10 @@ def inject_premium_css() -> None:
     st.markdown(
         """
 <style>
-:root{--bg:#F6F8FC;--bg-soft:#EEF3FA;--text:#0B1220;--border:rgba(15,23,42,.08);--navy:#123A6F}
-html, body, [data-testid="stAppViewContainer"]{background:var(--bg)!important;color:var(--text)!important}
+:root{--bg:#F6F8FC;--bg-soft:#EEF3FA;--text:#0B1220;--border:rgba(15,23,42,.08);--navy:#123A6F;--safe-bottom:env(safe-area-inset-bottom,0px)}
+html, body, [data-testid="stAppViewContainer"]{background:var(--bg)!important;color:var(--text)!important;-webkit-text-size-adjust:100%!important;overflow-x:hidden!important}
 .stApp{background:linear-gradient(180deg,#F8FBFF 0%,#F4F7FC 100%)!important}
-.block-container{max-width:none!important;padding:.1rem .16rem 8.2rem!important}
+.block-container{max-width:none!important;padding:.1rem .16rem calc(8.2rem + var(--safe-bottom))!important}
 [data-testid="stHeader"]{background:transparent!important}
 #MainMenu, footer{visibility:hidden}
 [data-testid="stSidebar"]{background:var(--bg-soft)!important;border-right:1px solid var(--border)!important;min-width:300px!important}
@@ -94,11 +94,12 @@ html, body, [data-testid="stAppViewContainer"]{background:var(--bg)!important;co
 .meta-pill{font-size:11px;font-weight:900;border-radius:999px;padding:5px 10px;border:1px solid var(--border);background:#F8FBFF;color:#123A6F}
 .meta-pill.green{background:#ECFDF5;color:#047857;border-color:#BBF7D0}
 .starter-label{margin:6px 0 8px;color:#123A6F;font-size:13px;font-weight:900}
-.composer-shell-static{position:fixed!important;left:calc(var(--composer-left, 316px) + 8px)!important;right:8px!important;bottom:8px!important;top:auto!important;transform:none!important;z-index:2147483000!important;background:#FFF!important;border:1px solid rgba(37,99,235,.14)!important;border-radius:16px!important;box-shadow:0 12px 30px rgba(15,23,42,.08)!important;padding:8px 10px!important;margin:0!important}
+.composer-shell-static{position:fixed!important;left:calc(var(--composer-left, 316px) + 8px)!important;right:8px!important;bottom:calc(8px + var(--safe-bottom))!important;top:auto!important;transform:none!important;z-index:2147483000!important;background:#FFF!important;border:1px solid rgba(37,99,235,.14)!important;border-radius:16px!important;box-shadow:0 12px 30px rgba(15,23,42,.08)!important;padding:8px 10px!important;margin:0!important;max-width:calc(100vw - var(--composer-left, 316px) - 16px)!important}
 .composer-shell-static form{border:none!important;background:transparent!important}
 .composer-marker{display:none!important}
 .composer-pending{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
 .composer-ready{visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+.composer-row [data-testid="stHorizontalBlock"]{gap:.6rem!important}
 .composer-row [data-testid="column"]{display:flex;align-items:center}
 .composer-row [data-testid="column"] > div{width:100%}
 .composer-shell-static div[data-testid="stPopover"] button,
@@ -106,7 +107,34 @@ html, body, [data-testid="stAppViewContainer"]{background:var(--bg)!important;co
 .composer-shell-static [data-testid="stTextInput"] > div > div{background:#FFF!important;border:1px solid rgba(37,99,235,.14)!important;border-radius:14px!important}
 .composer-shell-static [data-testid="stTextInput"] input{min-height:44px!important;padding:10px 14px!important}
 .composer-shell-static [data-testid="stFormSubmitButton"] button{min-height:44px!important;border-radius:14px!important;background:#123A6F!important;color:#FFF!important;border:none!important}
-@media (max-width:1100px){.hero-card{grid-template-columns:80px 1fr}.proof-grid,.product-info-grid,.tech-row{grid-template-columns:1fr}.composer-shell-static{left:8px!important}}
+@media (max-width:1100px){.hero-card{grid-template-columns:80px 1fr}.proof-grid,.product-info-grid,.tech-row{grid-template-columns:1fr}.composer-shell-static{left:8px!important;max-width:calc(100vw - 16px)!important}}
+@media (max-width:680px){
+  .block-container{padding:.35rem .45rem calc(11.5rem + var(--safe-bottom))!important}
+  [data-testid="stSidebar"]{min-width:min(86vw,320px)!important}
+  .product-shell{border-radius:18px!important;padding:12px!important;margin:0 0 10px!important}
+  .greeting-sub{font-size:13px!important;margin-bottom:10px!important}
+  .hero-card{grid-template-columns:52px 1fr!important;gap:10px!important;min-height:auto!important;padding:14px!important;border-radius:18px!important}
+  .hero-card > div:last-child{display:none!important}
+  .hero-globe{font-size:48px!important}
+  .hero-title{font-size:21px!important;letter-spacing:-.03em!important}
+  .hero-copy{font-size:13px!important;line-height:1.45!important}
+  .proof-grid{gap:10px!important;margin:10px 0!important}
+  .proof-card,.info-card{border-radius:18px!important;padding:14px!important}
+  .product-info-grid{gap:10px!important;margin:10px 0 18px!important}
+  .starter-label{margin-top:8px!important}
+  .user-bubble{max-width:88%!important;font-size:13px!important;padding:10px 14px!important}
+  .ai-wrap{grid-template-columns:42px 1fr!important;gap:8px!important}
+  .ai-globe{font-size:36px!important}
+  .answer-shell,.thinking-shell{border-radius:16px!important;padding:14px!important;font-size:14px!important;line-height:1.62!important}
+  .meta-pills{gap:6px!important}
+  .meta-pill{font-size:10px!important;padding:4px 8px!important}
+  .composer-shell-static{left:6px!important;right:6px!important;bottom:calc(6px + var(--safe-bottom))!important;padding:7px!important;border-radius:18px!important;max-width:calc(100vw - 12px)!important}
+  .composer-row [data-testid="stHorizontalBlock"]{gap:.35rem!important;flex-wrap:nowrap!important}
+  .composer-shell-static div[data-testid="stPopover"] button,
+  .composer-shell-static div[data-testid="stSelectbox"] > div[data-baseweb="select"] > div,
+  .composer-shell-static [data-testid="stFormSubmitButton"] button{min-height:42px!important;border-radius:14px!important}
+  .composer-shell-static [data-testid="stTextInput"] input{min-height:42px!important;font-size:16px!important;padding:8px 10px!important}
+}
 @keyframes floatGlobe{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 </style>
         """,
@@ -367,6 +395,12 @@ def enforce_composer_pin() -> None:
     if (window.parent && window.parent.document) doc = window.parent.document;
   } catch (_) {}
 
+  function mobileKeyboardInset() {
+    const vv = window.visualViewport;
+    if (!vv) return 0;
+    return Math.max(0, Math.round((window.innerHeight || 0) - vv.height - vv.offsetTop));
+  }
+
   function pinComposer() {
     const shell = doc.querySelector(".composer-shell-static");
     if (!shell) return false;
@@ -374,19 +408,21 @@ def enforce_composer_pin() -> None:
     const viewportWidth = Math.min(window.innerWidth || 0, doc.documentElement.clientWidth || 0);
     const isMobile = viewportWidth <= 1100;
     const left = (!isMobile && sidebar) ? Math.max(300, Math.round(sidebar.getBoundingClientRect().width)) : 0;
+    const bottom = Math.max(8, mobileKeyboardInset() + 8);
     doc.documentElement.style.setProperty("--composer-left", String(left) + "px");
     shell.style.cssText = [
       "position:fixed !important",
-      "bottom:8px !important",
+      `bottom:${bottom}px !important`,
       "top:auto !important",
       "right:8px !important",
       `left:${isMobile ? "8px" : `calc(${left}px + 8px)`} !important`,
       "transform:none !important",
       "margin:0 !important",
-      "z-index:2147483000 !important"
+      "z-index:2147483000 !important",
+      "max-width:" + (isMobile ? "calc(100vw - 16px)" : `calc(100vw - ${left}px - 16px)`) + " !important"
     ].join(";");
     if (doc.body) {
-      doc.body.style.paddingBottom = "124px";
+      doc.body.style.paddingBottom = (isMobile ? "172px" : "124px");
     }
     shell.classList.add("composer-ready");
     return true;
@@ -399,6 +435,12 @@ def enforce_composer_pin() -> None:
   }, 80);
   window.addEventListener("resize", pinComposer);
   window.addEventListener("scroll", pinComposer, { passive: true });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", pinComposer);
+    window.visualViewport.addEventListener("scroll", pinComposer);
+  }
+  doc.addEventListener("focusin", pinComposer);
+  doc.addEventListener("focusout", () => setTimeout(pinComposer, 150));
   const observer = new MutationObserver(() => pinComposer());
   if (doc.body) observer.observe(doc.body, { childList: true, subtree: true, attributes: true });
   setTimeout(pinComposer, 300);
